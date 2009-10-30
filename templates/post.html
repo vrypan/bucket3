@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ blog.baseURL }}">&lt;home</a>
+
+<h1><a href="{{page.url}}">{{ page.title }}</a></h1>
+<div class="date">{{ page.cre_dat|date:"D d.M.Y" }}</div>
+{{ page.body|safe }}
+
+{% if frontmatter.mood %}
+<p><small>mood: {{ frontmatter.mood }}</small></p>
+{% endif %}
+{% endblock %}

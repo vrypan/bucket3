@@ -1,0 +1,7 @@
+contentDir: ./content
+htmlDir: ./html
+db_file: ./internal/blog.db
+templatePath: [templates]
+
+baseURL: http://vrypan.net/~panayotis/my
+blogTitle: the official bucket3 blog

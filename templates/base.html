@@ -1,0 +1,25 @@
+<html>
+<head>
+	<title>{{blog.blogTitle}}|{{ page.title }}</title>
+	<style type="text/css">
+		body { 
+			font-family: Tahoma, Helvetica, Arial, sans-serif; 
+			font-size: 12px; 
+			color: #000000; 
+			font-weight: normal; 
+			margin-left: 10em;
+			margin-right: 10em;
+		} 
+		h1 {
+			font-size: 140%;
+		}
+		h2 { font-size: 120%; }
+		.date { font-style: italic; }
+	</style>
+</head>
+<body>
+{% block content %}
+<b>here goes the content.</b>
+{% endblock content %}
+</body>
+</html>

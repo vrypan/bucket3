@@ -1,0 +1,66 @@
+from bucket3.bucket import bucket
+
+import markdown2
+import codecs
+import sys,os
+import yaml
+from datetime import datetime
+import time
+
+from django.template import Template, Context, loader
+
+class markdown(bucket):
+	@classmethod
+	def types(cls):
+		return ('.markdown',)
+
+	def toHTML(cls, content):
+		return markdown2.markdown(content)
+
+	def __init__(self, conf, file):
+		bucket.__init__(self, conf)
+		self.file = file
+		self.page = {}
+	def parse(self):
+		data = codecs.open(self.file, mode='r', encoding='utf8').read()
+		if data[0:3] == '---' :
+			dummy, frontMatter, text = data.split('---', 2)
+			self.frontmatter = yaml.load(frontMatter)
+			self.page['body'] = self.toHTML(text)
+		else:
+			return false
+		if 'date' in self.frontmatter:
+			self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M')
+		else:
+			self.page['cre_dat'] = datetime.today()
+		if 'title' in self.frontmatter:
+			self.page['title'] = self.frontmatter['title']
+		else: 
+			self.page['title'] = self.file
+		return self
+
+	def title(self):
+		return self.page['title']
+	def url(self):
+		return self.itemURL(file=self.file, cre_dat=self.page['cre_dat'])
+	def body(self):
+		return self.page['body']
+	def date(self):
+		return self.page['cre_dat']
+
+	def render(self):
+		t = loader.get_template('post.html') 
+		c = Context({'blog':self.conf, 
+			'frontmatter':self.frontmatter,
+			'page':self.page
+			})
+		html = t.render(c).encode('utf-8')
+		post_dir = self.osItemDir(file=self.file, cre_dat=self.date())
+		if not os.path.exists(post_dir):
+			os.makedirs(post_dir)
+		out_filename = self.osItem(file=self.file, cre_dat=self.date())
+		out_file = open(out_filename,'w')
+		out_file.write(html)
+		out_file.close()
+		print 'Wrote:', out_filename
+
