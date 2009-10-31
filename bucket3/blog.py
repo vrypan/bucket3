@@ -29,27 +29,23 @@ class blog(bucket):
 		self.db_conn.row_factory = sqlite3.Row
 		self.db_cur = self.db_conn.cursor()
 
+	def walkContentDir(self,dir):
+		for file in os.listdir(dir):
+			filename = "%s/%s" % (dir,file)
+			c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
+			if c.handler:
+				print 'Parsing:', filename
+				if not c.in_db():
+					c.parse()
+					c.to_db()
+					c.render()
+			else:
+				if os.path.isdir(filename):
+					self.walkContentDir(filename)
+
 	def updPosts(self):
-		for dir, subdirs, files in os.walk(self.conf['contentDir']):
-			for subdir in subdirs:
-				filename = "%s/%s" % (dir,subdir)
-				c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
-				if c.handler:
-					if not c.in_db():
-						c.parse()
-						c.to_db()
-						c.render()
-					""" if this is a "special" dir, handled by a special handler, don't walk into it """
-					subdirs[:] = [d for d in subdirs if d != subdir]
-			for file in files:
-				filename = "%s/%s" % (dir,file)
-				c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
-				if c.handler:
-					if not c.in_db():
-						#print "Parsing: %s" % filename
-						c.parse()
-						c.to_db()
-						c.render()
+		self.walkContentDir(self.conf['contentDir'])
+
 	def updIndex(self):
 		self.db_cur.execute("SELECT * FROM post ORDER BY cre_date DESC")
 		posts = []
