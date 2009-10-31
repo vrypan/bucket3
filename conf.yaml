@@ -3,5 +3,5 @@ htmlDir: ./html
 db_file: ./internal/blog.db
 templatePath: [templates]
 
-baseURL: http://vrypan.net/~panayotis/my
-blogTitle: the official bucket3 blog
+baseURL: http://vrypan.net/~panayotis/my # enter your blog URL. You will have to copy (or link) the contents of htmlDir there
+blogTitle: a bucket3 blog
