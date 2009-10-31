@@ -1,0 +1,15 @@
+This is very, very, very early development stage.
+
+Most probably, this code will not work. You have been warned!
+
+But...
+
+If you download the code:
+1. Edit conf.yaml
+2. Edit content/my_first_post.markdown
+3. run python parser.py --init
+4. run python parser.py --generate
+5. copy the contents of html/ to a directory accessible by your web server (according to the baseURL value you entered in conf.yaml)
+
+Panayotis Vryonis 
+http://vrypan.net/
