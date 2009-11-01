@@ -1,3 +1,11 @@
+
+""" Usage: python bucket3.py [OPTIONS] 
+
+OPTIONS:
+	-i or --init
+	-g or --generate
+"""
+
 import markdown2
 import codecs
 import sys,os
@@ -13,20 +21,29 @@ from bucket3.blog import blog
 
 from django.conf import settings
 
-def main(argv):
+def main(*argv):
+	try:
+		(opts,args) = getopt.getopt(argv[1:], 
+				'gi',
+				['generate', 'init']
+				)
+	except getopt.GetoptError, e:
+		print e
+		print __doc__
+		return 1
+
 	conf = yaml.load(open('./conf.yaml',mode='r').read())
 
 	settings.configure( 
 			DEBUG=True, TEMPLATE_DEBUG=True, 
 			TEMPLATE_DIRS=(conf['templatePath'])
 			)
-	try:
-		opts, args = getopt.getopt(argv, "g", ["generate", "init"])
-	except getopt.GetoptError:  
-		usage()
-		sys.exit()
+
+	if not opts:
+		print __doc__
+		return 1
 	for opt, arg in opts:
-		if opt in ("--init"):
+		if opt in ("-i", "--init"):
 			db_conn = sqlite3.connect( conf['db_file'], detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 			db_conn.row_factory = sqlite3.Row
 			db_cur = db_conn.cursor()
@@ -46,10 +63,12 @@ def main(argv):
 				);
 				""")
 			db_conn.commit()
+			print 'A clean db file has been initialized.'
+
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
 			myblog.updIndex()
 
 if __name__ == "__main__": 
-	main(sys.argv[1:])
+	sys.exit(main(*sys.argv))
