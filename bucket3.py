@@ -25,7 +25,7 @@ def main(*argv):
 	try:
 		(opts,args) = getopt.getopt(argv[1:], 
 				'gi',
-				['generate', 'init']
+				['generate', 'init', 'update-index', 'add-post=']
 				)
 	except getopt.GetoptError, e:
 		print e
@@ -68,6 +68,15 @@ def main(*argv):
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
+			myblog.updIndex()
+
+		if opt in ("--add-post"):
+			myblog = blog(conf)
+			myblog.addPost("%s/%s" % (conf['contentDir'], arg))
+			myblog.updIndex()
+
+		if opt in ("--update-index"):
+			myblog = blog(conf)
 			myblog.updIndex()
 
 if __name__ == "__main__": 
