@@ -29,39 +29,73 @@ class blog(bucket):
 		self.db_conn.row_factory = sqlite3.Row
 		self.db_cur = self.db_conn.cursor()
 
+	def addPost(self,filename):
+		c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
+		if c.handler:
+			print 'Parsing:', filename
+			if not c.in_db():
+				c.parse()
+				c.to_db()
+				c.render()
+		else:
+			if os.path.isdir(filename):
+				self.walkContentDir(filename)
+
+
 	def walkContentDir(self,dir):
 		for file in os.listdir(dir):
 			filename = "%s/%s" % (dir,file)
-			c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
-			if c.handler:
-				print 'Parsing:', filename
-				if not c.in_db():
-					c.parse()
-					c.to_db()
-					c.render()
-			else:
-				if os.path.isdir(filename):
-					self.walkContentDir(filename)
+			self.addPost(filename)
 
 	def updPosts(self):
 		self.walkContentDir(self.conf['contentDir'])
 
 	def updIndex(self):
+		self.db_cur.execute("SELECT COUNT(*) FROM post")
+		res = self.db_cur.fetchall()
+		postsNum = res[0][0]
+		print postsNum
 		self.db_cur.execute("SELECT * FROM post ORDER BY cre_date DESC")
-		posts = []
-		for post in self.db_cur.fetchmany(size=10):
-			posts.append({
-				'title':post['title'], 
-				'body':post['body'],
-				'cre_date':post['cre_date'],
-				'url':post['url']})
+		dbposts = self.db_cur.fetchmany(size=10)
+		pagenum = 0
 
-		page = {'title':'home'}
-		t = loader.get_template('index.html') 
-		c = Context({'posts':posts, 'blog':self.conf, 'page':page })
-		indexhtml = "%s/index.html" % self.conf['htmlDir']
-		f = open(indexhtml,'w')
-		f.write(t.render(c).encode('utf8'))
-		f.close()
+		while dbposts:
+			posts = []
+			for post in dbposts:
+				posts.append({
+					'title':post['title'], 
+					'body':post['body'],
+					'cre_date':post['cre_date'],
+					'url':post['url']})
+
+			if (pagenum+1)*10 < postsNum:
+				prevPage = pagenum+1
+			else:
+				prevPage = None
+	
+			if pagenum>0:
+				nextPage = pagenum-1
+			else:
+				nextPage = None
+
+			if pagenum:
+				filename = "index_%s.html" % pagenum
+			else:
+				filename = "index.html"
+
+
+			page = {'title':'home', 'pagenum':pagenum,
+					'prevPage':prevPage,
+					'nextPage':nextPage
+					}
+
+			t = loader.get_template('index.html') 
+			c = Context({'posts':posts, 'blog':self.conf, 'page':page })
+			indexhtml = "%s/%s" % (self.conf['htmlDir'], filename)
+			f = open(indexhtml,'w')
+			f.write(t.render(c).encode('utf8'))
+			f.close()
+			dbposts = self.db_cur.fetchmany(size=10)
+			pagenum = pagenum+1
 
 
