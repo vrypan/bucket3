@@ -1,12 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ blog.blogTitle }}</h1>
 
 {% for post in posts %}
 <h2><a href="{{post.url}}">{{ post.title }}</a></h2>
 <div class="date">{{ post.cre_date|date:"D d M Y" }}</div>
 {{ post.body|safe }}
 {% endfor %}
+{% endblock %}
+
+{% block navTop %}
+<p>
+{% if page.prevPage %}
+<a href="{{ blog.baseURL }}/index_{{ page.prevPage }}.html">&lt;older posts</a>
+{% endif %}
+
+{% ifequal page.nextPage 0 %}
+<a href="{{ blog.baseURL }}/">newer posts&gt;</a>
+{% endifequal %}
+
+{% if page.nextPage %}
+<a href="{{ blog.baseURL }}/index_{{ page.nextPage }}.html">newer posts&gt;</a>
+{% endif %}
 
 
+</p>
 {% endblock %}

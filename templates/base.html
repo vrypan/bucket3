@@ -18,8 +18,14 @@
 	</style>
 </head>
 <body>
+{% block header %}
+<h1><a href="{{blog.baseURL}}">{{ blog.blogTitle }}</a></h1>
+{% endblock header %}
+
+{% block navTop %}{% endblock navTop %}
 {% block content %}
 <b>here goes the content.</b>
 {% endblock content %}
+{% block navBottom %}{% endblock navBottom %}
 </body>
 </html>
