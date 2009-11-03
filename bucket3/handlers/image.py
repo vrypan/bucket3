@@ -52,6 +52,5 @@ class image(bucket):
 		out_file.write(html)
 		out_file.close()
 		shutil.copy(self.file, post_dir)
-		print 'Wrote:', out_filename
 
 

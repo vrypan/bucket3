@@ -74,9 +74,7 @@ class b3(bucket):
 			if f != 'index.markdown':
 				ff = '%s/%s' % (self.file, f)
 				shutil.copy(ff, post_dir)
-				print 'Copied', ff
 		for f in dirs:
 				ff = '%s/%s' % (self.file, f)
 				shutil.copytree(ff, post_dir)
-		print 'Wrote:', out_filename
 

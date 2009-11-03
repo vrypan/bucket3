@@ -30,7 +30,8 @@ class markdown(bucket):
 		else:
 			return false
 		if 'date' in self.frontmatter:
-			self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M')
+			#self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M:%s')
+			self.page['cre_dat'] = self.frontmatter['date'] 
 		else:
 			self.page['cre_dat'] = datetime.today()
 		if 'title' in self.frontmatter:
@@ -62,5 +63,4 @@ class markdown(bucket):
 		out_file = open(out_filename,'w')
 		out_file.write(html)
 		out_file.close()
-		print 'Wrote:', out_filename
 

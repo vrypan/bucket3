@@ -33,7 +33,6 @@ class post(bucket):
 			self.db_cur = db_cur
 
 		ext = os.path.splitext(self.filepath)[1]
-		#print 'DEBUG:', ext, self.datatypes.keys(), filepath
 		if ext in self.datatypes:
 			self.handler = self.datatypes[ext](conf=conf, file=filepath)
 		else:

@@ -32,7 +32,6 @@ class blog(bucket):
 	def addPost(self,filename):
 		c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
 		if c.handler:
-			print 'Parsing:', filename
 			if not c.in_db():
 				c.parse()
 				c.to_db()
@@ -54,7 +53,6 @@ class blog(bucket):
 		self.db_cur.execute("SELECT COUNT(*) FROM post")
 		res = self.db_cur.fetchall()
 		postsNum = res[0][0]
-		print postsNum
 		self.db_cur.execute("SELECT * FROM post ORDER BY cre_date DESC")
 		dbposts = self.db_cur.fetchmany(size=10)
 		pagenum = 0
