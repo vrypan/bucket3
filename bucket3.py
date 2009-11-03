@@ -5,8 +5,8 @@
 """ Usage: python bucket3.py [OPTIONS] 
 
 OPTIONS:
-	-i or --init
 	-g or --generate
+	-i or --init (depreciated): same as --clear-db
 	--update-index: Reads cache and recreates index pages
 	--clear-db: Deletes everything from cache, recreates tables, etc.
 	--clear-html: Deletes all files under the htmlDir (as defined in conf.yaml)
@@ -59,7 +59,7 @@ def main(*argv):
 		return 1
 
 	for opt, arg in opts:
-		if opt in ("--clear-db"):
+		if opt in ("-i", "--init", "--clear-db"):
 			db_conn = sqlite3.connect( conf['db_file'], detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 			db_conn.row_factory = sqlite3.Row
 			db_cur = db_conn.cursor()
