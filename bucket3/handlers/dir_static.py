@@ -8,6 +8,8 @@ import shutil
 class dir_static(bucket):
 	""" This is a special handler used to copy a static directory
 	(usually containing .css, .js etc. files to <baseURL>/static
+
+	It doesn't work as expected. Need to rethink.
 	"""
 	@classmethod
 	def types(cls):
@@ -36,18 +38,12 @@ class dir_static(bucket):
 		return self.page['body']
 	def date(self):
 		return self.page['cre_dat']
+	def type(self):
+		return "none"
+	def tags(self):
+		return ()
 
 	def render(self):
-		post_dir = "%s/%s" % (self.conf['htmlDir'], 'static')
-		if not os.path.exists(post_dir):
-			os.makedirs(post_dir)
-		base, dirs, files = os.walk(self.file).next() 
-		for f in files:
-			ff = '%s/%s' % (self.file, f)
-			shutil.copy(ff, post_dir)
-			print 'Copied', ff
-		for f in dirs:
-			ff = '%s/%s' % (self.file, f)
-			shutil.copytree(ff, post_dir)
-		print 'Wrote:', out_filename
-
+		post_dir = "%s/%s" % (self.conf['htmlDir'], self.osItemName(self.file) )
+		shutil.rmtree(path=post_dir, ignore_errors=True)
+		shutil.copytree(self.file, post_dir)
