@@ -15,5 +15,3 @@ class html(markdown):
 		return ('.html',)
 	def toHTML(cls, content):
 		return content
-
-#post.regHandler(b3_html)

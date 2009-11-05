@@ -39,6 +39,14 @@ class markdown(bucket):
 		else: 
 			self.page['title'] = self.file
 		return self
+		if 'type' in self.frontmatter:
+			self.page['type'] = self.frontmatter['type']
+		else:
+			self.page['type'] = 'post'
+		if 'tags' in self.frontmatter:
+			self.page['tags'] = self.frontmatter['tags'].split(',')
+		else:
+			self.page['tags'] = None
 
 	def title(self):
 		return self.page['title']
@@ -48,6 +56,12 @@ class markdown(bucket):
 		return self.page['body']
 	def date(self):
 		return self.page['cre_dat']
+	def type(self):
+		return self.page['type']
+	def tags(self):
+		return self.page['tags']
+	def frontmatter(self):
+		return self.frontmatter
 
 	def render(self):
 		t = loader.get_template('post.html') 

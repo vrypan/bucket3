@@ -29,6 +29,9 @@ class image(bucket):
 		self.page['title'] = self.osItemName(self.file)
 		self.page['body'] = '<img src="%s/%s" />' % (self.itemURL(file=self.file, cre_dat=self.page['cre_dat']), 
 				self.file.split('/')[-1])
+		self.page['type'] = 'post'
+		self.page['tags'] = ('photos',)
+
 		return self
 
 	def title(self):
@@ -39,6 +42,12 @@ class image(bucket):
 		return self.page['body']
 	def date(self):
 		return self.page['cre_dat']
+	def type(self):
+		return self.page['type']
+	def tags(self):
+		return self.page['tags']
+	def frontmatter(self):
+		return None
 
 	def render(self):
 		t = loader.get_template('post.html') 

@@ -3,7 +3,8 @@
 <a href="{{ blog.baseURL }}">&lt;home</a>
 
 <h1><a href="{{page.url}}">{{ page.title }}</a></h1>
-<div class="date">{{ page.cre_dat|date:"D d.M.Y" }}</div>
+<div class="date">Date: {{ page.cre_dat|date:"D d.M.Y" }}</div>
+<div class="tags">Tags: {% for t in page.tags %}{{ t }},{% endfor %} </div>
 {{ page.body|safe }}
 
 {% if frontmatter.mood %}

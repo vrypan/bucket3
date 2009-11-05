@@ -41,6 +41,14 @@ class b3(bucket):
 			self.page['title'] = self.frontmatter['title']
 		else: 
 			self.page['title'] = self.file
+		if 'type' in self.frontmatter:
+			self.page['type'] = self.frontmatter['type']
+		else:
+			self.page['type'] = 'post'
+		if 'tags' in self.frontmatter:
+			self.page['tags'] = self.frontmatter['tags'].split(',')
+		else:
+			self.page['tags'] = None
 
 		# .toHTML must be called last, as it may use data calculated above.
 		self.page['body'] = self.toHTML(text)
@@ -54,6 +62,13 @@ class b3(bucket):
 		return self.page['body']
 	def date(self):
 		return self.page['cre_dat']
+	def type(self):
+		return self.page['type']
+	def tags(self):
+		return self.page['tags']
+	def frontmatter(self):
+		return self.frontmatter
+
 
 	def render(self):
 		t = loader.get_template('post.html') 

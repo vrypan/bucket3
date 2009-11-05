@@ -7,12 +7,17 @@
 OPTIONS:
 	-g or --generate
 	-i or --init (depreciated): same as --clear-db
-	--update-index: Reads cache and recreates index pages
-	--clear-db: Deletes everything from cache, recreates tables, etc.
-	--clear-html: Deletes all files under the htmlDir (as defined in conf.yaml)
-	--add-post=<path>: Parses files under <path>. <path> may be a single file, 
+	--update-index	Reads cache and recreates index pages
+	--clear-db 		Deletes everything from cache, recreates tables, etc.
+	--add-post=<path> 
+					Parses files under <path>. <path> may be a single file, 
 					or a directory. <path> must be relative to contentDir 
 					as defined in conf.yaml
+
+	*DANGEROUS* option
+	--clear-html 	Deletes all files under the htmlDir (as defined in conf.yaml)
+				EVERYTHING under htmlDir will be *DELETED* 
+				Use with caution.
 """
 
 import markdown2
@@ -75,9 +80,17 @@ def main(*argv):
 					cre_date TIMESTAMP,
 					sys_upd REAL,
 					src VARCHAR(255),
+					type VARCHAR(255),
 					frontmatter TEXT
 				);
-				""")
+
+				DROP TABLE IF EXISTS post_tags;
+				CREATE TABLE post_tags(
+					id INTEGER PRIMARY KEY,
+					post_id INTEGER,
+					tag VARCHAR(255)
+				);
+			""")
 			db_conn.commit()
 			print 'A clean db file has been initialized.'
 

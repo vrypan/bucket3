@@ -66,8 +66,11 @@ class post(bucket):
 				self.handler.date(),
 				time.time(),
 				self.filepath,
-				pickle.dumps(self.handler.frontmatter))
-		self.db_cur.execute("INSERT INTO post(title,url,body,cre_date,sys_upd,src,frontmatter) VALUES(?,?,?,?,?,?,?)", vals)
+				pickle.dumps(self.handler.frontmatter),
+				self.handler.type(),
+				)
+		self.db_cur.execute("INSERT INTO post(title,url,body,cre_date,sys_upd,src,frontmatter,type) VALUES(?,?,?,?,?,?,?,?)", vals)
+		post_id = self.db_cur.lastrowid()
+		for tag in self.handler.tags():
+			self.db_cur.execute("INSERT INTO post_tags (post_id,tag) VALUES(?,?)", (post_id, tag) )
 		self.db_conn.commit()
-
-
