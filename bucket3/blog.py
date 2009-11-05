@@ -33,6 +33,7 @@ class blog(bucket):
 		c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
 		if c.handler:
 			if not c.in_db():
+				print 'Parsing: %s' % filename
 				c.parse()
 				c.to_db()
 				c.render()
@@ -53,7 +54,7 @@ class blog(bucket):
 		self.db_cur.execute("SELECT COUNT(*) FROM post")
 		res = self.db_cur.fetchall()
 		postsNum = res[0][0]
-		self.db_cur.execute("SELECT * FROM post ORDER BY cre_date DESC")
+		self.db_cur.execute("SELECT * FROM post WHERE type != 'none' ORDER BY cre_date DESC")
 		dbposts = self.db_cur.fetchmany(size=10)
 		pagenum = 0
 
