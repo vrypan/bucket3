@@ -106,7 +106,7 @@ def main(*argv):
 					tag = '%s, %s' % (tag, t['name'])
 	
 		dir = '%s/wp/%s' % ( exp_dir, row['d2'] )
-		file = '%s/%s_%s.markdown' % ( dir, row['d3'], row['ID'] )
+		file = '%s/%s_%s.wordpress' % ( dir, row['d3'], row['ID'] )
 		if not os.path.exists(dir):
 			os.makedirs(dir)
 		fh = open(file,'w')
