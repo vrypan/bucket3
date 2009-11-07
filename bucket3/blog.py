@@ -59,13 +59,7 @@ class blog(bucket):
 		pagenum = 0
 
 		while dbposts:
-			posts = []
-			for post in dbposts:
-				posts.append({
-					'title':post['title'], 
-					'body':post['body'],
-					'cre_date':post['cre_date'],
-					'url':post['url']})
+			posts = [ dict(post) for post in dbposts ]
 
 			if (pagenum+1)*10 < postsNum:
 				prevPage = pagenum+1

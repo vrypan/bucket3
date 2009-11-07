@@ -5,8 +5,7 @@
 
 <h1 class="entry-title"><a href="{{post.url}}">{{ post.title }}</a></h1>
 <div class="entry-meta">
-	<div class="entry-date">Posted on: {{ post.cre_dat|date:"D d.M.Y" }}</div>
-	<div class="entry-tags">Tags: {% for t in post.tags %}{{ t }},{% endfor %} </div>
+	<div class="entry-date">Posted on: {{ post.cre_date|date:"D d.M.Y" }}</div>
 	{% if frontmatter.mood %}
 	<div class="entry-mood">mood: {{ frontmatter.mood }}</div>
 	{% endif %}
