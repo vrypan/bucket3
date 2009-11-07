@@ -13,5 +13,5 @@ class html(markdown):
 	@classmethod
 	def types(cls):
 		return ('.html',)
-	def toHTML(cls, content):
+	def toHTML(self, content):
 		return content

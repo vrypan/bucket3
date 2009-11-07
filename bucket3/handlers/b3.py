@@ -45,10 +45,10 @@ class b3(bucket):
 			self.page['type'] = self.frontmatter['type']
 		else:
 			self.page['type'] = 'post'
-		if 'tags' in self.frontmatter:
+		if 'tags' in self.frontmatter and self.frontmatter['tags']:
 			self.page['tags'] = self.frontmatter['tags'].split(',')
 		else:
-			self.page['tags'] = None
+			self.page['tags'] = ()
 
 		# .toHTML must be called last, as it may use data calculated above.
 		self.page['body'] = self.toHTML(text)

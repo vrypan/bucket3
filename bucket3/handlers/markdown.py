@@ -38,15 +38,15 @@ class markdown(bucket):
 			self.page['title'] = self.frontmatter['title']
 		else: 
 			self.page['title'] = self.file
-		return self
 		if 'type' in self.frontmatter:
 			self.page['type'] = self.frontmatter['type']
 		else:
 			self.page['type'] = 'post'
-		if 'tags' in self.frontmatter:
+		if 'tags' in self.frontmatter and self.frontmatter['tags']:
 			self.page['tags'] = self.frontmatter['tags'].split(',')
 		else:
-			self.page['tags'] = None
+			self.page['tags'] = ()
+		return self
 
 	def title(self):
 		return self.page['title']
