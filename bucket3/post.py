@@ -53,11 +53,17 @@ class post(bucket):
 			return False
 		else:
 			if row['sys_upd']<src_ts:
-				self.db_cur.execute("DELETE FROM post WHERE src=?",src)
+				self.db_cur.execute("DELETE FROM post_tags WHERE post_id=?",(row['id'],) )
+				self.db_cur.execute("DELETE FROM post WHERE ID=?",(row['id'],) )
 				self.db_conn.commit()
 				return False
 			else:
-				return row
+				ret = {}
+				for x in row.keys():
+					ret[x] = row[x]
+				self.db_cur.execute("SELECT * FROM post_tags WHERE post_id=?",(row['id'], ))
+				ret['tags'] = self.db_cur.fetchall()
+				return ret
 
 	def to_db(self):
 		vals = (self.handler.title(),
@@ -70,7 +76,7 @@ class post(bucket):
 				self.handler.type(),
 				)
 		self.db_cur.execute("INSERT INTO post(title,url,body,cre_date,sys_upd,src,frontmatter,type) VALUES(?,?,?,?,?,?,?,?)", vals)
-		post_id = self.db_cur.lastrowid()
+		post_id = self.db_cur.lastrowid
 		for tag in self.handler.tags():
-			self.db_cur.execute("INSERT INTO post_tags (post_id,tag) VALUES(?,?)", (post_id, tag) )
+			self.db_cur.execute("INSERT INTO post_tags (post_id,tag) VALUES(?,?)", (post_id, tag.strip()) )
 		self.db_conn.commit()
