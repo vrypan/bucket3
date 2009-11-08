@@ -1,11 +1,14 @@
 <html>
 <head>
 	{% if page.title %}
-	<title>{{blog.blogTitle}} - {{ page.title }}</title>
+	<title>{{ page.title }} | {{blog.blogTitle}}</title>
 	{% else %}
 	<title>{{blog.blogTitle}}</title>
 	{% endif %}
 	<link rel="stylesheet" type="text/css" href="{{blog.baseURL}}/files/style.css" />
+	{% if page.googlebot %}
+	<meta name="googlebot" content="{{ page.googlebot }}"/>
+	{% endif %}
 </head>
 <body>
 	<div id="wrapper">
@@ -24,6 +27,9 @@
 		</div>
 		<div id="navBottom">
 			{% block navBottom %}{% endblock navBottom %}
+		</div>
+		<div id="footer">
+			generated with <a href="http://bucket3.com/">bucket3</a>
 		</div>
 	</div>
 </body>

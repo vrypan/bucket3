@@ -22,14 +22,17 @@ class post(bucket):
 		bucket.__init__(self,conf)
 		self.debug = False
 		self.filepath = filepath
-		if not db_cur or not db_conn:
+		if not db_conn:
 			self.db_conn = sqlite3.connect( 
-					conf['db_file'], 
+					self.conf['db_file'], 
 					detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 			self.db_conn.row_factory = sqlite3.Row
-			self.db_cur = db_conn.cursor()
 		else:
 			self.db_conn = db_conn
+
+		if not db_cur:
+			self.db_cur = self.db_conn.cursor()
+		else:
 			self.db_cur = db_cur
 
 		ext = os.path.splitext(self.filepath)[1]
@@ -50,20 +53,24 @@ class post(bucket):
 		self.db_cur.execute("SELECT * FROM post WHERE src=?",src)
 		row = self.db_cur.fetchone()
 		if not row:
+			self.db_cur.close()
 			return False
 		else:
 			if row['sys_upd']<src_ts:
 				self.db_cur.execute("DELETE FROM post_tags WHERE post_id=?",(row['id'],) )
 				self.db_cur.execute("DELETE FROM post WHERE ID=?",(row['id'],) )
 				self.db_conn.commit()
+				self.db_cur.close()
 				return False
 			else:
 				ret = {}
 				for x in row.keys():
 					ret[x] = row[x]
 				self.db_cur.execute("SELECT * FROM post_tags WHERE post_id=?",(row['id'], ))
-				ret['tags'] = self.db_cur.fetchall()
-				return ret
+				ret['tags'] = [ ptag['tag'] for ptag in self.db_cur.fetchall() ]
+				post_dict = dict(ret)
+				self.db_cur.close()
+				return post_dict
 
 	def to_db(self):
 		vals = (self.handler.title(),

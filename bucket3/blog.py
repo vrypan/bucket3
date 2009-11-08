@@ -51,15 +51,16 @@ class blog(bucket):
 		self.walkContentDir(self.conf['contentDir'])
 
 	def updIndex(self):
-		self.db_cur.execute("SELECT COUNT(*) FROM post")
+		self.db_cur.execute("SELECT COUNT(*) FROM post WHERE type != 'none' ")
 		res = self.db_cur.fetchall()
 		postsNum = res[0][0]
-		self.db_cur.execute("SELECT * FROM post WHERE type != 'none' ORDER BY cre_date DESC")
+		self.db_cur.execute("SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC")
 		dbposts = self.db_cur.fetchmany(size=10)
 		pagenum = 0
 
 		while dbposts:
-			posts = [ dict(post) for post in dbposts ]
+			#posts = [ dict(post) for post in dbposts ]
+			posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
 
 			if (pagenum+1)*10 < postsNum:
 				prevPage = pagenum+1
@@ -72,19 +73,25 @@ class blog(bucket):
 				nextPage = None
 
 			if pagenum:
-				filename = "index_%s.html" % pagenum
+				dirname = "page/%s" % pagenum
 			else:
-				filename = "index.html"
+				dirname = ""
 
 
-			page = {'title':'home', 'pagenum':pagenum,
+			page = {'title':'', 'pagenum':pagenum,
 					'prevPage':prevPage,
 					'nextPage':nextPage
 					}
+			if pagenum:
+				page['googlebot'] = 'follow,noindex'
 
 			t = loader.get_template('index.html') 
 			c = Context({'posts':posts, 'blog':self.conf, 'page':page })
-			indexhtml = "%s/%s" % (self.conf['htmlDir'], filename)
+			indexdir = "%s/%s" % (self.conf['htmlDir'], dirname) 
+			indexhtml = "%s/index.html" % indexdir
+			if not os.path.exists(indexdir): 
+				os.makedirs(indexdir)
+
 			f = open(indexhtml,'w')
 			f.write(t.render(c).encode('utf8'))
 			f.close()
