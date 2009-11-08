@@ -1,6 +1,10 @@
 <html>
 <head>
+	{% if page.title %}
 	<title>{{blog.blogTitle}} - {{ page.title }}</title>
+	{% else %}
+	<title>{{blog.blogTitle}}</title>
+	{% endif %}
 	<link rel="stylesheet" type="text/css" href="{{blog.baseURL}}/files/style.css" />
 </head>
 <body>

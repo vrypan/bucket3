@@ -19,3 +19,4 @@ class bucket():
 		dir = "%s/%s/%s" % ( self.conf['baseURL'], cre_dat.strftime('%Y/%m/%d'), self.osItemName(file) )
 		return dir
 
+

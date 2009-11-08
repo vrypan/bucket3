@@ -19,7 +19,7 @@
 
 {% block navTop %}
 	{% if page.prevPage %}
-	<a href="{{ blog.baseURL }}/index_{{ page.prevPage }}.html">&lt;older posts</a>
+	<a href="{{ blog.baseURL }}/page/{{ page.prevPage }}/">&lt;older posts</a>
 	{% endif %}
 
 	{% ifequal page.nextPage 0 %}
@@ -27,6 +27,6 @@
 	{% endifequal %}
 
 	{% if page.nextPage %}
-	<a href="{{ blog.baseURL }}/index_{{ page.nextPage }}.html">newer posts&gt;</a>
+	<a href="{{ blog.baseURL }}/{{ page.nextPage }}/">newer posts&gt;</a>
 	{% endif %}
 {% endblock navTop %}
