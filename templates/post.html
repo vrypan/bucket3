@@ -5,10 +5,12 @@
 
 <h1 class="entry-title"><a href="{{page.url}}">{{ page.title }}</a></h1>
 <div class="entry-meta">
-	<div class="entry-date">Posted on: {{ page.cre_dat|date:"D d.M.Y" }}</div>
-	<div class="entry-tags">Tags: {% for t in page.tags %}{{ t }},{% endfor %} </div>
+	<div class="entry-date">posted on {{ page.cre_dat|date:"d/m/Y H:i" }}</div>
+	{% if page.tags %}
+	<div class="entry-tags">| tags: {% for t in page.tags %}{% if forloop.last %}{{ t }}{% else %}{{ t }}, {% endif %}{% endfor %} </div>
+	{% endif %}
 	{% if frontmatter.mood %}
-	<div class="entry-mood">mood: {{ frontmatter.mood }}</div>
+	<div class="entry-mood">| mood: {{ frontmatter.mood }}</div>
 	{% endif %}
 </div>
 <div class="entry-body">
