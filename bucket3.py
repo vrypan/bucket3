@@ -110,13 +110,20 @@ def main(*argv):
 
 		if opt in ("--clear-html"):
 			path = conf['htmlDir']
+
+			ok = raw_input('Delete EVERYTHING under %s? \n(y/N)' % os.path.abspath(path) )
+			if ok not in ('Y','y'):
+				print 'Aborting.'
+				return
+			else:
+				print 'Deleteing %s contents.' % os.path.abspath(path)
 			for i in os.listdir(path):
 				d = "%s/%s" % (path, i)
 				if os.path.isdir(d):
 					shutil.rmtree(path=d, ignore_errors=True)
 				else:
 					os.remove(d)
-			print "Deleted all files in %s." % conf['htmlDir']
+			print "Deleted all files in %s." % os.path.abspath(path)
 
 if __name__ == "__main__": 
 	sys.exit(main(*sys.argv))
