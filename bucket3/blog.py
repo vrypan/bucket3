@@ -50,16 +50,21 @@ class blog(bucket):
 	def updPosts(self):
 		self.walkContentDir(self.conf['contentDir'])
 
-	def updIndex(self):
-		self.db_cur.execute("SELECT COUNT(*) FROM post WHERE type != 'none' ")
+	def updDateIdx(self):
+		countQ = "SELECT COUNT(*) FROM post WHERE type != 'none' "
+		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC"
+		dirPrefix = "" #for tags this is "tag", for moods this can be "mood", etc.
+		self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
+
+	def updIndex(self, countQ, allQ, dirPrefix ):
+		self.db_cur.execute(countQ)
 		res = self.db_cur.fetchall()
 		postsNum = res[0][0]
-		self.db_cur.execute("SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC")
+		self.db_cur.execute(allQ)
 		dbposts = self.db_cur.fetchmany(size=10)
 		pagenum = 0
 
 		while dbposts:
-			#posts = [ dict(post) for post in dbposts ]
 			posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
 
 			if (pagenum+1)*10 < postsNum:
@@ -73,9 +78,9 @@ class blog(bucket):
 				nextPage = None
 
 			if pagenum:
-				dirname = "page/%s" % pagenum
+				dirname = "%s/page/%s" % (dirPrefix, pagenum)
 			else:
-				dirname = ""
+				dirname = dirPrefix
 
 
 			page = {'title':'', 'pagenum':pagenum,

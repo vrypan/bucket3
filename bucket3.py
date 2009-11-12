@@ -97,16 +97,16 @@ def main(*argv):
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
-			myblog.updIndex()
+			myblog.updDateIdx()
 
 		if opt in ("--add-post"):
 			myblog = blog(conf)
 			myblog.addPost("%s/%s" % (conf['contentDir'], arg))
-			myblog.updIndex()
+			myblog.updDateIdx()
 
 		if opt in ("--update-index"):
 			myblog = blog(conf)
-			myblog.updIndex()
+			myblog.updDateIdx()
 
 		if opt in ("--clear-html"):
 			path = conf['htmlDir']

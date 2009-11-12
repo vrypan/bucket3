@@ -1,4 +1,4 @@
-contentDir: ./content
+contentDir: ./content/wp
 htmlDir: ./html
 db_file: ./internal/blog.db
 templatePath: [templates]
