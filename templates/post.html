@@ -3,7 +3,7 @@
 {% block content %}
 <a href="{{ blog.baseURL }}">&lt;home</a>
 
-<h1 class="entry-title"><a href="{{page.url}}">{{ page.title }}</a></h1>
+<h2 class="entry-title"><a href="{{page.url}}">{{ page.title }}</a></h2>
 <div class="entry-meta">
 	<div class="entry-date">posted on {{ page.cre_dat|date:"d/m/Y H:i" }}</div>
 	{% if page.tags %}
