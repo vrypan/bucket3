@@ -8,7 +8,8 @@ body {
 	margin-right: 5em;
 } 
 #header h1 {
-	font-family: Georgia, "Times New Roman", Times, serif;
+	/* font-family: Georgia, "Times New Roman", Times, serif;*/
+	font-family: Arial Black, Arial, sans ;
 	font-size: 36px;
 	color: black;
 	font-weight: normal;	
@@ -28,9 +29,12 @@ body {
 
 .entry-title {
 	font-size: 16px;
+	margin-left: -10px;
 	margin-bottom: 0;
 	margin-top: 2em;
 	padding-bottom: 0.3ex;
+	padding-left: 6px;
+	border-left: 4px #000 solid ;
 }
 .entry-title a{
 	color: #000;
@@ -41,7 +45,9 @@ body {
 }
 .entry-body p {
 	margin-top: 3px;
-	font-size: 14px;
+	font-size: 13px;
+	margin-bottom: 1ex;
+	font-family: Tahoma, Arial, Helvetica, serif;
 }
 .entry-meta, .entry-body {
 	margin-top: 0;

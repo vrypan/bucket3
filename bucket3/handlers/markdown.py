@@ -51,7 +51,11 @@ class markdown(bucket):
 	def title(self):
 		return self.page['title']
 	def url(self):
-		return self.itemURL(file=self.file, cre_dat=self.page['cre_dat'])
+		if self.page['type']=='page':
+			isPage = True
+		else:
+			isPage = False
+		return self.itemURL(file=self.file, cre_dat=self.page['cre_dat'], isPage=isPage)
 	def body(self):
 		return self.page['body']
 	def date(self):
@@ -64,16 +68,20 @@ class markdown(bucket):
 		return self.frontmatter
 
 	def render(self):
+		if self.page['type']=='page':
+			isPage = True
+		else:
+			isPage = False
 		t = loader.get_template('post.html') 
 		c = Context({'blog':self.conf, 
 			'frontmatter':self.frontmatter,
 			'page':self.page
 			})
 		html = t.render(c).encode('utf-8')
-		post_dir = self.osItemDir(file=self.file, cre_dat=self.date())
+		post_dir = self.osItemDir(file=self.file, cre_dat=self.date(), isPage=isPage)
 		if not os.path.exists(post_dir):
 			os.makedirs(post_dir)
-		out_filename = self.osItem(file=self.file, cre_dat=self.date())
+		out_filename = self.osItem(file=self.file, cre_dat=self.date(), isPage=isPage)
 		out_file = open(out_filename,'w')
 		out_file.write(html)
 		out_file.close()
