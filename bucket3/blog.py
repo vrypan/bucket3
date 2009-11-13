@@ -53,8 +53,18 @@ class blog(bucket):
 	def updDateIdx(self):
 		countQ = "SELECT COUNT(*) FROM post WHERE type != 'none' "
 		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC"
-		dirPrefix = "" #for tags this is "tag", for moods this can be "mood", etc.
+		dirPrefix = "page" #for tags this is "tag", for moods this can be "mood", etc.
 		self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
+
+	def updTagIdx(self):
+		t_cur = self.db_conn.cursor()
+		t_cur.execute("SELECT DISTINCT(tag) as t from post_tags")
+		for t in t_cur.fetchall():
+			print "Creating indexes for tag [%s]" % t['t']
+			countQ = "SELECT COUNT(*) FROM post, post_tags WHERE type != 'none' AND post_tags.post_id=post.id AND tag='%s'" % t['t'].replace("'","''")
+			allQ = "SELECT post.id, src FROM post, post_tags WHERE type != 'none' AND post_tags.post_id=post.id AND tag='%s' ORDER BY cre_date DESC" % t['t'].replace("'","''")
+			dirPrefix = "tag/%s" % t['t'] 
+			self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
 
 	def updIndex(self, countQ, allQ, dirPrefix ):
 		self.db_cur.execute(countQ)
@@ -78,14 +88,16 @@ class blog(bucket):
 				nextPage = None
 
 			if pagenum:
-				dirname = "%s/page/%s" % (dirPrefix, pagenum)
+				dirname = "%s/%s" % (dirPrefix, pagenum)
 			else:
 				dirname = dirPrefix
-
+				if dirname == 'page': #this is a special case, we are dealing with the blog homepage.
+					dirname = ""
 
 			page = {'title':'', 'pagenum':pagenum,
 					'prevPage':prevPage,
-					'nextPage':nextPage
+					'nextPage':nextPage,
+					'dirPrefix': dirPrefix,
 					}
 			if pagenum:
 				page['googlebot'] = 'follow,noindex'

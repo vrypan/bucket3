@@ -1,26 +1,53 @@
 body { 
 	font-family:  Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px; 
+	font-size: 14px; 
 	color: #000000; 
 	font-weight: normal; 
-	margin-left: 10em;
-	margin-right: 10em;
+	margin-left: 5em;
+	margin-top: 3em;
+	margin-right: 5em;
 } 
+#header h1 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 36px;
+	color: black;
+	font-weight: normal;	
+}
+#header h1 a {
+	text-decoration: none;
+	color: #000 ;
+}
+
+.entry {
+	padding-left: 6px;
+	border-left: 4px #ffffff solid ;
+}
+.entry:hover {
+	border-left: 4px #ddd solid;
+}
+
 .entry-title {
-	font-size: 13px;
+	font-size: 16px;
 	margin-bottom: 0;
-	padding-bottom: 0.5ex;
+	margin-top: 2em;
+	padding-bottom: 0.3ex;
 }
 .entry-title a{
 	color: #000;
 	text-decoration: none;
 }
 .entry-title:before {
-	content: "➧ "; 
+	content: ""; 
 }
-
+.entry-body p {
+	margin-top: 3px;
+	font-size: 14px;
+}
 .entry-meta, .entry-body {
-	margin-left: 1em;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	/* margin-left: 1em; */
 }
 .entry-meta { 
 	font-size: 10px;

@@ -97,15 +97,18 @@ def main(*argv):
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
+			myblog.updTagIdx()
 			myblog.updDateIdx()
 
 		if opt in ("--add-post"):
 			myblog = blog(conf)
 			myblog.addPost("%s/%s" % (conf['contentDir'], arg))
+			myblog.updTagIdx() #this has to become smarter, no need to update all tags, just the post tags.
 			myblog.updDateIdx()
 
 		if opt in ("--update-index"):
 			myblog = blog(conf)
+			myblog.updTagIdx()
 			myblog.updDateIdx()
 
 		if opt in ("--clear-html"):
