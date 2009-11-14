@@ -26,7 +26,6 @@
 	{% if page.prevPage %}
 	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.prevPage }}/">&lt;older posts</a>
 	{% endif %}
-
 	{% ifequal page.nextPage 0 %}
 	{% ifnotequal page.dirPrefix "page" %}
 		<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}">newer posts&gt;</a>
@@ -34,8 +33,23 @@
 		<a href="{{ blog.baseURL }}/">newer posts&gt;</a>
 	{% endifnotequal %}
 	{% endifequal %}
-
 	{% if page.nextPage %}
 	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.nextPage }}/">newer posts&gt;</a>
 	{% endif %}
 {% endblock navTop %}
+
+{% block navBottom %}
+	{% if page.prevPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.prevPage }}/">&lt;older posts</a>
+	{% endif %}
+	{% ifequal page.nextPage 0 %}
+	{% ifnotequal page.dirPrefix "page" %}
+		<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}">newer posts&gt;</a>
+		{% else %}
+		<a href="{{ blog.baseURL }}/">newer posts&gt;</a>
+	{% endifnotequal %}
+	{% endifequal %}
+	{% if page.nextPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.nextPage }}/">newer posts&gt;</a>
+	{% endif %}
+{% endblock navBottom %}

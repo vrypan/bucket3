@@ -33,7 +33,7 @@ class blog(bucket):
 		c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
 		if c.handler:
 			if not c.in_db():
-				print 'Parsing: %s' % filename
+				# print 'Parsing: %s' % filename
 				c.parse()
 				c.to_db()
 				c.render()
@@ -61,7 +61,7 @@ class blog(bucket):
 		t_cur.execute("SELECT DISTINCT(tag) as t from post_tags")
 		for t in t_cur.fetchall():
 			if t['t']:
-				print "Creating indexes for tag [%s]" % t['t']
+				# print "Creating indexes for tag [%s]" % t['t']
 				countQ = "SELECT COUNT(*) FROM post, post_tags WHERE type != 'none' AND post_tags.post_id=post.id AND tag='%s'" % t['t'].replace("'","''")
 				allQ = "SELECT post.id, src FROM post, post_tags WHERE type != 'none' AND post_tags.post_id=post.id AND tag='%s' ORDER BY cre_date DESC" % t['t'].replace("'","''")
 				dirPrefix = "tag/%s" % t['t'] 
@@ -116,4 +116,13 @@ class blog(bucket):
 			dbposts = self.db_cur.fetchmany(size=10)
 			pagenum = pagenum+1
 
+	def updPageIdx(self):
+		self.db_cur.execute("SELECT title, url FROM post WHERE type='page'")
+		self.conf['blogpages'] = [ {'url':p['url'], 'txt':p['title']} for p in self.db_cur.fetchall()]
+		t = loader.get_template('page_index.html') 
+		c = Context({'blog':self.conf })
+		indexhtml = "%s/pages.html" % self.conf['htmlDir']
+		f = open(indexhtml,'w')
+		f.write(t.render(c).encode('utf8'))
+		f.close()
 

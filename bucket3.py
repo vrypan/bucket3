@@ -43,6 +43,7 @@ def main(*argv):
 				['generate', 
 					'init', 
 					'update-index', 
+					'make=', 
 					'add-post=', 
 					'clear-html', 
 					'clear-db', 
@@ -97,6 +98,7 @@ def main(*argv):
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
+			myblog.updPageIdx()
 			myblog.updTagIdx()
 			myblog.updDateIdx()
 
@@ -110,6 +112,19 @@ def main(*argv):
 			myblog = blog(conf)
 			myblog.updTagIdx()
 			myblog.updDateIdx()
+
+		if opt in ("--make"):
+			myblog = blog(conf)
+			o = arg.split(',')
+			if 'tags' in o:
+				print "Updating Tag Indexes" ;
+				myblog.updTagIdx()
+			if 'timeline' in o:
+				print "Updating Timeline Indexes" ;
+				myblog.updDateIdx()
+			if 'pageList' in o:
+				print "Updating Pages lists" ;
+				myblog.updPageIdx()
 
 		if opt in ("--clear-html"):
 			path = conf['htmlDir']

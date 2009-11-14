@@ -19,6 +19,29 @@ body {
 	color: #000 ;
 }
 
+#wrapper {
+	width: 800px;
+	margin: auto;
+}
+#sidebar {
+	width: 200px;
+	float: right;
+	font-size: 11px;
+	border-left: 4px #ddd solid;
+	color: #808080;
+}
+#sidebar a {
+	text-decoration: none;
+	color: #808080;
+}
+
+#navTop, #navBottom {
+	font-size: 11px;
+}
+
+#sidebar ul {
+	list-style-type:square;
+}
 .entry {
 	padding-left: 6px;
 	border-left: 4px #ffffff solid ;
@@ -62,7 +85,7 @@ body {
 .entry-date, .entry-tags, .entry-mood { display: inline }
 
 #content {
-	width: 640px;
+	width: 540px;
 }
 #footer {
 	font-size: 10px;

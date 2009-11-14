@@ -73,7 +73,7 @@ class post(bucket):
 				return post_dict
 
 	def to_db(self):
-		vals = (self.handler.title(),
+		vals = (self.handler.title().strip(),
 				self.handler.url(),
 				self.handler.body(),
 				self.handler.date(),
