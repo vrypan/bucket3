@@ -5,3 +5,4 @@ templatePath: [templates]
 
 baseURL: http://vrypan.net/~panayotis/my # enter your blog URL. You will have to copy (or link) the contents of htmlDir there
 blogTitle: a bucket3 blog
+blogSubtitle: testing bucket3 on real-life data.

@@ -48,15 +48,18 @@ class blog(bucket):
 			self.addPost(filename)
 
 	def updPosts(self):
+		print "[POSTS] Parsing content."
 		self.walkContentDir(self.conf['contentDir'])
 
 	def updDateIdx(self):
+		print "[DATE IDX] Creating page indexes."
 		countQ = "SELECT COUNT(*) FROM post WHERE type != 'none' "
 		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC"
 		dirPrefix = "page" #for tags this is "tag", for moods this can be "mood", etc.
 		self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
 
 	def updTagIdx(self):
+		print "[TAG IDX] Creating tag indexes."
 		t_cur = self.db_conn.cursor()
 		t_cur.execute("SELECT DISTINCT(tag) as t from post_tags")
 		for t in t_cur.fetchall():
@@ -116,7 +119,28 @@ class blog(bucket):
 			dbposts = self.db_cur.fetchmany(size=10)
 			pagenum = pagenum+1
 
+	def updRSS2(self):
+		print "[RSS2] Creating RSS2 feed."
+		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC LIMIT 10"
+		self.db_cur.execute(allQ)
+		dbposts = self.db_cur.fetchall()
+
+		posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
+		dirname = 'feed'
+
+		t = loader.get_template('rss2.xml') 
+		c = Context({'posts':posts, 'blog':self.conf })
+		indexdir = "%s/%s" % (self.conf['htmlDir'], dirname) 
+		indexhtml = "%s/rss2.xml" % indexdir
+		if not os.path.exists(indexdir): 
+			os.makedirs(indexdir)
+		f = open(indexhtml,'w')
+		f.write(t.render(c).encode('utf8'))
+		f.close()
+
+
 	def updPageIdx(self):
+		print "[PAGES MENU] Creating pages.html."
 		self.db_cur.execute("SELECT title, url FROM post WHERE type='page'")
 		self.conf['blogpages'] = [ {'url':p['url'], 'txt':p['title']} for p in self.db_cur.fetchall()]
 		t = loader.get_template('page_index.html') 

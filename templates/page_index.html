@@ -1,0 +1,5 @@
+<ul id="blog-pages">
+{% for p in blog.blogpages %}
+	<li><a href="{{ p.url }}">{{ p.txt }}</a></li>
+{% endfor %}
+</ul>

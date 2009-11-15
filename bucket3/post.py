@@ -67,7 +67,7 @@ class post(bucket):
 				for x in row.keys():
 					ret[x] = row[x]
 				self.db_cur.execute("SELECT * FROM post_tags WHERE post_id=?",(row['id'], ))
-				ret['tags'] = [ ptag['tag'] for ptag in self.db_cur.fetchall() ]
+				ret['tags'] = [ ptag['tag'].strip() for ptag in self.db_cur.fetchall() ]
 				post_dict = dict(ret)
 				self.db_cur.close()
 				return post_dict

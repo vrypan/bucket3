@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+
+<channel>
+	<title>{{ blog.blogTitle }}</title>
+	<link>{{ blog.blogURL }}</link>
+	<description>{{ blog.blogSubtitle }}</description>
+	<lastBuildDate>{% now "r" %}</lastBuildDate>
+	<generator>http://bucket3.com/</generator>
+	<language>el</language>
+
+	{% for post in posts %}
+	<item> 
+		<title>{{ post.title }}</title>
+		<link>{{post.url}}</link>
+		<pubDate>{{ post.cre_date|date:"r" }}</pubDate>
+		<dc:creator>FIXME</dc:creator>
+		{% if post.tags %}{% for t in post.tags %}
+			<category><![CDATA[{{ t }}]]></category>
+		{% endfor %}{% endif %}
+		<guid isPermaLink="true">{{post.url}}</guid>
+		<description><![CDATA[{{ post.body|striptags|truncatewords:100 }}]]></description>
+		<content:encoded><![CDATA[{{ post.body|safe }}]]></content:encoded>
+	</item>
+	{% endfor %}
+</channel>
+
+</rss>

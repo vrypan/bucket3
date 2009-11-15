@@ -43,7 +43,7 @@ class markdown(bucket):
 		else:
 			self.page['type'] = 'post'
 		if 'tags' in self.frontmatter and self.frontmatter['tags']:
-			self.page['tags'] = self.frontmatter['tags'].split(',')
+			self.page['tags'] = [ t.strip() for t in self.frontmatter['tags'].split(',') ]
 		else:
 			self.page['tags'] = ()
 		return self

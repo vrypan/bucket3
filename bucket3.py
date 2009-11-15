@@ -98,19 +98,18 @@ def main(*argv):
 		if opt in ("-g","--generate"):
 			myblog = blog(conf)
 			myblog.updPosts()
+
+		if opt in ("--update-index", "-g", "--generate" ):
+			myblog = blog(conf)
 			myblog.updPageIdx()
 			myblog.updTagIdx()
 			myblog.updDateIdx()
+			myblog.updRSS2()
 
 		if opt in ("--add-post"):
 			myblog = blog(conf)
 			myblog.addPost("%s/%s" % (conf['contentDir'], arg))
 			myblog.updTagIdx() #this has to become smarter, no need to update all tags, just the post tags.
-			myblog.updDateIdx()
-
-		if opt in ("--update-index"):
-			myblog = blog(conf)
-			myblog.updTagIdx()
 			myblog.updDateIdx()
 
 		if opt in ("--make"):
@@ -125,6 +124,9 @@ def main(*argv):
 			if 'pageList' in o:
 				print "Updating Pages lists" ;
 				myblog.updPageIdx()
+			if 'rss2' in o:
+				print "Updating RSS2 feed" ;
+				myblog.updRSS2()
 
 		if opt in ("--clear-html"):
 			path = conf['htmlDir']
