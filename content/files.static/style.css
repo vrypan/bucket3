@@ -66,11 +66,16 @@ body {
 .entry-title:before {
 	content: ""; 
 }
+.entry-body {
+	font-size: 13px;
+	font-family: Tahoma, Arial, Helvetica, serif;
+}
 .entry-body p {
 	margin-top: 3px;
-	font-size: 13px;
 	margin-bottom: 1ex;
-	font-family: Tahoma, Arial, Helvetica, serif;
+}
+.entry-body ul {
+	list-style-type:square;
 }
 .entry-meta, .entry-body {
 	margin-top: 0;

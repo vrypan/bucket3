@@ -111,6 +111,7 @@ def main(*argv):
 			myblog.addPost("%s/%s" % (conf['contentDir'], arg))
 			myblog.updTagIdx() #this has to become smarter, no need to update all tags, just the post tags.
 			myblog.updDateIdx()
+			myblog.updRSS2()
 
 		if opt in ("--make"):
 			myblog = blog(conf)

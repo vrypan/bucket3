@@ -53,8 +53,8 @@ class blog(bucket):
 
 	def updDateIdx(self):
 		print "[DATE IDX] Creating page indexes."
-		countQ = "SELECT COUNT(*) FROM post WHERE type != 'none' "
-		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC"
+		countQ = "SELECT COUNT(*) FROM post WHERE type='post' "
+		allQ = "SELECT id, src FROM post WHERE type='post' ORDER BY cre_date DESC"
 		dirPrefix = "page" #for tags this is "tag", for moods this can be "mood", etc.
 		self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
 
@@ -121,7 +121,7 @@ class blog(bucket):
 
 	def updRSS2(self):
 		print "[RSS2] Creating RSS2 feed."
-		allQ = "SELECT id, src FROM post WHERE type != 'none' ORDER BY cre_date DESC LIMIT 10"
+		allQ = "SELECT id, src FROM post WHERE type='post' ORDER BY cre_date DESC LIMIT 10"
 		self.db_cur.execute(allQ)
 		dbposts = self.db_cur.fetchall()
 
