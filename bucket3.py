@@ -6,13 +6,14 @@
 
 OPTIONS:
 	-g or --generate
-	-i or --init (depreciated): same as --clear-db
 	--update-index	Reads cache and recreates index pages
 	--clear-db 		Deletes everything from cache, recreates tables, etc.
 	--add-post=<path> 
 					Parses files under <path>. <path> may be a single file, 
 					or a directory. <path> must be relative to contentDir 
 					as defined in conf.yaml
+	--make=[tags|timeline|pageList|rss2]
+					will (re)create the respective html pages
 
 	*DANGEROUS* option
 	--clear-html 	Deletes all files under the htmlDir (as defined in conf.yaml)
@@ -39,7 +40,7 @@ from django.conf import settings
 def main(*argv):
 	try:
 		(opts,args) = getopt.getopt(argv[1:], 
-				'gi',
+				'g',
 				['generate', 
 					'init', 
 					'update-index', 
