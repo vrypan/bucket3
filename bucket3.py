@@ -21,7 +21,7 @@ OPTIONS:
 				Use with caution.
 """
 
-import markdown2
+import markdown
 import codecs
 import sys,os
 import yaml
@@ -55,6 +55,7 @@ def main(*argv):
 		return 1
 
 	conf = yaml.load(open('./conf.yaml',mode='r').read())
+	conf['db_file'] += '/blog.db' 
 
 	settings.configure( 
 			DEBUG=True, TEMPLATE_DEBUG=True, 

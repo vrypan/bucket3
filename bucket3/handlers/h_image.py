@@ -9,7 +9,7 @@ import shutil
 
 from django.template import Template, Context, loader
 
-class image(bucket):
+class h_image(bucket):
 	@classmethod
 	def types(cls):
 		return ('.jpeg','.jpg','.gif')

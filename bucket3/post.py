@@ -1,6 +1,6 @@
 from bucket import bucket
 
-import markdown2
+import markdown
 import codecs
 import sys,os
 import yaml

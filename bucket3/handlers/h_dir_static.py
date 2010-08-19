@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 import shutil
 
-class dir_static(bucket):
+class h_dir_static(bucket):
 	""" This is a special handler used to copy a static directory
 	(usually containing .css, .js etc. files to <baseURL>/static
 

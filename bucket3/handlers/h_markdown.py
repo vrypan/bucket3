@@ -1,6 +1,6 @@
 from bucket3.bucket import bucket
 
-import markdown2
+import markdown
 import codecs
 import sys,os
 import yaml
@@ -9,13 +9,13 @@ import time
 
 from django.template import Template, Context, loader
 
-class markdown(bucket):
+class h_markdown(bucket):
 	@classmethod
 	def types(cls):
 		return ('.markdown',)
 
 	def toHTML(cls, content):
-		return markdown2.markdown(content)
+		return markdown.markdown(content)
 
 	def __init__(self, conf, file):
 		bucket.__init__(self, conf)
@@ -30,8 +30,8 @@ class markdown(bucket):
 		else:
 			return false
 		if 'date' in self.frontmatter:
-			#self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M:%s')
-			self.page['cre_dat'] = self.frontmatter['date'] 
+			self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M')
+			#self.page['cre_dat'] = self.frontmatter['date'] 
 		else:
 			self.page['cre_dat'] = datetime.today()
 		if 'title' in self.frontmatter:

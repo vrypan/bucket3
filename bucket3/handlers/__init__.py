@@ -1,1 +1,1 @@
-__all__ = ['html', 'image', 'markdown', 'b3','dir_static', 'wp']
+__all__ = ['h_html', 'h_image', 'h_markdown', 'h_b3','h_dir_static', 'h_wp']

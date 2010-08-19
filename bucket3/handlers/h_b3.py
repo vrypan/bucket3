@@ -1,6 +1,6 @@
 from bucket3.bucket import bucket
 
-import markdown2
+import markdown
 import codecs
 import sys,os
 import yaml
@@ -10,7 +10,7 @@ import shutil
 
 from django.template import Template, Context, loader
 
-class b3(bucket):
+class h_b3(bucket):
 	@classmethod
 	def types(cls):
 		return ('.b3',)
@@ -23,7 +23,7 @@ class b3(bucket):
 			isPage = True
 		else:
 			isPage = False
-		return markdown2.markdown(content.replace('@site',self.itemURL(self.file, self.date(), isPage)))
+		return markdown.markdown(content.replace('@site',self.itemURL(self.file, self.date(), isPage)))
 
 	def __init__(self, conf, file):
 		bucket.__init__(self, conf)
@@ -38,8 +38,8 @@ class b3(bucket):
 		else:
 			return false
 		if 'date' in self.frontmatter:
-			# self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M')
-			self.page['cre_dat'] = self.frontmatter['date']
+			self.page['cre_dat'] = datetime.strptime(self.frontmatter['date'], '%Y-%m-%d %H:%M')
+			# self.page['cre_dat'] = self.frontmatter['date']
 		else:
 			self.page['cre_dat'] = datetime.today()
 		if 'title' in self.frontmatter:

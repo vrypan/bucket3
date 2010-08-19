@@ -1,8 +1,8 @@
 from bucket3.bucket import bucket
-from bucket3.handlers.markdown import markdown
+from bucket3.handlers.h_markdown import h_markdown
 import re
 
-class wp(markdown):
+class h_wp(h_markdown):
 	""" This handler is intended to parse the contents of exportWP.py
 	i.e. the HTML code storred in wordpress database.
 	"""
@@ -22,4 +22,4 @@ class wp(markdown):
 		return u'\n'.join(paras)
 
 	def toHTML(self, content):
-		return markdown.toHTML(self, self.linebreaks(content))
+		return h_markdown.toHTML(self, self.linebreaks(content))

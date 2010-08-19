@@ -2,10 +2,7 @@
 title: bucket3 content handlers
 author: Panayotis Vryonis
 date: 2009-10-30 10:30
-tags: 
- - documentation
- - bucket3
- - handlers
+tags: documentation,bucket3,handlers
 ---
 
 You can create your own content handlers, without divinig into bucket3

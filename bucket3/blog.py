@@ -33,7 +33,7 @@ class blog(bucket):
 		c = post(filepath=filename, db_cur=self.db_cur, db_conn=self.db_conn, conf=self.conf)
 		if c.handler:
 			if not c.in_db():
-				# print 'Parsing: %s' % filename
+				print 'Parsing: %s' % filename
 				c.parse()
 				c.to_db()
 				c.render()
