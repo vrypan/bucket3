@@ -12,7 +12,7 @@ OPTIONS:
 					Parses files under <path>. <path> may be a single file, 
 					or a directory. <path> must be relative to contentDir 
 					as defined in conf.yaml
-	--make=[tags|timeline|pageList|rss2]
+	--make=[tags|timeline|pageList|rss2|yearIndexes|monthIndexes]
 					will (re)create the respective html pages
 
 	*DANGEROUS* option
@@ -106,6 +106,7 @@ def main(*argv):
 			myblog.updPageIdx()
 			myblog.updTagIdx()
 			myblog.updDateIdx()
+			myblog.updYearsIdx()
 			myblog.updRSS2()
 
 		if opt in ("--add-post"):
@@ -124,6 +125,12 @@ def main(*argv):
 			if 'timeline' in o:
 				print "Updating Timeline Indexes" ;
 				myblog.updDateIdx()
+			if 'yearIndexes' in o:
+				print "Updating Year indexes" ;
+				myblog.updYearsIdx()
+			if 'monthIndexes' in o:
+				print "Updating Monthly indexes" ;
+				myblog.updMonthsIdx()
 			if 'pageList' in o:
 				print "Updating Pages lists" ;
 				myblog.updPageIdx()

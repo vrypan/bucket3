@@ -69,6 +69,63 @@ class blog(bucket):
 				allQ = "SELECT post.id, src FROM post, post_tags WHERE type != 'none' AND post_tags.post_id=post.id AND tag='%s' ORDER BY cre_date DESC" % t['t'].replace("'","''")
 				dirPrefix = "tag/%s" % t['t'] 
 				self.updIndex(countQ=countQ, allQ=allQ, dirPrefix=dirPrefix)
+	def updMonthsIdx(self):
+		print "[MONTHS IDX] Creating monthly indexes."
+		d_cur = self.db_conn.cursor()
+		d_cur.execute("SELECT DISTINCT(strftime('%Y-%m',cre_date)) AS d from post")
+		for d in d_cur.fetchall():
+			if d['d']:
+				month = d['d']
+				print "Creating indexes for month [%s]" % month
+				allQ = "SELECT post.id, src FROM post WHERE type != 'none' AND cre_date >= '%s-01' AND cre_date < date('%s-01','start of month','+1 month') ORDER BY cre_date DESC" % (month, month)
+				self.db_cur.execute(allQ)
+				dbposts = self.db_cur.fetchall()
+				if dbposts:
+					posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
+					dirname = month.replace("-","/")
+					page = {
+						'title':'Monthly Archive %s' % month,
+						'dirPrefix': dirname
+						}
+					t = loader.get_template('short_index.html')
+					c = Context({'posts':posts, 'blog':self.conf, 'page':page })
+					indexdir = "%s/%s" % (self.conf['htmlDir'], dirname) 
+					indexhtml = "%s/index.html" % indexdir
+					if not os.path.exists(indexdir):
+						os.makedirs(indexdir)
+					f = open(indexhtml,'w')
+					f.write(t.render(c).encode('utf8'))
+					f.close()
+
+
+	def updYearsIdx(self):
+		print "[YEARS IDX] Creating yearly indexes."
+		d_cur = self.db_conn.cursor()
+		d_cur.execute("SELECT DISTINCT(strftime('%Y',cre_date)) AS d from post")
+		for d in d_cur.fetchall():
+			if d['d']:
+				year = d['d']
+				print "Creating indexes for year [%s]" % year
+				allQ = "SELECT post.id, src FROM post WHERE type != 'none' AND cre_date >= '%s-01-01' AND cre_date <'%s-01-01' ORDER BY cre_date DESC" % (year, int(year)+1)
+				self.db_cur.execute(allQ)
+				dbposts = self.db_cur.fetchall()
+				if dbposts:
+					posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
+					dirname = year
+					page = {
+						'title':'Archive %s' % year,
+						'dirPrefix': year
+						}
+					t = loader.get_template('short_index.html')
+					c = Context({'posts':posts, 'blog':self.conf, 'page':page })
+					indexdir = "%s/%s" % (self.conf['htmlDir'], dirname) 
+					indexhtml = "%s/index.html" % indexdir
+					if not os.path.exists(indexdir):
+						os.makedirs(indexdir)
+					f = open(indexhtml,'w')
+					f.write(t.render(c).encode('utf8'))
+					f.close()
+
 
 	def updIndex(self, countQ, allQ, dirPrefix ):
 		self.db_cur.execute(countQ)
@@ -81,15 +138,17 @@ class blog(bucket):
 		while dbposts:
 			posts = [ post(filepath=p['src'], conf=self.conf, db_conn=self.db_conn ).in_db() for p in dbposts ]
 
-			if (pagenum+1)*10 < postsNum:
+			if (pagenum*10)+1 < postsNum:
 				prevPage = pagenum+1
 			else:
 				prevPage = None
 	
-			if pagenum>0:
+			if pagenum>1:
 				nextPage = pagenum-1
 			else:
 				nextPage = None
+
+			dirname = "%s/%s" % (dirPrefix, pagenum)
 
 			if pagenum:
 				dirname = "%s/%s" % (dirPrefix, pagenum)
