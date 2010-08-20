@@ -11,5 +11,12 @@ If you download the code:
 4. run python bucket3.py --generate
 5. copy the contents of html/ to a directory accessible by your web server (according to the baseURL value you entered in conf.yaml)
 
+Dependencies:
+You will need to have installed the following python modules
+- markdown
+- PyYAML
+- sqlite3 (make sure your python is compiled/installed with sqlite enabled)
+- django (bucket3 uses the django template engine))
+
 Panayotis Vryonis 
 http://vrypan.net/
