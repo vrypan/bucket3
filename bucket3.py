@@ -106,6 +106,7 @@ def main(*argv):
 			myblog.updPageIdx()
 			myblog.updTagIdx()
 			myblog.updDateIdx()
+			myblog.updYearsIdx()
 			myblog.updRSS2()
 
 		if opt in ("--add-post"):

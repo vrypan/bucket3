@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for post in posts %}
+
+<div class="entry">
+<h2 class="entry-title"><a href="{{post.url}}">{{ post.title }}</a></h2>
+<div class="entry-meta">
+	<div class="entry-date">posted on {{ post.cre_date|date:"d/m/Y H:i" }}</div>
+	{% if post.tags %}
+	<div class="entry-tags">| tags: {% for t in post.tags %}<a href="{{ blog.baseURL }}/tag/{{ t }}">{{ t }}</a>{% if forloop.last %} {% else %}, {% endif %}{% endfor %} </div>
+	{% endif %}
+	{% if frontmatter.mood %}
+	<div class="entry-mood">| mood: {{ post.frontmatter.mood }}</div>
+	{% endif %}
+</div>
+</div>
+
+{% endfor %}
+{% endblock content %}
+
+{% block navTop %}
+	{% if page.prevPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.prevPage }}/">&lt;older posts</a>
+	{% endif %}
+	{% ifequal page.nextPage 0 %}
+	{% ifnotequal page.dirPrefix "page" %}
+		<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}">newer posts&gt;</a>
+		{% else %}
+		<a href="{{ blog.baseURL }}/">newer posts&gt;</a>
+	{% endifnotequal %}
+	{% endifequal %}
+	{% if page.nextPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.nextPage }}/">newer posts&gt;</a>
+	{% endif %}
+{% endblock navTop %}
+
+{% block navBottom %}
+	{% if page.prevPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.prevPage }}/">&lt;older posts</a>
+	{% endif %}
+	{% ifequal page.nextPage 0 %}
+	{% ifnotequal page.dirPrefix "page" %}
+		<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}">newer posts&gt;</a>
+		{% else %}
+		<a href="{{ blog.baseURL }}/">newer posts&gt;</a>
+	{% endifnotequal %}
+	{% endifequal %}
+	{% if page.nextPage %}
+	<a href="{{ blog.baseURL }}/{{ page.dirPrefix }}/{{ page.nextPage }}/">newer posts&gt;</a>
+	{% endif %}
+{% endblock navBottom %}
