@@ -1,4 +1,6 @@
 .DS_Store
-posts/*
+# my actual blog posts, no need to include.
+posts/vrypan/*
 _data/*
-
+# my real conf file, no need to include.
+conf.home.yaml 
