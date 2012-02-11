@@ -1,7 +1,7 @@
 ---
 title: This is my first post!
 author: Your Name
-date: 2012-02-11 11:29:00 GMT+2
+date: 2009-11-10 11:29:00 GMT+2
 tags: bucket3, test, add more tags
 slug: this-is-post1
 ---

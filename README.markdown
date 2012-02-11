@@ -14,6 +14,9 @@ blog-like format.
 5.  You should now have your whole blog under "html_dir" (as defined in your conf file).
 6.  Upload the files to your server.
 
+# Example
+conf.bucket3com.yaml, \_themes/bucket3com and the posts under posts/ are the source of http://www.bucket3.com/ 
+
 # License
 
 bucket3 is licensed under GPL version 3.

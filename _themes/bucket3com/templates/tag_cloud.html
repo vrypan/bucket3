@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="home">
+	<h2>tag cloud | {{ cloud|length() }} tags</h2>
+<div class="entry">
+	<p>
+		{% for c,size in cloud %}
+		<span style="font-size:{{ size }}px">{% if size>bold_px %}<b>{% endif %}<a href="{{ blog.url}}tag/{{c}}/">{{c}}</a>{% if size>bold_px %}</b>{% endif %}</span>
+		{% endfor %}
+	</p>
+</div>
+</div>
+
+{% endblock %}

@@ -1,11 +1,11 @@
 ---
-title: this is a "b3" post
+title: bucket3 "attached" files
 author: Panayotis Vryonis
 date: 2012-02-11 11:30:00 GMT+2
 mood: :-)
 tags: bucket3, images
 attached: streetview.jpg
-slug: a-post-with-image
+slug: attached-files
 ---
 
 If you have posts that link to other media, such as images, you don't have to use absolute URLs.
