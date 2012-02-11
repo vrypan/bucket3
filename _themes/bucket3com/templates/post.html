@@ -17,7 +17,7 @@
 
 {% block content %}
 <div class="entry">
-<h2 class="entry-title"><a href="{{meta.url}}">{{ meta.title }}</a></h2>
+<h2 class="entry-title"><a href="{{meta._url}}">{{ meta.title }}</a></h2>
 <div class="entry-meta">
 	<div class="entry-date">posted on {{ meta._date.strftime("%d/%m/%Y %H:%M")  }}</div>
 	{% if meta.tags %}
@@ -33,6 +33,7 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = '{{ blog.disqus_shortname }}'; // required: replace example with your forum shortname
+    var disqus_url = '{{ meta._url }}';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

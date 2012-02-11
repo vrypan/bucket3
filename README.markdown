@@ -19,7 +19,7 @@ conf.bucket3com.yaml, \_themes/bucket3com and the posts under posts/ are the sou
 
 # License
 
-bucket3 is licensed under GPL version 3.
+bucket3 is distributed under the MIT LICENSE.
 
 # Copyright
 
