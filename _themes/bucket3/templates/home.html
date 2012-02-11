@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block page_meta %}
+<meta name="title" content="{{ blog.title }} | Home">
+<meta name="description" content="{{ blog.description }}">
+<!-- Google will often use this as its description of your page/site. Make it good. -->
+
+<meta name="author" content="{{ blog.author }}">
+<meta name="Copyright" content="{{ blog.copyright }}">
+
+<!-- Dublin Core Metadata : http://dublincore.org/ -->
+<meta name="DC.title" content="{{ blog.title }} | Home">
+<meta name="DC.subject" content="{{ blog.description }}">
+<meta name="DC.creator" content="{{ blog.author }}">
+{% endblock page_meta %}
+
+{% block content %}
+<div id="home">
+	
+{% for p in index %}
+<div class="entry">
+	<h2 class="entry-title"><a href="{{p.meta._url}}">{% if p.meta.title %}{{ p.meta.title }}{% else %}#{% endif %}</a></h2>
+<div class="entry-meta">
+	<div class="entry-date">posted on {{ p.meta._date.strftime("%d/%m/%Y %H:%M")  }}</div>
+	{% if p.meta.tags %}
+	<div class="entry-tags">| tags: {% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}">{{ t }}</a> {% endfor %}</div>
+	{% endif %}
+</div>
+<div class="entry-body">
+	{{ p.body|safe() }}
+</div>
+</div>
+{% endfor %}
+{% endblock %}
+</div>
+

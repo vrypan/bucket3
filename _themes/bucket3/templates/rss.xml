@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:scripting2="http://scripting2.com/namespace.html">
+	<channel>
+		<title>{{ blog.name }}</title>
+		<link>{{ blog.url }}</link>
+		<description>{{ blog.description }}</description>
+		<language>en-us</language>
+		<copyright>{{ blog.copyright }}</copyright>
+		<pubDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S %z")  }}</pubDate>
+		<lastBuildDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S %z")  }}</lastBuildDate>
+		<docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
+		<generator>bucket3 v2.0</generator>
+		<ttl>15</ttl>
+		{% for p in posts %}
+		<item>
+			<title>{{ p.meta.title|e }}</title>
+			<link>{{ p.meta._url }}</link>
+			<guid>{{ p.meta._url }}</guid>
+			<description>{{ p.body|e }}</description>
+			<pubDate>{{ p.meta._date.strftime("%a, %d %b %Y %H:%M:%S %z") }}</pubDate>
+		</item>
+		{% endfor %}
+	</channel>
+</rss>
