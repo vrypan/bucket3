@@ -3,4 +3,4 @@
 posts/vrypan/*
 _data/*
 # my real conf file, no need to include.
-conf.home.yaml 
+conf*
