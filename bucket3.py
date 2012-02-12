@@ -58,6 +58,9 @@ class blog():
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
 		self.html_dir = conf['html_dir']
 		
+		if not os.path.exists(self.data_dir):
+			os.makedirs(self.data_dir)
+			
 		self.getState()
 
 		blog = {
