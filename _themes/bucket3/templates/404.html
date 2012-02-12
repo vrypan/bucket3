@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block page_meta %}
+<meta name="title" content="{{ blog.title }} | Error 404 Page Not Found">
+<meta name="description" content="Error 404: Page not found.">
+<!-- Google will often use this as its description of your page/site. Make it good. -->
+
+<meta name="author" content="{{ blog.author }}">
+<meta name="Copyright" content="{{ blog.copyright }}">
+
+<!-- Dublin Core Metadata : http://dublincore.org/ -->
+<meta name="DC.title" content="{{ blog.title }} | Error 404 Page Not Found">
+<meta name="DC.subject" content="The page you requested was not found. Error 404.">
+<meta name="DC.creator" content="{{ blog.author }}">
+{% endblock page_meta %}
+
+
+{% block content %}
+<div class="entry">
+<h2 class="entry-title">Error 404: page not found.</h2>
+<div class="entry-body">
+	<p>The page you requested was not found. </p>
+	<p>You may like to go to the <a href="{{ blog.url }}">homepage</a></p>
+</div>
+{% endblock %}

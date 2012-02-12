@@ -127,6 +127,12 @@ class blog():
 				self.html_dir
 				)
 				
+		tpl = self.tpl_env.get_template('404.html')
+		html = tpl.render()
+		f = open(os.path.join(self.html_dir, '404.html'), 'w')
+		f.write(html.encode('utf8'))
+		f.close()
+				
 	def textAbstract(self, txt):
 		txt = re.sub('<[^<]+?>', '', txt)
 
