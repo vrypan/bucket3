@@ -303,7 +303,7 @@ class blog():
 				f = open(os.path.join(self.html_dir, 'tag', tag_name, 'index.html' ), 'w')
 				f.write(html.encode('utf8'))
 				f.close()
-		max_count = max([y for x,y in counts ])
+		max_count = max([y for x,y in counts ])+1 # just make sure max_count-min_count!=0
 		min_count = min([y for x,y in counts ])
 		
 		min_px = 10
