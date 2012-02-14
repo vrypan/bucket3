@@ -5,3 +5,4 @@ _data/*
 # my real conf file, no need to include.
 conf*
 html
+*.pyc
