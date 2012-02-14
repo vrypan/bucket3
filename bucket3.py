@@ -46,7 +46,7 @@ class contentFilters():
 		return txt.decode('utf-8')
 
 
-class blog():
+class Bucket3():
 		
 	def __init__(self, conf=() ):
 		time.tzset()
@@ -398,7 +398,7 @@ def main(*argv):
 						os.remove(d)
 				print "Deleted all files in %s." % p 
 			
-	b = blog(conf=conf)
+	b = Bucket3(conf=conf)
 	
 	# --skel
 	if args.skel:
