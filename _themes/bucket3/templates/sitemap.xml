@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
+{% for p in posts %}
+<url>
+	<loc>{{ p.meta._url }}</loc>
+	<lastmod>{{ p.meta._date.strftime("%Y-%m-%d") }}</lastmod>
+</url>
+{% endfor %}
+</urlset>

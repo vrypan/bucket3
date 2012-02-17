@@ -234,6 +234,17 @@ class Bucket3():
 		f.write(html.encode('utf8'))
 		f.close()
 		
+	def renderSitemap(self):
+		data = self.getCache('all_index')
+		
+		if not data:
+			return
+		tpl = self.tpl_env.get_template('sitemap.xml')
+		html = tpl.render(posts=data)
+		f = open(os.path.join(self.html_dir, 'sitemap.xml'), 'w')
+		f.write(html.encode('utf8'))
+		f.close()
+	
 	def renderRSS(self):
 		data = self.getCache('all_index')
 
@@ -366,6 +377,12 @@ def main(*argv):
 		default=False,
 		help="(re)render tag archives.")
 
+	parser.add_argument('--sitemap',
+		action='store_true',
+		dest='sitemap',
+		default=False,
+		help="(re)render sitemap.xml.")
+
 	parser.add_argument('--new-posts',
 		action='store_true',
 		dest='new_posts',
@@ -437,6 +454,7 @@ def main(*argv):
 			b.renderArchives()
 			b.renderTags()
 			b.renderRSS()
+			b.renderSitemap()
 				
 	# --tags
 	if args.tags:
@@ -446,6 +464,11 @@ def main(*argv):
 	if args.rss:
 		b.renderRSS()
 	
+	# --sitemap
+	if args.sitemap:
+		print "rendering sitemap.xml"
+		b.renderSitemap()
+
 	# --archives
 	if args.archives:
 		b.renderArchives()
