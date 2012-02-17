@@ -152,3 +152,10 @@ ul.archive .date {
 	color: gray;
 	letter-spacing: -0.1em;
 }
+blockquote:before { 
+	content:"\201c"; 
+	font-size:4em; 
+	line-height:.1em; 
+	margin-right:.25em; 
+	vertical-align:-.4em; 
+}
