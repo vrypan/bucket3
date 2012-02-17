@@ -25,6 +25,7 @@
 	{% if p.meta.tags %}
 	<div class="entry-tags">| tags: {% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}">{{ t }}</a> {% endfor %}</div>
 	{% endif %}
+	{% if blog.plusone_button %}<div class="g-plusone" data-size="small" data-annotation="inline" data-width="300" data-href="{{p.meta._url}}"></div>{% endif %}
 </div>
 <div class="entry-body">
 	{{ p.body|safe() }}

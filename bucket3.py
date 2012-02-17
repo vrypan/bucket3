@@ -74,6 +74,7 @@ class Bucket3():
 			'google_site_verification': conf['google_site_verification'],
 			'google_analytics_id': conf['google_analytics_id'],
 			'disqus_shortname': conf['disqus_shortname'],
+			'plusone_button': conf['plusone_button'],
 		}
 		
 		if 'theme' in conf and conf['theme']:
@@ -216,7 +217,6 @@ class Bucket3():
 		f.close()
 		
 		for a in meta['attached']:
-			print '->', path
 			shutil.copy2(os.path.join( os.path.dirname(path), a), meta['_path'])
 			
 		return meta, body_html

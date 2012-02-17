@@ -104,6 +104,17 @@
 <!-- this is where we put our custom functions -->
 <script src="_/js/functions.js"></script>
 
+{% if blog.plusone_button %}
+<script type="text/javascript">
+  (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+</script>
+{% endif %}
+
+
 {% if blog.google_analytics_id %}
 <!-- Asynchronous google analytics; this is the official snippet. -->
 <script>
