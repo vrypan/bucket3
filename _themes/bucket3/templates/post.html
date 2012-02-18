@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block page_title %}
+<title>{{ blog.title }} | {{ meta.title}}</title>
+{% endblock page_title %}
+
 {% block page_meta %}
 <meta name="title" content="{{ blog.title }} | {{ meta.title}}">
 <meta name="description" content="{{ body|striptags|truncate|e }}">
