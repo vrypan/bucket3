@@ -13,5 +13,6 @@ blog_copyright:  Creative Commons Attribution 3.0 License (CC-BY 3.0)
 google_site_verification: 
 google_analytics_id: # UA-XXXXXX-XX 
 disqus_shortname:
+plusone_button: False
 
 theme: bucket3 #templates, css, js, etc.
