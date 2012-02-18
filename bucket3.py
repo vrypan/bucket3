@@ -52,7 +52,7 @@ class Bucket3():
 		time.tzset()
 		self.filters = contentFilters()
 		
-		self.root_url = conf['blog_url'] 
+		self.root_url = conf['blog']['url'] 
 		self.root_dir = conf['root_dir']
 		self.data_dir = os.path.join(self.root_dir, '_data')
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
@@ -63,19 +63,7 @@ class Bucket3():
 			
 		self.getState()
 
-		blog = {
-			# these variables are available in all templates.
-			# can be used like {{ blog.title }}
-			'title': conf['blog_title'],
-			'url': conf['blog_url'],
-			'description': conf['blog_description'],
-			'author': conf['blog_author'],
-			'copyright': conf['blog_copyright'],
-			'google_site_verification': conf['google_site_verification'],
-			'google_analytics_id': conf['google_analytics_id'],
-			'disqus_shortname': conf['disqus_shortname'],
-			'plusone_button': conf['plusone_button'],
-		}
+		blog = conf['blog']
 		
 		if 'theme' in conf and conf['theme']:
 			self.theme = conf['theme']
