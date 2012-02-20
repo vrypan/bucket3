@@ -152,3 +152,7 @@ ul.archive .date {
 	color: gray;
 	letter-spacing: -0.1em;
 }
+
+.gist {
+	font-size: 12px;
+	}

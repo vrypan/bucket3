@@ -1,18 +1,19 @@
 # Make sure you cahnge the values bellow to match your configuration
 #
 
-root_dir: .
-html_dir: ./html
+root_dir: /home/vrypan/bucket3/
+html_dir: /home/vrypan/public_html/bucket3
 
-blog_title: the bucket3 blog
-blog_url: http://www.bucket3.com/ #trailing slash is important!
-blog_description: bucket3 is a simple, blog aware, static site generator written in python.
-blog_author: "Panayotis Vryonis <vrypan@gmail.com>"
-blog_copyright:  Creative Commons Attribution 3.0 License (CC-BY 3.0)
-
-google_site_verification: 
-google_analytics_id: UA-67888-8
-disqus_shortname: bucket3blog
+blog:
+        title: the bucket3 blog
+        #url: http://www.bucket3.com/ #trailing slash is important!
+        url: http://r3600/~vrypan/bucket3/ #trailing slash is important!
+        description: bucket3 is a simple, blog aware, static site generator written in python.
+        author: "Panayotis Vryonis <vrypan@gmail.com>"
+        copyright:  Creative Commons Attribution 3.0 License (CC-BY 3.0)
+        google_site_verification: 
+        google_analytics_id: UA-67888-8
+        disqus_shortname: bucket3blog
 
 theme: bucket3com #templates, css, js, etc.
 
