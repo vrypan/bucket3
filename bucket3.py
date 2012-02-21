@@ -16,8 +16,8 @@ import yaml
 import markdown2
 from jinja2 import Template, FileSystemLoader, Environment
 import re
-
-
+from itertools import groupby
+	
 class contentFilters():
 	exts = ('.md', '.markdown', '.wordpress', '.html')
 		
@@ -98,6 +98,26 @@ class Bucket3():
 		f = open(fname, 'wb')
 		pickle.dump(data, f)
 		f.close
+	
+	def getPostList(self, name, prefix=""):
+		cacheName = "%s_%s" % (prefix, name)
+		return self.getCache(cacheName)
+		
+	def putPostList(self, list_data, name, prefix="", cleanup=False):
+		cacheName = "%s_%s" % (prefix, name)
+		if cleanup:
+			list_data = self.cleanupList(list_data)
+		return self.putCache(cacheName, list_data)
+		
+	def cleanupList(self, list_data):
+		# remove duplicates
+		u_list = [p.next() for k,p in groupby(
+			sorted(list_data, key=itemgetter("_url"), reverse=True), 
+			key = itemgetter('_url')
+			) ]
+		# sort by date
+		s_list = sorted(u_list, key=itemgetter('_date'), reverse=True)
+		return s_list
 		
 	def makeHtmlSkel(self):
 		assets_dir = os.path.join(self.html_dir, '_')
@@ -178,7 +198,7 @@ class Bucket3():
 	def renderPost(self, path):
 		txt = open(path,'r').read()
 		(dummy, frontmatter, body) = txt.split('---',2)
-		print path
+		print 'Reading %s...' % path
 		meta = self.parseFrontmatter(frontmatter)
 		meta['_update'] = datetime.fromtimestamp(os.path.getmtime(path))
 
@@ -207,14 +227,15 @@ class Bucket3():
 		for a in meta['attached']:
 			shutil.copy2(os.path.join( os.path.dirname(path), a), meta['_path'])
 			
-		return meta, body_html
+		meta['body'] = body_html
+		return meta
 		
 	def renderHome(self):
-		data = self.getCache('all_index')
+		data = self.getPostList(name='all')
 		
 		if not data:
 			return
-		idx = sorted(data, key=itemgetter('date'), reverse=True)[:10]
+		idx = data[:10]
 		
 		tpl = self.tpl_env.get_template('home.html')
 		html = tpl.render(index=idx)
@@ -223,7 +244,7 @@ class Bucket3():
 		f.close()
 		
 	def renderSitemap(self):
-		data = self.getCache('all_index')
+		data = self.getPostList(name='all')
 		
 		if not data:
 			return
@@ -234,11 +255,11 @@ class Bucket3():
 		f.close()
 	
 	def renderRSS(self):
-		data = self.getCache('all_index')
+		data = self.getPostList(name='all')
 
 		if not data:
 			return
-		idx = sorted(data, key=itemgetter('date'), reverse=True)[:10]
+		idx = data[:10]
 
 		tpl = self.tpl_env.get_template('rss.xml')
 		html = tpl.render(posts=idx)
@@ -247,15 +268,15 @@ class Bucket3():
 		f.close()
 		
 	def renderArchives(self):
-		data = self.getCache('all_index')
-		idx = sorted(data, key=itemgetter('date'), reverse=True)
-		max_date = idx[0]['date']
-		min_date = idx[-1]['date']
+		idx = self.getPostList(name='all')
+
+		max_date = idx[0]['_date']
+		min_date = idx[-1]['_date']
 		
 		counts = []
 		
 		for year in range(max_date.year, min_date.year-1, -1):
-			recs = [ p for p in idx if p['date'].year==year]
+			recs = [ p for p in idx if p['_date'].year==year]
 			if recs:
 				counts.append( (year, len(recs)) )
 				tpl = self.tpl_env.get_template('archive.html')
@@ -263,10 +284,10 @@ class Bucket3():
 				f = open(os.path.join(self.html_dir, '%s' % year, 'index.html' ), 'w')
 				f.write(html.encode('utf8'))
 				f.close()
-				max_month = recs[0]['date'].month
-				min_month = recs[-1]['date'].month
+				max_month = recs[0]['_date'].month
+				min_month = recs[-1]['_date'].month
 				for month in range( max_month, min_month-1, -1):
-					mposts = [ p for p in recs if p['date'].month==month ]
+					mposts = [ p for p in recs if p['_date'].month==month ]
 					if mposts:
 						html = tpl.render(index=mposts, year=year, month=month)
 						f = open(os.path.join(self.html_dir, '%s' % year, str(month), 'index.html' ), 'w')
@@ -290,9 +311,9 @@ class Bucket3():
 				tag_name = f[4:].decode('utf8')
 				counts.append((tag_name,len(data)))
 				
-				idx = sorted(data, key=itemgetter('date'), reverse=True)
-				max_year = idx[0]['date'].year
-				min_year = idx[-1]['date'].year
+				idx = data
+				max_year = idx[0]['_date'].year
+				min_year = idx[-1]['_date'].year
 
 				tpl = self.tpl_env.get_template('tag_archive.html')
 				html = tpl.render(index=idx, tag_name=tag_name)
@@ -302,6 +323,7 @@ class Bucket3():
 				f = open(os.path.join(self.html_dir, 'tag', tag_name, 'index.html' ), 'w')
 				f.write(html.encode('utf8'))
 				f.close()
+				
 		max_count = max([y for x,y in counts ])+1 # just make sure max_count-min_count!=0
 		min_count = min([y for x,y in counts ])
 		
@@ -413,31 +435,31 @@ def main(*argv):
 	if args.new_posts:
 		last_ts = 1
 		tagidx = {}
-		all_index = b.getCache('all_index')
+		all_index = b.getPostList(name="all")
 		if not all_index:
 			all_index = []
 
 		for p, ts in b.newPosts():
 			if ts > last_ts:
 				last_ts = ts # last_ts will hold the latest post's timestamp at the end of the loop.
-			pmeta, pbody = b.renderPost(p)
-			all_index.append( {'date':pmeta['_date'], 'meta':pmeta, 'body':pbody } )
-			for tag in pmeta['tags']:
+			post = b.renderPost(p)
+			all_index.append( post )
+			for tag in post['tags']:
 				if not tag in tagidx:
-					cache = b.getCache('tag_%s' % tag )
+					cache = b.getPostList(name=tag, prefix="tag" )
 					if cache:
 						tagidx[tag]=cache
 					else:
 						tagidx[tag] = []
-				tagidx[tag].append( {'date':pmeta['_date'], 'meta':pmeta, 'body':pbody } )
+				tagidx[tag].append( post )
 
 		for tag in tagidx.keys():
 			if tag.strip():
-				b.putCache('tag_%s' % tag, tagidx[tag])
+				b.putPostList(name=tag, prefix="tag", list_data=tagidx[tag], cleanup=True)
 				
 		if last_ts > 1:
 			b.putCache('lastrun', {'timestamp': last_ts})
-			b.putCache('all_index', all_index)
+			b.putPostList(name="all", cleanup=True, list_data=all_index)
 			b.renderHome()
 			b.renderArchives()
 			b.renderTags()
