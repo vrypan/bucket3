@@ -58,6 +58,11 @@ class Bucket3():
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
 		self.html_dir = conf['html_dir']
 		
+		if 'use_slugs' in conf:
+			self.use_slugs = conf['use_slugs']
+		else:
+			self.use_slugs = False
+		
 		if not os.path.exists(self.data_dir):
 			os.makedirs(self.data_dir)
 			
@@ -176,25 +181,33 @@ class Bucket3():
 		else:
 			meta['attached'] = []
 
-		if not 'slug' in meta:
-			if 'id' in meta and meta['id']:
-				meta['slug'] = str(meta['id'])
+		if self.use_slugs:
+			if 'slug' in meta and meta['slug']:
+				meta['_slug'] = meta['slug']
 			else:
-				# TODO: a "slugify" method is needed here, but the md5(txt) will do for now.
-				meta['slug'] = md5(txt).hexdigest()
+				if 'id' in meta and meta['id']:
+					meta['_slug'] = str(meta['id'])
+				else:
+					# TODO: a "slugify" method is needed here, but the md5(txt) will do for now.
+					meta['_slug'] = md5(txt).hexdigest()
+		else:
+			if 'id' in meta and meta['id']:
+				meta['_slug'] = str(meta['id'])
+			else:
+				meta['_slug'] = md5(txt).hexdigest()
 
 		meta['_path'] = os.path.join(
 			self.html_dir, 
 			str(meta['_date'].year), 
 			str(meta['_date'].month), 
 			str(meta['_date'].day), 
-			meta['slug'])
+			meta['_slug'])
 		meta['_url'] = "%s%s/%s/%s/%s/" % (
 			self.root_url, 
 			str(meta['_date'].year), 
 			str(meta['_date'].month), 
 			str(meta['_date'].day), 
-			meta['slug'])
+			meta['_slug'])
 		return meta
 		
 	def renderPost(self, path):
