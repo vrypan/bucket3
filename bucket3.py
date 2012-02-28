@@ -146,7 +146,9 @@ class Bucket3():
 		else:
 			meta['_date'] = datetime.strptime(meta['date'][:16], '%Y-%m-%d %H:%M')
 		if 'tags' in meta and meta['tags']:
-			meta['tags'] = [t.strip() for t in meta['tags'].split(',') ]
+			# tags can be defined as a yaml list, or a comma separated list (string).
+			if type(meta['tags']) == type(" "):
+				meta['tags'] = [t.strip() for t in meta['tags'].split(',') ]
 		else:
 			meta['tags'] = []
 		if 'attached' in meta and meta['attached']:
