@@ -25,7 +25,7 @@
 <div class="entry-meta">
 	<div class="entry-date">posted on {{ meta._date.strftime("%d/%m/%Y %H:%M")  }}</div>
 	{% if meta.tags %}
-	<div class="entry-tags">| tags: {% for t in meta.tags %}<a href="{{ blog.url }}tag/{{ t }}">{{ t }}</a> {% endfor %}</div>
+	<div class="entry-tags">| tags: {% for t in meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">{{ t }}</a> {% endfor %}</div>
 	{% endif %}
 	{% if blog.plusone_button %}<div class="g-plusone" data-size="small" data-annotation="inline" data-width="300" data-href="{{meta._url}}"></div>{% endif %}
 </div>

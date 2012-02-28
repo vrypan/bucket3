@@ -11,7 +11,7 @@
 		<li><span class="date">{{ p._date.strftime("%d-%m-%Y")  }}</span> 
 		<a href="{{p._url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
 			{% if p.tags %}
-				<small> [tags: {% for t in p.tags %}<a href="{{ blog.url }}tag/{{ t }}">{{ t }}</a> {% endfor %}]</small>
+				<small> [tags: {% for t in p.tags %}<a href="{{ blog.url }}tag/{{ t }}/">{{ t }}</a> {% endfor %}]</small>
 			{% endif %}
 			</li>
 		{% endfor %}

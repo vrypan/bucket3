@@ -23,7 +23,7 @@
 <div class="entry-meta">
 	<div class="entry-date">posted on {{ p._date.strftime("%d/%m/%Y %H:%M")  }}</div>
 	{% if p.tags %}
-	<div class="entry-tags">| tags: {% for t in p.tags %}<a href="{{ blog.url }}tag/{{ t }}">{{ t }}</a> {% endfor %}</div>
+	<div class="entry-tags">| tags: {% for t in p.tags %}<a href="{{ blog.url }}tag/{{ t }}/">{{ t }}</a> {% endfor %}</div>
 	{% endif %}
 	{% if blog.plusone_button %}<div class="g-plusone" data-size="small" data-annotation="inline" data-width="300" data-href="{{p._url}}"></div>{% endif %}
 </div>
