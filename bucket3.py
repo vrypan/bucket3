@@ -75,10 +75,15 @@ class Bucket3():
 		else:
 			self.theme = 'bucket3'
 		
-		self.template_dir = os.path.join(self.root_dir, '_themes', self.theme, 'templates')	
+		self.template_dir = [ 
+				os.path.join(self.root_dir, '_themes', self.theme, 'templates')	,
+				os.path.join(self.root_dir, '_themes', 'bucket3', 'templates'), # the default template
+				]
+
 		self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
 		self.tpl_env.globals['blog'] = blog
 		self.tpl_env.globals['_months'] = [calendar.month_name[i] for i in range(0,13)] #yes, needs to start from zero.
+		self.tpl_env.globals['_months_short'] = [calendar.month_abbr[i] for i in range(0,13)] #yes, needs to start from zero.
 		self.tpl_env.globals['_now'] = datetime.now()
 	
 	def getState(self):
@@ -288,12 +293,9 @@ class Bucket3():
 		max_date = idx[0]['_date']
 		min_date = idx[-1]['_date']
 		
-		counts = []
-		
 		for year in range(max_date.year, min_date.year-1, -1):
 			recs = [ p for p in idx if p['_date'].year==year]
 			if recs:
-				counts.append( (year, len(recs)) )
 				tpl = self.tpl_env.get_template('archive.html')
 				html = tpl.render(index=recs, year=year)
 				f = open(os.path.join(self.html_dir, '%s' % year, 'index.html' ), 'w')
@@ -311,8 +313,16 @@ class Bucket3():
 		
 		if not os.path.exists(os.path.join(self.html_dir, 'archive')):
 			os.makedirs(os.path.join(self.html_dir, 'archive'))
+
+		matrix = {} 
+		for year in range(max_date.year, min_date.year-1, -1):
+			matrix[year] = {}
+			for month in range(1,13):
+				recs = [ p for p in idx if p['_date'].year==year and p['_date'].month==month ]
+				matrix[year][month] = len(recs)
+
 		tpl = self.tpl_env.get_template('main_archive.html')
-		html = tpl.render(counts=counts)
+		html = tpl.render(counts=matrix)
 		f = open(os.path.join(self.html_dir, 'archive', 'index.html' ), 'w')
 		f.write(html.encode('utf8'))
 		f.close()

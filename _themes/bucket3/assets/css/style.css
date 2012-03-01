@@ -19,6 +19,7 @@ body {
 	color: black;
 	font-weight: normal;	
 	margin: 0;
+	line-height: 36px;
 }
 #header h1 a {
 	text-decoration: none;
@@ -68,18 +69,20 @@ body {
 	border-left: 4px #ddd solid;
 }
 
-.entry-title {
+h1, .entry-title {
 	font-size: 24px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #080000;
+	line-height: 30px;
+}
+.entry-title {
 	margin-left: -10px;
 	margin-bottom: 0;
 	margin-top: 2em;
 	padding-bottom: 0.3ex;
 	padding-left: 6px;
 	border-left: 4px #000 solid ;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	color: #080000;
-	font-weight: bold;
-	line-height: 30px;
 }
 .entry-title a{
 	color: #000;
@@ -116,6 +119,7 @@ body {
 	width: 100%
 }
 #footer {
+	clear: both;
 	font-size: 10px;
 	color: #808080;
 	display: block;
@@ -123,7 +127,7 @@ body {
 	margin-left: 0;
 	margin-right: 0;
 	margin-bottom: 0;
-	margin-top: 2em;
+	margin-top: 4em;
 	padding: 1ex .5ex 1ex 2ex;
 	border-top: 1px #808080 solid;
 	text-align: right;
@@ -152,10 +156,32 @@ ul.archive .date {
 	color: gray;
 	letter-spacing: -0.1em;
 }
-blockquote:before { 
-	content:"\201c"; 
-	font-size:4em; 
-	line-height:.1em; 
-	margin-right:.25em; 
-	vertical-align:-.4em; 
+
+.gist {
+	font-size: 12px;
+	}
+dl {
+	display: block;
+	clear: both;
+	width: 100%;
+	height: 1ex;
 }
+dt {
+	clear: both;
+	width: 10%;
+	text-align: left;
+}
+dd {
+	width: 7.5%;
+	text-align: center;
+}
+.archive_short dt, .archive_short dd {
+	display: block;
+	float: left;
+	padding: 0.5ex 0 ;
+	margin: 0;
+	color: #999;
+	font-size: 14px;
+	border-bottom: 1px #ddd solid;
+}
+

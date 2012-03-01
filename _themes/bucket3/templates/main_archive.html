@@ -16,11 +16,18 @@
 
 {% block content %}
 <div id="home">
-	<h1>blog archive per year</h1>
-{% for year, count in counts %}
-<div class="entry">
-	<h2 class="entry-title"><a href="{{ blog.url }}{{ year }}">{{ year }} | {{ count }} posts </h2>
-</div>
+	<h1>blog achive</h1>
+{% for y in counts|reverse() %}
+	<dl class="archive_short">
+		<dt>{{ y }}</dt>
+		{% for m in range(1,13) %}
+		<dd>
+			{% if counts[y][m] > 0 %}<a href="{{ blog.url }}{{ y }}/{{ m }}/">{{ _months_short[m] }}</a>
+			{% else %} {{ _months_short[m] }}
+			{% endif %}
+		</dd>
+		{% endfor %}
+	</dl>
 {% endfor %}
 </div>
 
