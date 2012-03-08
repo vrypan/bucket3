@@ -19,3 +19,4 @@ blog:
         disqus_shortname:
 
 theme: bucket3 #templates, css, js, etc.
+use_slugs: False
