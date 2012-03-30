@@ -176,11 +176,10 @@ class Bucket3():
 		else:
 			meta['_date'] = datetime.strptime(meta['date'][:16], '%Y-%m-%d %H:%M')
 		if 'tags' in meta and meta['tags']:
-			# tags can be defined as a yaml list, or a comma separated list (string).
-			if type(meta['tags']) == type(" "):
-				meta['tags'] = [t.strip() for t in meta['tags'].split(',') ]
+			meta['tags'] = [t.strip() for t in meta['tags'].split(',') if t.strip() ]
 		else:
 			meta['tags'] = []
+		print "tags: ", meta['tags']
 		if 'attached' in meta and meta['attached']:
 			meta['attached'] = [a.strip() for a in meta['attached'].split(',') if a.strip()]
 		else:
@@ -503,7 +502,12 @@ def main(*argv):
 	if args.sitemap:
 		print "rendering sitemap.xml"
 		b.renderSitemap()
-
+		
+	# --home
+	if args.home:
+		print "rendering homepage"
+		b.renderHome()
+		
 	# --archives
 	if args.archives:
 		b.renderArchives()
