@@ -179,7 +179,6 @@ class Bucket3():
 			meta['tags'] = [t.strip() for t in meta['tags'].split(',') if t.strip() ]
 		else:
 			meta['tags'] = []
-		print "tags: ", meta['tags']
 		if 'attached' in meta and meta['attached']:
 			meta['attached'] = [a.strip() for a in meta['attached'].split(',') if a.strip()]
 		else:
