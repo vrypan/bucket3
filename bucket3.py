@@ -148,12 +148,17 @@ class Bucket3():
 				os.path.join(self.root_dir, '_themes', self.theme, 'robots.txt'),
 				self.html_dir
 				)
-				
-		tpl = self.tpl_env.get_template('404.html')
-		html = tpl.render()
-		f = open(os.path.join(self.html_dir, '404.html'), 'w')
-		f.write(html.encode('utf8'))
-		f.close()
+		"""
+		Look for files under <theme_name>templates/static
+		These are files like 404.html, about.html, etc, that should be generated once and placed under /filename.html in our site.
+		IMPORTANT: these files are *NOT* inherited from the default template! You have to create or copy them!
+		"""
+		for static_page in os.listdir( os.path.join(self.root_dir, '_themes', self.theme, 'templates', 'static') ):
+			tpl = self.tpl_env.get_template('static/%s' % static_page) 
+			html = tpl.render()
+			f = open(os.path.join(self.html_dir, static_page), 'w')
+			f.write(html.encode('utf8'))
+			f.close()
 				
 	def textAbstract(self, txt):
 		txt = re.sub('<[^<]+?>', '', txt)
