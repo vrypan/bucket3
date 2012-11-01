@@ -63,6 +63,11 @@ class Bucket3():
 		else:
 			self.use_slugs = False
 		
+		if 'tags_lowercase' in conf:
+			self.tags_lowercase = conf['tags_lowercase']
+		else:
+			self.tags_lowercase = False
+
 		if not os.path.exists(self.data_dir):
 			os.makedirs(self.data_dir)
 			
@@ -181,7 +186,10 @@ class Bucket3():
 		else:
 			meta['_date'] = datetime.strptime(meta['date'][:16], '%Y-%m-%d %H:%M')
 		if 'tags' in meta and meta['tags']:
-			meta['tags'] = [t.strip() for t in meta['tags'].split(',') if t.strip() ]
+			if self.tags_lowercase:
+				meta['tags'] = [t.strip().lower() for t in meta['tags'].split(',') if t.strip() ]
+			else:
+				meta['tags'] = [t.strip() for t in meta['tags'].split(',') if t.strip() ]
 		else:
 			meta['tags'] = []
 		if 'attached' in meta and meta['attached']:
@@ -258,7 +266,7 @@ class Bucket3():
 		
 		if not data:
 			return
-		idx = data[:10]
+		idx = data[:25]
 		
 		tpl = self.tpl_env.get_template('home.html')
 		html = tpl.render(index=idx)

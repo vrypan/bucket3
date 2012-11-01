@@ -19,4 +19,5 @@ blog:
         disqus_shortname:
 
 theme: bucket3 #templates, css, js, etc.
-use_slugs: False
+use_slugs: False # Look for a "slug:" option in post frontmatter and use it as part of the URL?
+tags_lowercase: True # convert all tags to lowercase?
