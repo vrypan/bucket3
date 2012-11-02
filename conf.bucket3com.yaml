@@ -1,13 +1,12 @@
 # Make sure you cahnge the values bellow to match your configuration
 #
 
-root_dir: /home/vrypan/bucket3/
-html_dir: /home/vrypan/public_html/bucket3
+root_dir: /Users/vrypan/bucket3/
+html_dir: /Users/vrypan/Sites/bucket3
 
 blog:
         title: the bucket3 blog
-        #url: http://www.bucket3.com/ #trailing slash is important!
-        url: http://r3600/~vrypan/bucket3/ #trailing slash is important!
+        url: http://www.bucket3.com/ #trailing slash is important!
         description: bucket3 is a simple, blog aware, static site generator written in python.
         author: "Panayotis Vryonis <vrypan@gmail.com>"
         copyright:  Creative Commons Attribution 3.0 License (CC-BY 3.0)
@@ -16,4 +15,5 @@ blog:
         disqus_shortname: bucket3blog
 
 theme: bucket3com #templates, css, js, etc.
-
+use_slugs: True
+tags_lowercase: True
