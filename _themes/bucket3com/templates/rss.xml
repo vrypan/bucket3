@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:scripting2="http://scripting2.com/namespace.html">
+	<channel>
+		<title>{{ blog.title }}</title>
+		<link>{{ blog.url }}</link>
+		<description>{{ blog.description }}</description>
+		<language>en-us</language>
+		<copyright>{{ blog.copyright }}</copyright>
+		<pubDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S %z")  }}</pubDate>
+		<lastBuildDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S %z")  }}</lastBuildDate>
+		<docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
+		<generator>bucket3 v2.0</generator>
+		 <!-- PubSubHubbub Discovery -->
+		<link rel="hub"  href="http://vrypan.superfeedr.com/" xmlns="http://www.w3.org/2005/Atom" />
+		<link rel="self" href="http://www.bucket3.com/rss.xml" xmlns="http://www.w3.org/2005/Atom" />
+		<!-- End Of PubSubHubbub Discovery -->
+		<ttl>15</ttl>
+		{% for p in posts %}
+		<item>
+			<title>{{ p.title|e }}</title>
+			<link>{{ p._url }}</link>
+			<guid>{{ p._url }}</guid>
+			<description>{{ p.body|e }}</description>
+			<pubDate>{{ p._date.strftime("%a, %d %b %Y %H:%M:%S %z") }}</pubDate>
+		</item>
+		{% endfor %}
+	</channel>
+</rss>
