@@ -17,6 +17,6 @@ I initially uploaded my files using
 
 Then, whenever I create new content, I use 
 
-	3cmd sync -P html/ s3://www.bucket3.com/
+	s3cmd sync -P html/ s3://www.bucket3.com/
 
 s3cmd is written in python.
