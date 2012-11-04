@@ -7,3 +7,4 @@ conf*
 html
 *.pyc
 MANIFEST
+dist/
