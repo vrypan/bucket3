@@ -10,7 +10,7 @@ setup(
     scripts=['bin/bucket3'],
     package_dir={'bucket3': 'bucket3'},
     include_package_data=True,
-    url='http://pypi.python.org/pypi/Bucket3/',
+    url='http://www.bucket3.com/',
     license='MIT-LICENSE.txt',
     description='Static blog generator.',
     long_description=open('README.txt').read(),
@@ -19,4 +19,15 @@ setup(
 		"Jinja2",
 		"PyYAML",
     ],
+    classifiers=[
+        'Development Status :: 4 - Beta',
+         'Environment :: Console',
+         'License :: OSI Approved :: MIT License',
+         'Operating System :: OS Independent',
+         'Programming Language :: Python :: 2.6',
+         'Programming Language :: Python :: 2.7',
+         'Topic :: Internet :: WWW/HTTP',
+         'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+
 )

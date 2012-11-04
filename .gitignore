@@ -8,3 +8,4 @@ html
 *.pyc
 MANIFEST
 dist/
+bucket3.egg-info/
