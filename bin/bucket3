@@ -8,6 +8,8 @@ import sys
 import shutil
 from hashlib import md5
 import yaml
+from datetime import datetime
+from dateutil.tz import tzlocal
 
 def newConf():
 	import pkgutil
@@ -18,14 +20,17 @@ def newConf():
 	print "conf.example.yaml created. Edit and rename.\n"
 	return
 
-def newPost(filename):
+def newPost(slug):
+	# This is an ugly implementation. I know.
+	prefix = datetime.now().strftime('%y%m%d')
+	filename = "%s-%s.md" % (prefix, slug)
 	f = open(filename,'w')
 	f.write("""---
 title: >
  title goes here, leading space must be there.
-date: 2000-01-31 18:00:00 GMT+2
+date: """ + datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z') + """
 type: post
-slug: if-you-are-using-slugs-set-it-here
+slug: """ + slug + """
 tags: tag1, tag2, tag3
 attached:
 ---
@@ -48,7 +53,7 @@ def main(*argv):
 		default=False,
 		help="Create a sample conf.yaml file in the current directory.")
 
-	parser.add_argument("--new",
+	parser.add_argument("-n", "--new",
 		dest="post_skel_file",
 		help="Create a sample post file.")
 
