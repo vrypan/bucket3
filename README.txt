@@ -2,7 +2,7 @@
 Bucket3
 ===========
 
-bucket3 is a simple, blog aware, static site generator written in python. It reads your content and spits out a complete, static website suitable for serving with Apache or your favorite web server. [1]
+bucket3 is a simple, blog aware, static site generator written in python. It reads your content and spits out a complete, static website suitable for serving with Apache or your favorite web server.
 
 bucket3 would like to become a virtual “information bucket” where you throw 
 pieces of information (texts, images, audio, etc), and presents them in a nice 
@@ -11,19 +11,21 @@ blog-like format.
 Quick intro
 =========
 
-1.  Download the bucket3 code.
+1. pip install bucket3
 
-2.  Install jinja2 and markdown2.
+2. mkdir myblog ; mkdir myblog/posts ; mkdir myblog/html
 
-3.  Edit conf.yaml or create a new one (see conf.yaml.example)
+3. cd myblog; bucket3 --new-conf
 
-4.  Put your posts under posts/ They don't have to be in the same directory, as long as they are under "posts/", you can organize them in any way you like.
+4. Edit conf.yaml or create a new one (see conf.yaml.example)
 
-5.  run bucket3.py --conf=your_conf_file --skel --new-posts
+5. bucket3 --new posts/hellowworld.md
 
-6.  You should now have your whole blog under "html_dir" (as defined in your conf file).
+5. bucket3.py --conf=conf.yaml --skel --new-posts
 
-7.  Upload the files to your server.
+6. You should now have your whole blog under "html" (as defined in your conf file).
+
+7. Upload the files to your server.
 
 Examples
 ------------

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from bucket3 import Bucket3
@@ -9,10 +9,51 @@ import shutil
 from hashlib import md5
 import yaml
 
+def newConf():
+	import pkgutil
+	s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
+	f = open('conf.example.yaml','w')
+	f.write(s.encode('utf8'))
+	f.close()
+	print "conf.example.yaml created. Edit and rename.\n"
+	return
+
+def newPost(filename):
+	f = open(filename,'w')
+	f.write("""---
+title: >
+ title goes here, leading space must be there.
+date: 2000-01-31 18:00:00 GMT+2
+type: post
+slug: if-you-are-using-slugs-set-it-here
+tags: tag1, tag2, tag3
+attached:
+---
+
+Start writing your post here. 
+
+If the file you created ends in .md, use markdown.
+""".encode('utf8'))
+	f.close()
+	print "Generated %s.\n" % filename
+
+	return
+
 def main(*argv):
 	parser = argparse.ArgumentParser(description="usage: bucket3.py [options]", prefix_chars='-+')
 
-	parser.add_argument("-c", "--config",
+	parser.add_argument("--new-conf",
+		action='store_true',
+		dest="newconf",
+		default=False,
+		help="Create a sample conf.yaml file in the current directory.")
+
+	parser.add_argument("--new",
+		dest="post_skel_file",
+		help="Create a sample post file.")
+
+
+	parser.add_argument("-c", "--conf",
 		dest="conf_file",
 		help="configuration file.")
 
@@ -68,7 +109,12 @@ def main(*argv):
 	# --conf
 	args = parser.parse_args()
 	if not args.conf_file:
-		parser.print_help()
+		if args.newconf:
+			newConf()
+		elif args.post_skel_file:
+			newPost(args.post_skel_file)
+		else:
+			parser.print_help()
 		return
 	conf = yaml.load(open(args.conf_file,mode='r').read())
 	
@@ -152,6 +198,10 @@ def main(*argv):
 	# --archives
 	if args.archives:
 		b.renderArchives()
+	
+	# --new-conf
+	# This is useless here. It's already taken care above.
+
 	
 if __name__ == '__main__':
 	main()
