@@ -1,0 +1,2 @@
+include *.txt *.md
+recursive-include bucket3 *.py *.html *.js *.css *.xml *.jpg *.txt *.ico

@@ -1,0 +1,157 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from bucket3 import Bucket3
+import argparse
+import os
+import sys
+import shutil
+from hashlib import md5
+import yaml
+
+def main(*argv):
+	parser = argparse.ArgumentParser(description="usage: bucket3.py [options]", prefix_chars='-+')
+
+	parser.add_argument("-c", "--config",
+		dest="conf_file",
+		help="configuration file.")
+
+	parser.add_argument('--skel',
+		action='store_true',
+		dest='skel',
+		default=False,
+		help="Copy default assets (css, js, img, etc)?")
+
+	parser.add_argument('--clean-all',
+		action='store_true',
+		dest='clean_all',
+		default=False,
+		help="Remove all files from _data/ and from html_dir.")
+
+	parser.add_argument('--home',
+		action='store_true',
+		dest='home',
+		default=False,
+		help="(re)render the homepage")
+
+	parser.add_argument('--rss',
+		action='store_true',
+		dest='rss',
+		default=False,
+		help="(re)render rss.xml")
+
+	parser.add_argument('--archives',
+		action='store_true',
+		dest='archives',
+		default=False,
+		help="(re)render yearly and monthly archives.")
+		
+	parser.add_argument('--tags',
+		action='store_true',
+		dest='tags',
+		default=False,
+		help="(re)render tag archives.")
+
+	parser.add_argument('--sitemap',
+		action='store_true',
+		dest='sitemap',
+		default=False,
+		help="(re)render sitemap.xml.")
+
+	parser.add_argument('--new-posts',
+		action='store_true',
+		dest='new_posts',
+		default=False,
+		help="check for new posts and render them. Also updates data files used by other functions, like archives, RSS and tags, and render the related html files.")
+
+
+	# --conf
+	args = parser.parse_args()
+	if not args.conf_file:
+		parser.print_help()
+		return
+	conf = yaml.load(open(args.conf_file,mode='r').read())
+	
+	# --clean-all
+	if args.clean_all:
+		ok = raw_input('Delete EVERYTHING under %s and %s \n(y/N)' % (
+			os.path.abspath(conf['html_dir']), 
+			os.path.abspath(
+				os.path.join( conf['root_dir'], '_data') 
+			) 
+			))
+		if ok in ('Y','y'):
+			for p in [ os.path.abspath( conf['html_dir'] ), os.path.abspath( os.path.join( conf['root_dir'], '_data') )]:
+				for i in os.listdir(p):
+					d = os.path.join( p,i)
+					if os.path.isdir(d):
+						shutil.rmtree(path=d, ignore_errors=True)
+					else:
+						os.remove(d)
+				print "Deleted all files in %s." % p 
+			
+	b = Bucket3(conf=conf)
+	
+	# --skel
+	if args.skel:
+		b.makeHtmlSkel()
+
+	# --new-posts
+	if args.new_posts:
+		last_ts = 1
+		tagidx = {}
+		all_index = b.getPostList(name="all")
+		if not all_index:
+			all_index = []
+
+		for p, ts in b.newPosts():
+			if ts > last_ts:
+				last_ts = ts # last_ts will hold the latest post's timestamp at the end of the loop.
+			post = b.renderPost(p)
+			all_index.append( post )
+			for tag in post['tags']:
+				if not tag in tagidx:
+					cache = b.getPostList(name=tag, prefix="tag" )
+					if cache:
+						tagidx[tag]=cache
+					else:
+						tagidx[tag] = []
+				tagidx[tag].append( post )
+
+		for tag in tagidx.keys():
+			if tag.strip():
+				b.putPostList(name=tag, prefix="tag", list_data=tagidx[tag], cleanup=True)
+				
+		if last_ts > 1:
+			b.putCache('lastrun', {'timestamp': last_ts})
+			b.putPostList(name="all", cleanup=True, list_data=all_index)
+			b.renderHome()
+			b.renderArchives()
+			b.renderTags()
+			b.renderRSS()
+			b.renderSitemap()
+				
+	# --tags
+	if args.tags:
+		b.renderTags()
+		
+	# --rss
+	if args.rss:
+		b.renderRSS()
+	
+	# --sitemap
+	if args.sitemap:
+		print "rendering sitemap.xml"
+		b.renderSitemap()
+		
+	# --home
+	if args.home:
+		print "rendering homepage"
+		b.renderHome()
+		
+	# --archives
+	if args.archives:
+		b.renderArchives()
+	
+if __name__ == '__main__':
+	main()
