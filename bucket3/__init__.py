@@ -82,7 +82,6 @@ class Bucket3():
 		
 		self.template_dir = [ 
 				os.path.join(self.root_dir, '_themes', self.theme, 'templates')	,
-				os.path.join(self.root_dir, '_themes', 'bucket3', 'templates'), # the default template
 				os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), 
 					'_themes', 'bucket3', 'templates'), # last resort, the bucket3 theme downloaded with the app
 				]
