@@ -1,0 +1,40 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import argparse
+import os
+import sys
+import yaml
+
+def newConf(filename):
+	import pkgutil
+	s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
+	f = open(filename,'w')
+	f.write(s.encode('utf8'))
+	f.close()
+	print "%s created. Make sure you edit it.\n" % filename
+	return
+
+def main(*argv):
+	parser = argparse.ArgumentParser(description="usage: bucket3-init [options]", prefix_chars='-')
+
+	parser.add_argument("--path",
+		dest="toppath",
+		default='.',
+		help="Top dir for your blog files.")
+
+	args = parser.parse_args()
+	path = os.path.abspath(args.toppath)
+	bucket3_path = os.path.join(path,'.bucket3')
+	conf_file = os.path.join(bucket3_path, 'conf.yaml')
+
+	if not os.path.isdir(bucket3_path):
+		os.mkdir(bucket3_path)
+	if not os.path.isfile(conf_file):
+		newConf(conf_file)
+	else:
+		print "%s already exists." % conf_file
+	
+	
+if __name__ == '__main__':
+	main()

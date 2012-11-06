@@ -1,0 +1,77 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import argparse
+import os
+import sys
+import shutil
+import yaml
+from datetime import datetime
+from dateutil.tz import tzlocal
+
+def newPost(slug, ext):
+	# This is an ugly implementation. I know.
+	prefix = datetime.now().strftime('%y%m%d')
+	filename = "%s-%s.%s" % (prefix, slug, ext)
+	f = open(filename,'w')
+	f.write("""---
+title: >
+ title goes here, leading space must be there.
+date: """ + datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z') + """
+type: post
+slug: """ + slug + """
+tags: tag1, tag2, tag3
+attached:
+---
+
+Start writing your post here. 
+
+If the file you created ends in .md, use markdown.
+""".encode('utf8'))
+	f.close()
+	print "Generated %s.\n" % filename
+
+	return
+
+def main(*argv):
+	parser = argparse.ArgumentParser(description="usage: bucket3-newpost [options] <slug>", prefix_chars='-')
+
+	parser.add_argument("--path",
+		dest="toppath",
+		help="Provide the top directory of your bucket3 blog.")
+	parser.add_argument("slug")
+
+	args = parser.parse_args()
+	
+	if not args.toppath:
+		toppath = None
+		# try to locate toppath
+		cwd = os.getcwd()
+		p,c = os.path.split(cwd)
+		while p != os.sep:
+			if os.path.isdir(
+					os.path.join(p,c,'.bucket3')
+					):
+				toppath = os.path.join(p,c)
+				break
+			else:
+				p,c = os.path.split(p)
+
+		if not toppath:
+			print 'Unable to locate a bucket3 configuration.'
+			return 1
+	else:
+		toppath = args.toppath
+	
+	conf_file = os.path.join(toppath, '.bucket3', 'conf.yaml')
+
+	conf = yaml.load(open(conf_file,mode='r').read())
+	
+	if conf['default_file_ext']:
+		ext = conf['default_file_ext']
+	else:
+		ext = 'md'
+	newPost(args.slug, ext)
+	
+if __name__ == '__main__':
+	main()

@@ -54,7 +54,7 @@ class Bucket3():
 		
 		self.root_url = conf['blog']['url'] 
 		self.root_dir = conf['root_dir']
-		self.data_dir = os.path.join(self.root_dir, '_data')
+		self.data_dir = os.path.join(self.root_dir, '.bucket3', '_data')
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
 		self.html_dir = conf['html_dir']
 		
