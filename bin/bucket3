@@ -1,173 +1,64 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from bucket3 import Bucket3
 import argparse
-import os
 import sys
-import shutil
-from hashlib import md5
-import yaml
-from datetime import datetime
-from dateutil.tz import tzlocal
-
-def newConf():
-	import pkgutil
-	s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
-	f = open('conf.example.yaml','w')
-	f.write(s.encode('utf8'))
-	f.close()
-	print "conf.example.yaml created. Edit and rename.\n"
-	return
-
-def newPost(slug):
-	# This is an ugly implementation. I know.
-	prefix = datetime.now().strftime('%y%m%d')
-	filename = "%s-%s.md" % (prefix, slug)
-	f = open(filename,'w')
-	f.write("""---
-title: >
- title goes here, leading space must be there.
-date: """ + datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z') + """
-type: post
-slug: """ + slug + """
-tags: tag1, tag2, tag3
-attached:
----
-
-Start writing your post here. 
-
-If the file you created ends in .md, use markdown.
-""".encode('utf8'))
-	f.close()
-	print "Generated %s.\n" % filename
-
-	return
-
+from bucket3 import b3tools
+	
+	
 def main(*argv):
-	parser = argparse.ArgumentParser(description="usage: bucket3.py [options]", prefix_chars='-+')
-
-	parser.add_argument("--new-conf",
-		action='store_true',
-		dest="newconf",
-		default=False,
-		help="Create a sample conf.yaml file in the current directory.")
-
-	parser.add_argument("-n", "--new",
-		dest="post_skel_file",
-		help="Create a sample post file.")
-
-
-	parser.add_argument("-c", "--conf",
-		dest="conf_file",
-		help="configuration file.")
-
-	parser.add_argument('--skel',
-		action='store_true',
-		dest='skel',
-		default=False,
-		help="Copy default assets (css, js, img, etc)?")
-
-	parser.add_argument('--clean-all',
-		action='store_true',
-		dest='clean_all',
-		default=False,
-		help="Remove all files from _data/ and from html_dir.")
-
-	parser.add_argument('--home',
-		action='store_true',
-		dest='home',
-		default=False,
-		help="(re)render the homepage")
-
-	parser.add_argument('--rss',
-		action='store_true',
-		dest='rss',
-		default=False,
-		help="(re)render rss.xml")
-
-	parser.add_argument('--archives',
-		action='store_true',
-		dest='archives',
-		default=False,
-		help="(re)render yearly and monthly archives.")
+	parser = argparse.ArgumentParser(prog='bucket3-cmd')
+	
+	parser.add_argument("-p", "--path",
+		dest="path",
+		default = '.',
+		help="Provide the top directory of your bucket3 blog.")
 		
-	parser.add_argument('--tags',
-		action='store_true',
-		dest='tags',
-		default=False,
-		help="(re)render tag archives.")
-
-	parser.add_argument('--sitemap',
-		action='store_true',
-		dest='sitemap',
-		default=False,
-		help="(re)render sitemap.xml.")
-
-	parser.add_argument('--new-posts',
-		action='store_true',
-		dest='new_posts',
-		default=False,
-		help="check for new posts and render them. Also updates data files used by other functions, like archives, RSS and tags, and render the related html files.")
-
-
+	subparsers = parser.add_subparsers(help='sub-command help', dest='cmd')
+	
+	# NEW
+	parser_new = subparsers.add_parser('new', help='Scaffold new post file.')
+	parser_new.add_argument("slug")
+	parser_new.add_argument("--ext", default='md', help='Extension of the file to be created. Usually defaults to md.')
+	
+	# INIT
+	parser_init = subparsers.add_parser('init', help='Initialize a new blog')
+	
+	# CLEAR
+	parser_clear = subparsers.add_parser('clear', help='Delete HTML and cache files.')
+	
+	# 2HTML
+	parser_2html = subparsers.add_parser('2html', help='Render HTML pages.')
+	parser_2html.add_argument("-f", '--force', 
+				action='store_true', dest='force', default=False,
+				help='Force script to re-generate HTML even if no new or modified posts are found.')
+	
 	args = parser.parse_args()
-
-	if not args.toppath:
-		toppath = None
-		cwd = os.getcwd()
-		p,c = os.path.split(cwd)
-		while p != os.sep:
-			if os.path.isdir(
-					os.path.join(p,c,'.bucket3')
-					):
-				toppath = os.path.join(p,c)
-				break
-			else:
-				p,c = os.path.split(p)
-
-		if not toppath:
-			print 'Unable to locate a bucket3 configuration.'
-			return 1
-	else:
-		toppath = args.toppath
 	
-	conf_file = os.path.join(toppath, '.bucket3', 'conf.yaml')
-
-	conf = yaml.load(open(conf_file,mode='r').read())
-
-	# --clean-all
-	if args.clean_all:
-		ok = raw_input('Delete EVERYTHING under %s and %s \n(y/N)' % (
-			os.path.abspath(conf['html_dir']), 
-			os.path.abspath(
-				os.path.join( conf['root_dir'], '_data') 
-			) 
-			))
-		if ok in ('Y','y'):
-			for p in [ os.path.abspath( conf['html_dir'] ), os.path.abspath( os.path.join( conf['root_dir'], '_data') )]:
-				for i in os.listdir(p):
-					d = os.path.join( p,i)
-					if os.path.isdir(d):
-						shutil.rmtree(path=d, ignore_errors=True)
-					else:
-						os.remove(d)
-				print "Deleted all files in %s." % p 
-			
-	b = Bucket3(conf=conf)
-	
-	# --skel
-	if args.skel:
-		b.makeHtmlSkel()
-
-	# --new-posts
-	if args.new_posts:
+	if args.cmd == 'new':
+		# Create NEW post file
+		b3tools.post_new(slug=args.slug, ext=args.ext, cpath=args.path)
+		return
+		
+	elif args.cmd == 'init':
+		# INITialize blog directories and configuration files
+		b3tools.blog_new(args.path)
+		return
+		
+	elif args.cmd == 'clear':
+		# CLEAR data files and HTML.
+		b3tools.blog_clean(args.path)
+		
+	elif args.cmd == '2html':
+		from bucket3 import Bucket3
+		conf = b3tools.conf_get(args.path)
+		b = Bucket3(conf = conf)
 		last_ts = 1
 		tagidx = {}
-		all_index = b.getPostList(name="all")
+		all_index = b.getPostList(name='all')
 		if not all_index:
 			all_index = []
-
+			
 		for p, ts in b.newPosts():
 			if ts > last_ts:
 				last_ts = ts # last_ts will hold the latest post's timestamp at the end of the loop.
@@ -185,8 +76,8 @@ def main(*argv):
 		for tag in tagidx.keys():
 			if tag.strip():
 				b.putPostList(name=tag, prefix="tag", list_data=tagidx[tag], cleanup=True)
-				
-		if last_ts > 1:
+
+		if last_ts > 1 or args.force:
 			b.putCache('lastrun', {'timestamp': last_ts})
 			b.putPostList(name="all", cleanup=True, list_data=all_index)
 			b.renderHome()
@@ -194,32 +85,11 @@ def main(*argv):
 			b.renderTags()
 			b.renderRSS()
 			b.renderSitemap()
-				
-	# --tags
-	if args.tags:
-		b.renderTags()
-		
-	# --rss
-	if args.rss:
-		b.renderRSS()
-	
-	# --sitemap
-	if args.sitemap:
-		print "rendering sitemap.xml"
-		b.renderSitemap()
-		
-	# --home
-	if args.home:
-		print "rendering homepage"
-		b.renderHome()
-		
-	# --archives
-	if args.archives:
-		b.renderArchives()
-	
-	# --new-conf
-	# This is useless here. It's already taken care above.
+			b.makeHtmlSkel()
+		return 0
 
-	
+	else: 
+		parser.print_help()
+
 if __name__ == '__main__':
 	main()
