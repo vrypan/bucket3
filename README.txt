@@ -13,15 +13,17 @@ Quick intro
 
 1. pip install bucket3
 
-2. mkdir myblog ; mkdir myblog/posts ; mkdir myblog/html
+2. mkdir myblog
 
-3. cd myblog; bucket3 --new-conf
+3. cd myblog; bucket3 init
 
-4. Edit conf.yaml or create a new one (see conf.yaml.example)
+4. Edit .bucket3/conf.yaml
 
-5. bucket3 --new posts/hellowworld.md
+5. cd posts; bucket3 new hello-world-1 
 
-5. bucket3.py --conf=conf.yaml --skel --new-posts
+6. Edit the file generated, and add some text.
+
+7. bucket3 2html
 
 6. You should now have your whole blog under "html" (as defined in your conf file).
 
@@ -30,7 +32,7 @@ Quick intro
 Examples
 ------------
 
-conf.bucket3com.yaml, _themes/bucket3com and the posts under posts/ are the source of http://www.bucket3.com/ 
+iCheck out the source of http://www.bucket3.com/ at https://github.com/vrypan/www.bucket3.com
 
 http://blog.vrypan.net/ is also generated using bucket3.
 

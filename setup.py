@@ -3,11 +3,11 @@ import os, sys
 
 setup(
     name='bucket3',
-    version='0.8.1',
+    version='0.9.0',
     author='Panayotis Vryonis',
     author_email='vrypan@gmail.com',
     packages=['bucket3'],
-    scripts=['bin/bucket3'],
+    scripts=['bin/bucket3', 'bin/bucket3-cmd', 'bin/bucket3-make'],
     package_dir={'bucket3': 'bucket3'},
     include_package_data=True,
     url='http://www.bucket3.com/',
