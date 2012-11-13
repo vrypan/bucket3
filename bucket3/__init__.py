@@ -166,6 +166,7 @@ class Bucket3():
 			f = open(os.path.join(self.html_dir, static_page), 'w')
 			f.write(html.encode('utf8'))
 			f.close()
+			print 'Generated static page:', static_page
 				
 	def textAbstract(self, txt):
 		txt = re.sub('<[^<]+?>', '', txt)

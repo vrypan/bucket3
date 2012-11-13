@@ -7,7 +7,7 @@ setup(
     author='Panayotis Vryonis',
     author_email='vrypan@gmail.com',
     packages=['bucket3'],
-    scripts=['bin/bucket3', 'bin/bucket3-cmd', 'bin/bucket3-make'],
+    scripts=['bin/bucket3'],
     package_dir={'bucket3': 'bucket3'},
     include_package_data=True,
     url='http://www.bucket3.com/',
