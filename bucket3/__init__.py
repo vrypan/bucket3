@@ -81,7 +81,8 @@ class Bucket3():
 			self.theme = 'bucket3'
 		
 		self.template_dir = [ 
-				os.path.join(self.root_dir, '_themes', self.theme, 'templates')	,
+				os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates'),
+				os.path.join(self.root_dir, '.bucket3', 'themes', 'bucket3', 'templates'),
 				os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), 
 					'_themes', 'bucket3', 'templates'), # last resort, the bucket3 theme downloaded with the app
 				]
@@ -146,12 +147,12 @@ class Bucket3():
 			x_dir = os.path.join(assets_dir, x)
 			if not os.path.exists(x_dir):
 				os.mkdir(x_dir)
-			for f in os.listdir(os.path.join(self.root_dir, '_themes', self.theme, 'assets', x)):
-				shutil.copy2(os.path.join( self.root_dir, '_themes', self.theme, 'assets', x, f), x_dir)
+			for f in os.listdir(os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'assets', x)):
+				shutil.copy2(os.path.join( self.root_dir, '.bucket3', 'themes', self.theme, 'assets', x, f), x_dir)
 				
-		if os.path.exists(os.path.join( self.root_dir, '_themes', self.theme, 'robots.txt')):
+		if os.path.exists(os.path.join( self.root_dir, '.bucket3', 'themes', self.theme, 'robots.txt')):
 			shutil.copy2(
-				os.path.join(self.root_dir, '_themes', self.theme, 'robots.txt'),
+				os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'robots.txt'),
 				self.html_dir
 				)
 		"""
@@ -159,7 +160,7 @@ class Bucket3():
 		These are files like 404.html, about.html, etc, that should be generated once and placed under /filename.html in our site.
 		IMPORTANT: these files are *NOT* inherited from the default template! You have to create or copy them!
 		"""
-		for static_page in os.listdir( os.path.join(self.root_dir, '_themes', self.theme, 'templates', 'static') ):
+		for static_page in os.listdir( os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates', 'static') ):
 			tpl = self.tpl_env.get_template('static/%s' % static_page) 
 			html = tpl.render()
 			f = open(os.path.join(self.html_dir, static_page), 'w')
