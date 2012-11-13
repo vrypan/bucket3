@@ -1,0 +1,11 @@
+bucket3 0.9.0, 2012-11-13
+-------------------------
+- UI/UX:
+	* configuration, theme and data files are "hidden" under .bucket3 dir
+	* bucket3 command is simpler (bucket3 {init|new|2html|clear})
+	* Users no longer need to specify the conf file as long as the work under
+	the blog installation path.
+	
+- bug fixes
+
+- bucket3/b3tools.py has much of the functionality that used to be in bhcket3.py
