@@ -126,12 +126,12 @@ class Bucket3v2():
                     meta['slug'] = str(meta['id'])
                 else:
                     # TODO: a "slugify" method is needed here, but the md5(txt) will do for now.
-                    meta['slug'] = md5(txt).hexdigest()
+                    meta['slug'] = hashlib.md5(txt).hexdigest()
         else:
             if 'id' in meta and meta['id']:
                 meta['slug'] = str(meta['id'])
             else:
-                meta['slug'] = md5(txt).hexdigest()
+                meta['slug'] = hashlib.md5(txt).hexdigest()
         
         meta['fs_path'] = os.path.join(
             self.html_dir,

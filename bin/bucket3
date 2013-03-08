@@ -5,6 +5,7 @@ import argparse
 import sys
 from bucket3 import b3tools
 from bucket3.fsmeta import fsmeta
+import time
 	
 	
 def main(*argv):
@@ -76,7 +77,7 @@ def main(*argv):
 		    b.db_post_del(post_id)
 		fsdb.close()
 
-		b3.rq_do()
+		b.rq_do()
 
 		return 0
 
