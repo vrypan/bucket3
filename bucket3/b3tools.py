@@ -48,10 +48,9 @@ def post_new(slug='', ext=None, cpath='.'):
 	"""
 	import pkgutil
 	from datetime import datetime
-	from dateutil.tz import tzlocal
 	
 	s = pkgutil.get_data('bucket3', 'conf/post.example.md')
-	s = s.replace('_date_time_now_', datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z') )
+	s = s.replace('_date_time_now_', datetime.now().strftime('%Y-%m-%d %H:%M:%S %z') )
 	s = s.replace('_post_slug_', slug)		
 	if not ext:
 		c = conf_get(cpath)
