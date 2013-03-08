@@ -2,8 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
 {% for p in posts %}
 <url>
-	<loc>{{ p._url }}</loc>
-	<lastmod>{{ p._date.strftime("%Y-%m-%d") }}</lastmod>
+	<loc>{{ p.url }}</loc>
+	<lastmod>{{ p.date.strftime("%Y-%m-%d") }}</lastmod>
 </url>
 {% endfor %}
 </urlset>

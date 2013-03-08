@@ -14,10 +14,10 @@
 		{% for p in posts %}
 		<item>
 			<title>{{ p.title|e }}</title>
-			<link>{{ p._url }}</link>
-			<guid>{{ p._url }}</guid>
-			<description>{{ p.body|e }}</description>
-			<pubDate>{{ p._date.strftime("%a, %d %b %Y %H:%M:%S %z") }}</pubDate>
+			<link>{{ p.meta.url }}</link>
+			<guid>{{ p.meta.url }}</guid>
+			<description>{{ p.html|e }}</description>
+			<pubDate>{{ p.meta.date.strftime("%a, %d %b %Y %H:%M:%S %z") }}</pubDate>
 		</item>
 		{% endfor %}
 	</channel>

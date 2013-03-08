@@ -4,10 +4,11 @@
 import argparse
 import sys
 from bucket3 import b3tools
+from bucket3.fsmeta import fsmeta
 	
 	
 def main(*argv):
-	parser = argparse.ArgumentParser(prog='bucket3-cmd')
+	parser = argparse.ArgumentParser(prog='bucket3')
 	
 	parser.add_argument("-p", "--path",
 		dest="path",
@@ -27,8 +28,8 @@ def main(*argv):
 	# CLEAR
 	parser_clear = subparsers.add_parser('clear', help='Delete HTML and cache files.')
 	
-	# 2HTML
-	parser_2html = subparsers.add_parser('2html', help='Render HTML pages.')
+	# RENDER
+	parser_2html = subparsers.add_parser('render', help='Render HTML pages.')
 	parser_2html.add_argument("-f", '--force', 
 				action='store_true', dest='force', default=False,
 				help='Force script to re-generate HTML even if no new or modified posts are found.')
@@ -49,43 +50,34 @@ def main(*argv):
 		# CLEAR data files and HTML.
 		b3tools.blog_clean(args.path)
 		
-	elif args.cmd == '2html':
-		from bucket3 import Bucket3
+	elif args.cmd == 'render':
+		from bucket3 import Bucket3v2 as Bucket3
 		conf = b3tools.conf_get(args.path)
+
+		fsdb = fsmeta( conf['root_dir'] )
+		fsdb.create()
+
+		t1 = int(time.time())
+		t2 = int(fsdb.meta_get('last_obj_ts', 0))
+
+		fsdb.fs_sync( 'posts' ) 
+
 		b = Bucket3(conf = conf)
-		last_ts = 1
-		tagidx = {}
-		all_index = b.getPostList(name='all')
-		if not all_index:
-			all_index = []
-			
-		for p, ts in b.newPosts():
-			if ts > last_ts:
-				last_ts = ts # last_ts will hold the latest post's timestamp at the end of the loop.
-			post = b.renderPost(p)
-			all_index.append( post )
-			for tag in post['tags']:
-				if not tag in tagidx:
-					cache = b.getPostList(name=tag, prefix="tag" )
-					if cache:
-						tagidx[tag]=cache
-					else:
-						tagidx[tag] = []
-				tagidx[tag].append( post )
+		b.db_init()
 
-		for tag in tagidx.keys():
-			if tag.strip():
-				b.putPostList(name=tag, prefix="tag", list_data=tagidx[tag], cleanup=True)
+		for f in fsdb.file_get_new( since_ts=t2 ):
+		    print "[new]", f['id'], f['path'], "mtime=", f['mtime'], "lstime=", f['lstime'], "last_obj_ts=", t2
+		    post = b.fs_post_get(f['path'])
+		    if post:
+		        b.db_post_put(post)
+		for f in fsdb.file_get_deleted( before_ts=t1 ):
+		    print "[del]", f['id'], f['path'], "mtime=", f['mtime'], "lstime=", f['lstime'], "last_obj_ts=", t1
+		    post_id = b.fs_post_get_id(f['path'])
+		    b.db_post_del(post_id)
+		fsdb.close()
 
-		if last_ts > 1 or args.force:
-			b.putCache('lastrun', {'timestamp': last_ts})
-			b.putPostList(name="all", cleanup=True, list_data=all_index)
-			b.renderHome()
-			b.renderArchives()
-			b.renderTags()
-			b.renderRSS()
-			b.renderSitemap()
-			b.makeHtmlSkel()
+		b3.rq_do()
+
 		return 0
 
 	else: 
