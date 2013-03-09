@@ -77,7 +77,12 @@ def main(*argv):
 		    b.db_post_del(post_id)
 		fsdb.close()
 
+		# Render static pages, CSS files, etc. 
+		# Should be able to decide smarter if this is necessary each time
+		b.render_html_skel() 
+
 		b.rq_do()
+
 
 		return 0
 
