@@ -246,18 +246,18 @@ class Bucket3v2():
     def db_post_get_by_year(self, year):
         min_ts = int( time.mktime( (year,   1,1,0,0,0,0,0,0) ) )
         max_ts = int( time.mktime( (year+1, 1,1,0,0,0,0,0,0) ) )
-        for p in self.db_conn.execute('SELECT * FROM posts WHERE date>=? AND date<? ORDER BY date', (min_ts, max_ts) ):
+        for p in self.db_conn.execute('SELECT * FROM posts WHERE date>=? AND date<? ORDER BY date DESC', (min_ts, max_ts) ):
             yield self.db_post_expand(p)
 
     def db_post_get_by_month(self, year, month):
         min_ts = int( time.mktime( (year, month,  1,0,0,0,0,0,0) ) )
         max_ts = int( time.mktime( (year, month+1,1,0,0,0,0,0,0) ) )
-        for p in self.db_conn.execute('SELECT * FROM posts WHERE date>=? AND date<? ORDER BY date', (min_ts, max_ts) ):
+        for p in self.db_conn.execute('SELECT * FROM posts WHERE date>=? AND date<? ORDER BY date DESC', (min_ts, max_ts) ):
             yield self.db_post_expand(p)
     
     def db_post_get_by_tag(self, tag):
         print "tag=", tag
-        for p in self.db_conn.execute('SELECT * FROM posts WHERE tags like ? ORDER BY date', ('%'+tag+'%',) ):
+        for p in self.db_conn.execute('SELECT * FROM posts WHERE tags like ? ORDER BY date DESC', ('%'+tag+'%',) ):
             yield self.db_post_expand(p)
 
     def db_post_put(self, post):
