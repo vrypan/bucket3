@@ -40,6 +40,7 @@ def conf_get(cpath = None):
 	conf_file = os.path.join(cpath, '.bucket3', 'conf.yaml')
 	conf = yaml.load(open(conf_file,mode='r').read())
 	conf['root_dir'] = cpath 
+	conf['html_dir'] = os.path.join(cpath, 'html')
 
 	return conf
 
@@ -79,11 +80,12 @@ def blog_clean(cpath):
 		return 1
 	
 	html_dir = os.path.abspath(c['html_dir'])
-	data_dir = os.path.abspath(os.path.join(c['root_dir'], '.bucket3', '_data'))
-	
-	ok = raw_input('Delete EVERYTHING under \n%s and \n%s \n(y/N)' % ( html_dir,data_dir ) )
+	data_dir = os.path.abspath(os.path.join(c['root_dir'], '.bucket3', 'data'))
+	fsdb_dir = os.path.abspath(os.path.join(c['root_dir'], '.bucket3', 'fsdb'))
+
+	ok = raw_input('Delete EVERYTHING under \n%s and \n%s and \n%s \n(y/N)' % ( html_dir,data_dir, fsdb_dir ) )
 	if ok in ('Y','y'):
-		for p in [ html_dir, data_dir ]:
+		for p in [ html_dir, data_dir, fsdb_dir ]:
 			for i in os.listdir(p):
 				d = os.path.join( p,i)
 				if os.path.isdir(d):
