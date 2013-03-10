@@ -3,7 +3,7 @@ import os, sys
 
 setup(
     name='bucket3',
-    version='0.9.0',
+    version='0.9.5',
     author='Panayotis Vryonis',
     author_email='vrypan@gmail.com',
     packages=['bucket3'],
@@ -16,8 +16,9 @@ setup(
     long_description=open('README.txt').read(),
     install_requires=[
         "markdown2",
-		"Jinja2",
-		"PyYAML",
+	"Jinja2",
+	"PyYAML",
+	"docopt",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
