@@ -13,7 +13,7 @@ setup(
     url='http://www.bucket3.com/',
     license='MIT-LICENSE.txt',
     description='Static blog generator.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
     install_requires=[
         "markdown2",
 	"Jinja2",

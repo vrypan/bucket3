@@ -23,11 +23,11 @@ Quick intro
 
 6. Edit the file generated, and add some text.
 
-7. bucket3 2html
+7. bucket3 update
 
 6. You should now have your whole blog under "html" (as defined in your conf file).
 
-7. Upload the files to your server.
+7. Upload the files under html/ to your server.
 
 Examples
 ------------
@@ -44,7 +44,7 @@ bucket3 is distributed under the MIT LICENSE.
 Copyright
 =========
 
-Panayotis Vryonis, http://vrypan.net/
+Panayotis Vryonis, http://www.vrypan.net/
 
 See also
 =========
