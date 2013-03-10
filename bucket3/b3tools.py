@@ -64,7 +64,9 @@ def post_new(slug='', ext=None, cpath='.'):
 			ext = ".md"
 			
 	prefix = datetime.now().strftime('%y%m%d')
-	filename = "%s-%s.%s" % (prefix, slug, ext)
+	dirname = "%s-%s" % (prefix, slug)
+	filename = os.path.join( dirname, "%s-%s.%s" % (prefix, slug, ext) )
+	os.mkdir(dirname)
 	f = open(filename,'w')
 	f.write(s.encode('utf8'))
 	f.close()
