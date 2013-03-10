@@ -1,59 +1,48 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""
+Usage:
+  bucket3 [options] init 
+  bucket3 [options] clear
+  bucket3 [options] new <slug>
+  bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
+  bucket3 [options] update
+  bucket3 -h, --help
 
-import argparse
+Options:
+  -p, --path=<path>  top directory of your blog. [default: .]
+  --debug            show debug messages
+  --verbose, -v      show messages [default: False]
+"""
+
+from docopt import docopt
+
 import sys
 from bucket3 import b3tools
 from bucket3.fsmeta import fsmeta
+from bucket3 import Bucket3v2 as Bucket3
 import time
-	
-	
-def main(*argv):
-	parser = argparse.ArgumentParser(prog='bucket3')
-	
-	parser.add_argument("-p", "--path",
-		dest="path",
-		default = '.',
-		help="Provide the top directory of your bucket3 blog.")
+
+if __name__ == '__main__':
+
+	args = docopt(__doc__, version='bucket3 0.9.5')
+
+	if args['--verbose']:
+		VERBOSE = True
+	else:
+		VERBOSE = False
+
+	if args['init']:
+		b3tools.blog_new(args['--path'])
 		
-	subparsers = parser.add_subparsers(help='sub-command help', dest='cmd')
-	
-	# NEW
-	parser_new = subparsers.add_parser('new', help='Scaffold new post file.')
-	parser_new.add_argument("slug")
-	parser_new.add_argument("--ext", default='md', help='Extension of the file to be created. Usually defaults to md.')
-	
-	# INIT
-	parser_init = subparsers.add_parser('init', help='Initialize a new blog')
-	
-	# CLEAR
-	parser_clear = subparsers.add_parser('clear', help='Delete HTML and cache files.')
-	
-	# RENDER
-	parser_2html = subparsers.add_parser('render', help='Render HTML pages.')
-	parser_2html.add_argument("-f", '--force', 
-				action='store_true', dest='force', default=False,
-				help='Force script to re-generate HTML even if no new or modified posts are found.')
-	
-	args = parser.parse_args()
-	
-	if args.cmd == 'new':
-		# Create NEW post file
-		b3tools.post_new(slug=args.slug, ext=args.ext, cpath=args.path)
-		return
+	elif args['clear']:
+		b3tools.blog_clean(args['--path'])
 		
-	elif args.cmd == 'init':
-		# INITialize blog directories and configuration files
-		b3tools.blog_new(args.path)
-		return
+	elif args['new']:
+		b3tools.post_new(slug=args['slug'], ext=args['ext'], cpath=args['--path'])
 		
-	elif args.cmd == 'clear':
-		# CLEAR data files and HTML.
-		b3tools.blog_clean(args.path)
-		
-	elif args.cmd == 'render':
-		from bucket3 import Bucket3v2 as Bucket3
-		conf = b3tools.conf_get(args.path)
+	elif args['update']:
+		conf = b3tools.conf_get(args['--path'])
 
 		fsdb = fsmeta( conf['root_dir'] )
 		fsdb.create()
@@ -83,11 +72,29 @@ def main(*argv):
 
 		b.rq_do()
 
+	elif args['render']:
+		conf = b3tools.conf_get(args['--path'])
+		b = Bucket3(conf = conf)
 
-		return 0
+		if args['--static']:
+			if VERBOSE:
+				print 'Rendering skeleton and static pages.'
+			b.render_html_skel()
+		if args['--rss']:
+			if VERBOSE:
+				print 'Rendering rss.xml.'
+			b.render_rss()
+		if args['--sitemap']:
+			if VERBOSE:
+				print 'Rendering sitemap.xml.'
+			b.render_xml_sitemap()
+		if args['--posts']:
+			if VERBOSE:
+				print 'Rendering all posts in db.'
+			b.db_init()
+			for post in b.db_post_get_all(count=None):
+				b.render_Q.update( [('post', post['id']), ] )
+        		b.rq_post_deps(post)
+			b.rq_do()
 
-	else: 
-		parser.print_help()
 
-if __name__ == '__main__':
-	main()
