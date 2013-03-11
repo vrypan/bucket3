@@ -1,9 +1,6 @@
 # Make sure you cahnge the values bellow to match your configuration
 #
 
-root_dir: _top_blog_dir_
-html_dir: _html_dir_
-
 # The data under "blog:" will be available in all templates.
 # For example, in order to print the blog title in a template you can use {{ blog.title }}
 # You can obviously define your own vars here.
