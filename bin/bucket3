@@ -10,9 +10,8 @@ Usage:
   bucket3 -h, --help
 
 Options:
-  -p, --path=<path>  top directory of your blog. [default: .]
-  --debug            show debug messages
-  --verbose, -v      show messages [default: False]
+  -p, --path=<path>        top directory of your blog. [default: .]
+  -v, --verbose=<level>,   show messages, level=0..2, 0=silent. [default: 1]
 """
 
 from docopt import docopt
@@ -27,10 +26,7 @@ if __name__ == '__main__':
 
 	args = docopt(__doc__, version='bucket3 0.9.5')
 
-	if args['--verbose']:
-		VERBOSE = True
-	else:
-		VERBOSE = False
+	VERBOSE = int(args['--verbose'])
 
 	if args['init']:
 		b3tools.blog_new(args['--path'])
@@ -51,29 +47,32 @@ if __name__ == '__main__':
 
 		fsdb.fs_sync( 'posts' ) 
 
-		b = Bucket3(conf = conf)
+		b = Bucket3(conf = conf, verbose=VERBOSE)
 		b.db_init()
 
 		for f in fsdb.file_get_new( since_ts=t2 ):
-		    print "[new]", f['id'], f['path'], "mtime=", f['mtime'], "lstime=", f['lstime'], "last_obj_ts=", t2
-		    post = b.fs_post_get(f['path'])
-		    if post:
-		        b.db_post_put(post)
+			if VERBOSE:
+				print "Found new/modified file", f['path']
+			post = b.fs_post_get(f['path'])
+			if post:
+				b.db_post_put(post)
 		for f in fsdb.file_get_deleted( before_ts=t1 ):
-		    print "[del]", f['id'], f['path'], "mtime=", f['mtime'], "lstime=", f['lstime'], "last_obj_ts=", t1
-		    post_id = b.fs_post_get_id(f['path'])
-		    b.db_post_del(post_id)
+			if VERBOSE:
+				print "Found deleted file    ", f['path']
+			post_id = b.fs_post_get_id(f['path'])
+			b.db_post_del(post_id)
 		fsdb.close()
 
 		# Render static pages, CSS files, etc. 
 		# Should be able to decide smarter if this is necessary each time
+		print 'Rendering skeleton and static pages.'
 		b.render_html_skel() 
 
 		b.rq_do()
 
 	elif args['render']:
 		conf = b3tools.conf_get(args['--path'])
-		b = Bucket3(conf = conf)
+		b = Bucket3(conf = conf, verbose=VERBOSE)
 
 		if args['--static']:
 			if VERBOSE:
@@ -93,7 +92,7 @@ if __name__ == '__main__':
 			b.db_init()
 			for post in b.db_post_get_all(count=None):
 				b.render_Q.update( [('post', post['id']), ] )
-        		b.rq_post_deps(post)
+				b.rq_post_deps(post)
 			b.rq_do()
 
 
