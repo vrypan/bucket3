@@ -79,7 +79,7 @@ class fsmeta:
             yield row
     
     def file_del(self, id):
-        self.db_cur.execute("DELETE FROM file WHERE id=?", id)
+        self.db_cur.execute("DELETE FROM file WHERE id=?", (id,) )
     
 
     def fs_get_files_all( self, path ):

@@ -52,15 +52,17 @@ if __name__ == '__main__':
 
 		for f in fsdb.file_get_new( since_ts=t2 ):
 			if VERBOSE:
-				print "Found new/modified file", f['path']
+				print "Located new/modified file", f['path']
 			post = b.fs_post_get(f['path'])
 			if post:
 				b.db_post_put(post)
 		for f in fsdb.file_get_deleted( before_ts=t1 ):
 			if VERBOSE:
-				print "Found deleted file    ", f['path']
+				print "Located deleted file    ", f['path']
 			post_id = b.fs_post_get_id(f['path'])
 			b.db_post_del(post_id)
+			fsdb.file_del(f['id'])
+
 		fsdb.close()
 
 		# Render static pages, CSS files, etc. 

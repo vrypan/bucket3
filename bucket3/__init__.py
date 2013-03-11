@@ -202,12 +202,16 @@ class Bucket3v2():
 		return post_id
 
 	def db_post_del(self, id):
+		if self.verbose:
+			print "Deleting post [id:%s]..." % id,
 		post = self.db_post_get(id)
-		if not post:
-			print 'Asked to delete %s. not found.' % id
+		if not post and self.verbose:
+			print "Not found. Ignoring."
 			return
 		self.db_conn.execute('DELETE FROM posts WHERE id=?', (id,) )
 		self.rq_post_deps(post)
+		if self.verbose:
+			print "Done."
 
 	def db_init(self):
 		self.db_conn.executescript("""
