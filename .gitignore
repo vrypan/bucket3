@@ -9,3 +9,4 @@ html
 MANIFEST
 dist/
 bucket3.egg-info/
+build/
