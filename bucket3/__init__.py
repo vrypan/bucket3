@@ -257,6 +257,22 @@ class Bucket3v2():
 		for p in self.db_conn.execute('SELECT * FROM posts WHERE date>=? AND date<? ORDER BY date DESC', (min_ts, max_ts) ):
 			yield self.db_post_expand(p)
 
+	def db_post_get_counts_by_year(self):
+		r = self.db_conn.execute('SELECT MIN(date) as min, MAX(date) as max FROM posts').fetchone()
+		if not r:
+			return None
+		min_year = datetime.fromtimestamp(r['min']).year
+		max_year = datetime.fromtimestamp(r['max']).year
+		counts = {}
+		for year in range(min_year, max_year+1):
+			counts[year] = {}
+			for month in range(1,13):
+				min_ts = int( time.mktime( (year, month,  1,0,0,0,0,0,0) ) )
+				max_ts = int( time.mktime( (year, month+1,1,0,0,0,0,0,0) ) )
+				p = self.db_conn.execute('SELECT COUNT(*) as count FROM posts WHERE date>=? AND date<? ORDER BY date DESC', (min_ts, max_ts) ).fetchone()
+				counts[year][month] = p['count']
+		return counts
+
 	def db_post_get_by_month(self, year, month):
 		min_ts = int( time.mktime( (year, month,  1,0,0,0,0,0,0) ) )
 		max_ts = int( time.mktime( (year, month+1,1,0,0,0,0,0,0) ) )
@@ -310,6 +326,7 @@ class Bucket3v2():
 		actions.append( ('rss',) )
 		actions.append( ('sitemap',) )
 		actions.append( ('homepage',) )
+		actions.append( ('archive_main',) )
 		
 		self.render_Q.update(actions)
 	
@@ -323,6 +340,13 @@ class Bucket3v2():
 				if self.verbose:
 					print "Done."
 			
+			elif task[0] == 'archive_main':
+				if self.verbose:
+					print "Rendering archive [main]...",
+				self.render_archive_main()
+				if self.verbose:
+					print "Done."
+
 			elif task[0] == 'archive_year':
 				if self.verbose:
 					print "Rendering archive [year:%s]..." % task[1],
@@ -453,6 +477,18 @@ class Bucket3v2():
 		f = open(os.path.join(self.html_dir, 'rss.xml'), 'w')
 		f.write(html.encode('utf8'))
 		f.close()
+
+	def render_archive_main(self):
+		counts_by_year_month = self.db_post_get_counts_by_year()
+		if counts_by_year_month:
+			tpl = self.tpl_env.get_template('main_archive.html')
+			html = tpl.render(counts=counts_by_year_month)
+			file_dir =  os.path.join(self.html_dir, 'archive')
+			if not os.path.exists(file_dir):
+				os.makedirs(file_dir)
+			f = open(os.path.join(file_dir, 'index.html' ), 'w')
+			f.write(html.encode('utf8'))
+			f.close()
 	
 	def render_archive_year(self, year):
 		posts = [ p for p in self.db_post_get_by_year(year) ]
