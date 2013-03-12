@@ -9,17 +9,9 @@
 	<!-- Le styles -->
 	<link href="{{ blog.url }}_/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
-	body{
-	  margin-top: 40px;
-	}
 	  .container-narrow {
 		margin: 0 auto;
 		max-width: 640px;
-	  }
-	  .title{
-		font-family: 'Arial Black', Arial, sans;
-		color: black;
-
 	  }
 	</style>
 
@@ -58,22 +50,28 @@
 
 <body>
 	<div class="container container-narrow">
-		<h1 class="title">{{ blog.title }}</h1>
-		<div class="row-fluid">
-			<div class="span6">{{ blog.description }}</div>
-			<div class="span6 text-right">
-				<a href="{{ blog.url }}">home</a> &nbsp;
-				<a href="{{ blog.url }}archive/">archive</a> &nbsp;
-				<a href="{{ blog.url }}tag/">tags</a> &nbsp;
-				<a href="{{ blog.url}}rss.xml">rss</a> &nbsp;
+		
+		<div class="navbar" id="topnav">
+			<div class="navbar-inner">
+				<ul class="nav nav-pills">
+					<li><a href="{{ blog.url }}">home</a></li>
+					<li><a href="{{ blog.url }}archive/">archive</a></li>
+					<li><a href="{{ blog.url }}tag/">tags</a></li>
+					<li><a href="{{ blog.url}}rss.xml">rss</a></li>
+				</ul>
 			</div>
 		</div>
-		<hr/>
 
-		<div id="content">{% block content %}{% endblock content %}</div>
+		<div class="page-header">
+			<h1>{{ blog.title }}
+				<small>{{ blog.description }}</small>
+			</h1>
+		</div>
+
+		{% block content %}{% endblock content %}
 	
 		<div class="footer">
-			<p class="pull-right">generated with <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a></p>
+			<p class="pull-right">powered by <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a></p>
 		</div>
 	</div>
 
