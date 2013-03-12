@@ -17,10 +17,10 @@
 {% block content %}
 	<h3>blog achive</h3>
 	{% for y in counts|reverse() %}
-		<div class="row">
-			<div class="span1">{{ y }}</div>
+		<div class="row-fluid">
+			<div class="span1"><b>{{ y }}</b></div>
 			<div class="span11">
-				<div class="row">
+				<div class="row-fluid">
 					{% for m in range(1,13) %}
 						<div class="span1">
 							{% if counts[y][m] > 0 %}<a href="{{ blog.url }}{{ y }}/{{ m }}/">{{ _months_short[m] }}</a>
@@ -32,5 +32,5 @@
 			</div>
 		</div>
 	{% endfor %}
-
+	<hr />
 {% endblock %}

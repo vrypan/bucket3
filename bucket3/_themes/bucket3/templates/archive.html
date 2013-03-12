@@ -15,18 +15,19 @@
 		{% endif %}
 
 		{% for p in subindex.list %}
-			<div class="row">
-				<div class="span1"><small>{{ p.meta.date.strftime("%d-%m-%Y")  }}</small>
+			<div class="row-fluid">
+				<div class="span2 muted">{{ p.meta.date.strftime("%d-%m-%Y")  }}
 				</div>
-				<div class="span11">
+				<div class="span10">
 					<a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
 					{% if p.meta.tags %}
-						<small> [tags: {% for t in p.meta.tags %}
-							<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
-						{% endfor %}]</small>
+						{% for t in p.meta.tags %}
+							<a class="muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
+						{% endfor %}
 					{% endif %}
 				</div>
 			</div>
 		{% endfor %}
 	{% endfor %}
+	<hr />
 {% endblock %}

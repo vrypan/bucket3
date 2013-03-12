@@ -62,9 +62,10 @@
 		<div class="row-fluid">
 			<div class="span6">{{ blog.description }}</div>
 			<div class="span6 text-right">
+				<a href="{{ blog.url }}">home</a> &nbsp;
 				<a href="{{ blog.url }}archive/">archive</a> &nbsp;
 				<a href="{{ blog.url }}tag/">tags</a> &nbsp;
-				<a href="{{ blog.url}}rss.xml">RSS feed</a> &nbsp;
+				<a href="{{ blog.url}}rss.xml">rss</a> &nbsp;
 			</div>
 		</div>
 		<hr/>
@@ -72,7 +73,7 @@
 		<div id="content">{% block content %}{% endblock content %}</div>
 	
 		<div class="footer">
-			generated with <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a>
+			<p class="pull-right">generated with <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a></p>
 		</div>
 	</div>
 

@@ -20,13 +20,13 @@
 
 
 {% block content %}
-    <h3><a href="{{meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a></h3>
-    <p class="mutted"><small>
+    <h3><a href="{{meta.url}}">{% if meta.title %}{{ meta.title }}{% else %}#{% endif %}</a></h3>
+    <p class="muted"><small>
         posted on {{ meta.date.strftime("%d/%m/%Y %H:%M")  }}
         {% if meta.tags %}
             {% for t in meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
         {% endif %}
-    </p>
+    </small></p>
     {{ body|safe() }}
     <hr />
 {% endblock %}

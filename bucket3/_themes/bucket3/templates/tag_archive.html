@@ -6,12 +6,12 @@
 	{% for subindex in index|groupby('year')|reverse() %}
 		<h3 class="entry-title">{{ subindex.grouper }} | {{subindex.list|length()}} posts</h3>
 			{% for p in subindex.list %}
-				<div class="row">
-					<div class="span1 mutted"><small>{{ p.meta.date.strftime("%d-%m-%Y")  }}</small></div>
-					<div class="span11">
-						<a href="{{p._url}}">{% if p.meta.title %}{{ p.meta.title }}{% else %}#{% endif %}</a>
+				<div class="row-fluid">
+					<div class="span2 muted">{{ p.meta.date.strftime("%d-%m-%Y")  }}</div>
+					<div class="span10">
+						<a href="{{p.meta.url}}">{% if p.meta.title %}{{ p.meta.title }}{% else %}#{% endif %}</a>
 						{% if p.tags %}
-							<small> [tags: {% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">{{ t }}</a> {% endfor %}]</small>
+							{% for t in p.meta.tags %}<a class="muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
 						{% endif %}
 					</div>
 				</div>

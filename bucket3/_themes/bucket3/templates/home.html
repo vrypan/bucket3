@@ -17,12 +17,12 @@
 {% block content %}
 	{% for p in index %}
 		<h3><a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a></h3>
-		<p class="mutted"><small>
+		<p class="muted"><small>
 			posted on {{ p.meta.date.strftime("%d/%m/%Y %H:%M")  }}
 			{% if p.meta.tags %}
 				{% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
 			{% endif %}
-		</p>
+		</small></p>
 		{{ p.html|safe() }}
 		<hr />
 	{% endfor %}
