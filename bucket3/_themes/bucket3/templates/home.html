@@ -1,37 +1,29 @@
 {% extends "base.html" %}
 
 {% block page_meta %}
-<meta name="title" content="{{ blog.title }} | Home">
-<meta name="description" content="{{ blog.description }}">
-<!-- Google will often use this as its description of your page/site. Make it good. -->
+	<meta name="title" content="{{ blog.title }} | Home">
+	<meta name="description" content="{{ blog.description }}">
+	<!-- Google will often use this as its description of your page/site. Make it good. -->
 
-<meta name="author" content="{{ blog.author }}">
-<meta name="Copyright" content="{{ blog.copyright }}">
+	<meta name="author" content="{{ blog.author }}">
+	<meta name="Copyright" content="{{ blog.copyright }}">
 
-<!-- Dublin Core Metadata : http://dublincore.org/ -->
-<meta name="DC.title" content="{{ blog.title }} | Home">
-<meta name="DC.subject" content="{{ blog.description }}">
-<meta name="DC.creator" content="{{ blog.author }}">
+	<!-- Dublin Core Metadata : http://dublincore.org/ -->
+	<meta name="DC.title" content="{{ blog.title }} | Home">
+	<meta name="DC.subject" content="{{ blog.description }}">
+	<meta name="DC.creator" content="{{ blog.author }}">
 {% endblock page_meta %}
 
 {% block content %}
-<div id="home">
-	
-{% for p in index %}
-<div class="entry">
-	<h2 class="entry-title"><a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a></h2>
-<div class="entry-meta">
-	<div class="entry-date">posted on {{ p.meta.date.strftime("%d/%m/%Y %H:%M")  }}</div>
-	{% if p.meta.tags %}
-	<div class="entry-tags">| tags: {% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}</div>
-	{% endif %}
-	{% if blog.plusone_button %}<div class="g-plusone" data-size="small" data-annotation="inline" data-width="300" data-href="{{p.meta.url}}"></div>{% endif %}
-</div>
-<div class="entry-body">
-	{{ p.html|safe() }}
-</div>
-</div>
-{% endfor %}
+	{% for p in index %}
+		<h3><a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a></h3>
+		<p class="mutted"><small>
+			posted on {{ p.meta.date.strftime("%d/%m/%Y %H:%M")  }}
+			{% if p.meta.tags %}
+				{% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
+			{% endif %}
+		</p>
+		{{ p.html|safe() }}
+		<hr />
+	{% endfor %}
 {% endblock %}
-</div>
-

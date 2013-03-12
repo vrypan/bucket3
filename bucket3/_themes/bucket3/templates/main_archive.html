@@ -15,20 +15,22 @@
 {% endblock page_meta %}
 
 {% block content %}
-<div id="home">
-	<h1>blog achive</h1>
-{% for y in counts|reverse() %}
-	<dl class="archive_short">
-		<dt>{{ y }}</dt>
-		{% for m in range(1,13) %}
-		<dd>
-			{% if counts[y][m] > 0 %}<a href="{{ blog.url }}{{ y }}/{{ m }}/">{{ _months_short[m] }}</a>
-			{% else %} {{ _months_short[m] }}
-			{% endif %}
-		</dd>
-		{% endfor %}
-	</dl>
-{% endfor %}
-</div>
+	<h3>blog achive</h3>
+	{% for y in counts|reverse() %}
+		<div class="row">
+			<div class="span1">{{ y }}</div>
+			<div class="span11">
+				<div class="row">
+					{% for m in range(1,13) %}
+						<div class="span1">
+							{% if counts[y][m] > 0 %}<a href="{{ blog.url }}{{ y }}/{{ m }}/">{{ _months_short[m] }}</a>
+							{% else %} {{ _months_short[m] }}
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
 
 {% endblock %}
