@@ -67,6 +67,11 @@ class Bucket3v2():
 			self.tags_lowercase = conf['tags_lowercase']
 		else:
 			self.tags_lowercase = False
+
+		if 'posts_in_homepage' in conf:
+			self.posts_in_homepage = conf['posts_in_homepage']
+		else:
+			self.posts_in_homepage = 10
 		
 		if not os.path.exists(self.data_dir):
 			os.makedirs(self.data_dir)
@@ -448,7 +453,11 @@ class Bucket3v2():
 				shutil.copy2(os.path.join( os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
 	
 	def render_home(self):
-		posts = [ p for p in self.db_post_get_all(count=10) ]
+		if self.posts_in_homepage:
+			count = self.posts_in_homepage
+		else:
+			count = 10
+		posts = [ p for p in self.db_post_get_all(count=count) ]
 		if not posts:
 			return
 		tpl = self.tpl_env.get_template('home.html')
