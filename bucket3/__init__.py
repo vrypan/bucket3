@@ -263,14 +263,13 @@ class Bucket3v2():
 			return None
 		min_year = datetime.fromtimestamp(r['min']).year
 		max_year = datetime.fromtimestamp(r['max']).year
-		counts = {}
+		counts = []
 		for year in range(min_year, max_year+1):
-			counts[year] = {}
 			for month in range(1,13):
 				min_ts = int( time.mktime( (year, month,  1,0,0,0,0,0,0) ) )
 				max_ts = int( time.mktime( (year, month+1,1,0,0,0,0,0,0) ) )
 				p = self.db_conn.execute('SELECT COUNT(*) as count FROM posts WHERE date>=? AND date<? ORDER BY date DESC', (min_ts, max_ts) ).fetchone()
-				counts[year][month] = p['count']
+				counts.append( {"year": year, "month":month, "count":p['count']} )
 		return counts
 
 	def db_post_get_by_month(self, year, month):
