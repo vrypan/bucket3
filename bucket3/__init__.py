@@ -494,7 +494,7 @@ class Bucket3v2():
 		posts = [ p for p in self.db_post_get_by_year(year) ]
 		if posts:
 			tpl = self.tpl_env.get_template('archive.html')
-			html = tpl.render(index=posts)
+			html = tpl.render(index=posts, year=year)
 			file_dir =  os.path.join(self.html_dir, str(year))
 			if not os.path.exists(file_dir):
 				os.makedirs(file_dir)
@@ -506,7 +506,7 @@ class Bucket3v2():
 		posts = [ p for p in self.db_post_get_by_month(year, month) ]
 		if posts:
 			tpl = self.tpl_env.get_template('archive.html')
-			html = tpl.render(index=posts)
+			html = tpl.render(index=posts, year=year, month=month)
 			file_dir = os.path.join(self.html_dir, str(year), str(month) )
 			if not os.path.exists(file_dir):
 				os.makedirs(file_dir)
@@ -517,8 +517,8 @@ class Bucket3v2():
 	def render_archive_tag(self, tag):
 		posts = [ p for p in self.db_post_get_by_tag(tag) ]
 		if posts:
-			tpl = self.tpl_env.get_template('archive.html')
-			html = tpl.render(index=posts, tag=tag)
+			tpl = self.tpl_env.get_template('tag_archive.html')
+			html = tpl.render(index=posts, tag_name=tag)
 			file_dir =  os.path.join(self.html_dir, 'tag', tag)
 			if not os.path.exists(file_dir):
 				os.makedirs(file_dir)
