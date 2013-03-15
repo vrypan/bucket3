@@ -4,9 +4,10 @@
 
 {% for year, year_items in index|groupby('year')|reverse() %}
 
-	<h2>{{ year }} | {{ year_items|length() }} posts
+	<h3>{{ year }} <small>| {{ year_items|length() }} posts
 		{% if tag %}tagged "{{ tag }}"{% endif %}
-	</h2>
+		</small>
+	</h3>
 	{% for month in year_items|groupby('month')|reverse() %}
 			<h3>
 				<a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper] }}</a> 
