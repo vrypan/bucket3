@@ -4,19 +4,16 @@
 <head>
 	<meta charset="utf-8">
 	{% block page_title %}<title>{{blog.title}}</title>{% endblock %}
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width">
 
 	<!-- Le styles -->
 	<link href="{{ blog.url }}_/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
-	  .container-narrow {
-		margin: 0 auto;
-		max-width: 640px;
-	  }
+		.container {
+			margin: 0 auto;
+			max-width: 640px;
+		}
 	</style>
-
-	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-
 	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
 	  <script src="{{ blog.url }}_/js/html5shiv.js"></script>
@@ -49,7 +46,7 @@
 </head>
 
 <body>
-	<div class="container container-narrow">
+	<div class="container">
 		
 		<div class="navbar" id="topnav">
 			<div class="navbar-inner">
