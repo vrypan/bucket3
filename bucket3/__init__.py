@@ -284,7 +284,7 @@ class Bucket3v2():
 			yield self.db_post_expand(p)
 	
 	def db_post_get_by_tag(self, tag):
-		for p in self.db_conn.execute('SELECT * FROM posts WHERE tags like ? ORDER BY date DESC', ('%'+tag+'%',) ):
+		for p in self.db_conn.execute('SELECT * FROM posts WHERE tags like ? ORDER BY date DESC', ('%|'+tag+'|%',) ):
 			yield self.db_post_expand(p)
 
 	def db_post_put(self, post):
