@@ -515,7 +515,8 @@ class Bucket3v2():
 		if posts:
 			tpl = self.tpl_env.get_template('archive.html')
 			html = tpl.render(index=posts)
-			file_dir = os.path.join(self.html_dir, str(year), str(month) )
+			p['month'] = '{:02d}'.format(dt.month)
+			file_dir = os.path.join(self.html_dir, str(year), '{:02d}'.format(dt.month) )
 			if not os.path.exists(file_dir):
 				os.makedirs(file_dir)
 			f = open(os.path.join( file_dir, 'index.html' ), 'w' )
