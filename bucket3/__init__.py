@@ -143,15 +143,15 @@ class Bucket3v2():
 		meta['fs_path'] = os.path.join(
 			self.html_dir,
 			str(meta['date'].year),
-			str(meta['date'].month),
-			str(meta['date'].day),
+			str('{:02d}'.format(meta['date'].month)),
+			str('{:02d}'.format(meta['date'].day)),
 			meta['slug'])
 		
 		meta['url'] = "%s%s/%s/%s/%s/" % (
 			self.root_url,
 			str(meta['date'].year),
-			str(meta['date'].month),
-			str(meta['date'].day),
+			str('{:02d}'.format(meta['date'].month)),
+			str('{:02d}'.format(meta['date'].day)),
 			meta['slug'])
 		
 		return meta
@@ -236,8 +236,8 @@ class Bucket3v2():
 		p = dict(zip(row.keys(), row))
 		dt = datetime.fromtimestamp(p['date'])
 		p['year'] = dt.year
-		p['month'] = dt.month
-		p['day'] = dt.day
+		p['month'] = '{:02d}'.format(dt.month)
+		p['day'] = '{:02d}'.format(dt.day)
 		p['meta'] = pickle.loads(str(row['meta'])) 
 		return p
 
