@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
 		root_path = '/'.join(b.root_url.split('/')[3:]) # remove http://hostname/ from root_url
 
-		old_path = "%s%s/%s/%s/%s/" % (
+		old_path = "/%s%s/%s/%s/%s/" % (
 		root_path,
 		str(date.year),
 		str(date.month),
@@ -50,4 +50,5 @@ if __name__ == '__main__':
 		str('{:02d}'.format(date.day)),
 		slug)
 
-		print old_path, new_path
+		if old_path != new_path: 
+			print old_path, new_path
