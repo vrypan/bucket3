@@ -513,10 +513,10 @@ class Bucket3v2():
 	def render_archive_month(self, year, month):
 		posts = [ p for p in self.db_post_get_by_month(year, month) ]
 		if posts:
+			month_MM = '{:02d}'.format(month)
 			tpl = self.tpl_env.get_template('archive.html')
 			html = tpl.render(index=posts)
-			p['month'] = '{:02d}'.format(dt.month)
-			file_dir = os.path.join(self.html_dir, str(year), '{:02d}'.format(dt.month) )
+			file_dir = os.path.join(self.html_dir, str(year),  month_MM )
 			if not os.path.exists(file_dir):
 				os.makedirs(file_dir)
 			f = open(os.path.join( file_dir, 'index.html' ), 'w' )
