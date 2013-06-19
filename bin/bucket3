@@ -24,7 +24,7 @@ import time
 
 if __name__ == '__main__':
 
-	args = docopt(__doc__, version='bucket3 0.9.5')
+	args = docopt(__doc__, version='bucket3 0.9.9')
 
 	VERBOSE = int(args['--verbose'])
 

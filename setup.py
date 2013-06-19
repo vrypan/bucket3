@@ -3,7 +3,7 @@ import os, sys
 
 setup(
     name='bucket3',
-    version='0.9.8',
+    version='0.9.9',
     author='Panayotis Vryonis',
     author_email='vrypan@gmail.com',
     packages=['bucket3'],
