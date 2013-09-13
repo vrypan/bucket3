@@ -20,4 +20,7 @@ use_slugs: False # Look for a "slug:" option in post frontmatter and use it as p
 tags_lowercase: True # convert all tags to lowercase?
 default_file_ext: md # Used by "bucket3 newpost" to determine the file type it should create
 
-posts_in_homepage: 10 
+posts_in_homepage: 10
+
+# if you want rss feed for some specific tags uncomment the line below and fill the list
+#rss_tags: ["sometag", "someothertag"]

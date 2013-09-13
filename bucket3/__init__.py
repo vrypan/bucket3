@@ -67,6 +67,11 @@ class Bucket3v2():
 			self.tags_lowercase = conf['tags_lowercase']
 		else:
 			self.tags_lowercase = False
+		
+		if 'rss_tags' in conf:
+			self.rss_tags = conf['rss_tags']
+		else:
+			self.rss_tags = False
 
 		if 'posts_in_homepage' in conf:
 			self.posts_in_homepage = conf['posts_in_homepage']
@@ -97,7 +102,7 @@ class Bucket3v2():
 		self.tpl_env.globals['_now'] = datetime.now()
 		self.db_conn = sqlite3.connect( os.path.join(self.data_dir, 'posts') )
 		self.db_conn.row_factory = sqlite3.Row
-		self.render_Q = set()     
+		self.render_Q = set()
 
 	def util_rel_path(self, abs_path):
 		abs_path = os.path.abspath(abs_path) #make sure path is absolute
@@ -116,7 +121,7 @@ class Bucket3v2():
 			meta['date'] = datetime.strptime(meta['date'][:16], '%Y-%m-%d %H:%M')
 		
 		if 'tags' in meta and meta['tags']:
-			meta['tags'] = [t.strip() for t in meta['tags'].lower().split(',') if t.strip() ] 
+			meta['tags'] = [t.strip() for t in meta['tags'].lower().split(',') if t.strip() ]
 		else:
 			meta['tags'] = []
 
@@ -228,7 +233,7 @@ class Bucket3v2():
 			tags TEXT,
 			slug TEXT,
 			meta TEXT,
-			html TEXT 
+			html TEXT
 			);
 		""")
 	
@@ -238,7 +243,7 @@ class Bucket3v2():
 		p['year'] = dt.year
 		p['month'] = '{:02d}'.format(dt.month)
 		p['day'] = '{:02d}'.format(dt.day)
-		p['meta'] = pickle.loads(str(row['meta'])) 
+		p['meta'] = pickle.loads(str(row['meta']))
 		return p
 
 	def db_post_get(self, id):
@@ -335,7 +340,7 @@ class Bucket3v2():
 		self.render_Q.update(actions)
 	
 	def rq_do(self):
-		""" Go through the render queue and do what has to be done. """        
+		""" Go through the render queue and do what has to be done. """
 		for task in self.render_Q:
 			if task[0] == 'post':
 				if self.verbose:
@@ -485,6 +490,18 @@ class Bucket3v2():
 		f = open(os.path.join(self.html_dir, 'rss.xml'), 'w')
 		f.write(html.encode('utf8'))
 		f.close()
+		
+		if not self.rss_tags:
+			return
+		for tag in self.rss_tags:
+			print "TAGS: %s" % tag
+			posts = [p for p in self.db_post_get_by_tag(tag)]
+			if posts:
+				tpl = self.tpl_env.get_template('rss.xml')
+				html = tpl.render(posts=posts)
+				f = open(os.path.join(self.html_dir, '%s.xml' % tag), 'w')
+				f.write(html.encode('utf8'))
+				f.close()
 
 	def render_archive_main(self):
 		counts_by_year_month = self.db_post_get_counts_by_year()
