@@ -82,7 +82,7 @@ if __name__ == '__main__':
 			b.render_html_skel()
 		if args['--rss']:
 			if VERBOSE:
-				print 'Rendering rss.xml.'
+				print 'Rendering RSS.'
 			b.render_rss()
 		if args['--sitemap']:
 			if VERBOSE:

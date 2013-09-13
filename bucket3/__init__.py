@@ -67,11 +67,6 @@ class Bucket3v2():
 			self.tags_lowercase = conf['tags_lowercase']
 		else:
 			self.tags_lowercase = False
-		
-		if 'rss_tags' in conf:
-			self.rss_tags = conf['rss_tags']
-		else:
-			self.rss_tags = False
 
 		if 'posts_in_homepage' in conf:
 			self.posts_in_homepage = conf['posts_in_homepage']
@@ -82,6 +77,16 @@ class Bucket3v2():
 			os.makedirs(self.data_dir)
 		
 		blog = conf['blog']
+
+		# we will need rss_tags both in templates and program flow,
+		# setting both makes it easier.
+
+		if 'rss_tags' in conf and conf['rss_tags']:
+			self.rss_tags = conf['rss_tags']
+			blog['rss_tags'] = conf['rss_tags']
+		else:
+			self.rss_tags = False
+			blog['rss_tags'] = False
 		
 		if 'theme' in conf and conf['theme']:
 			self.theme = conf['theme']
@@ -378,11 +383,7 @@ class Bucket3v2():
 					print "Done."
 			
 			elif task[0] == 'rss':
-				if self.verbose:
-					print "Rendering rss.xml...",
 				self.render_rss()
-				if self.verbose:
-					print "Done."
 			
 			elif task[0] == 'sitemap':
 				if self.verbose:
@@ -482,6 +483,7 @@ class Bucket3v2():
 		f.close()
 	
 	def render_rss(self):
+		print "   rss.xml...",
 		posts = [ p for p in self.db_post_get_all(0,25) ]
 		if not posts:
 			return
@@ -490,18 +492,23 @@ class Bucket3v2():
 		f = open(os.path.join(self.html_dir, 'rss.xml'), 'w')
 		f.write(html.encode('utf8'))
 		f.close()
+		print "Done."
 		
 		if not self.rss_tags:
 			return
 		for tag in self.rss_tags:
-			print "TAGS: %s" % tag
+			print "   tag/%s/rss.xml..." % tag,
 			posts = [p for p in self.db_post_get_by_tag(tag)]
 			if posts:
 				tpl = self.tpl_env.get_template('rss.xml')
-				html = tpl.render(posts=posts)
-				f = open(os.path.join(self.html_dir, '%s.xml' % tag), 'w')
+				html = tpl.render(posts=posts, tag=tag)
+				file_dir =  os.path.join(self.html_dir, 'tag', tag)
+				if not os.path.exists(file_dir):
+					os.makedirs(file_dir)
+				f = open( os.path.join( file_dir,'rss.xml' ), 'w')
 				f.write(html.encode('utf8'))
 				f.close()
+			print 'Done.'
 
 	def render_archive_main(self):
 		counts_by_year_month = self.db_post_get_counts_by_year()

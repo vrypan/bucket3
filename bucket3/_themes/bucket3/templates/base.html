@@ -19,7 +19,11 @@
 
 	<link rel="shortcut icon" href="{{ blog.url}}_/img/favicon.ico">
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="{{ blog.url }}rss.xml" />
-
+	{% if blog.rss_tags %}
+	{% for tag in blog.rss_tags %}
+	<link rel="alternate" type="application/rss+xml" title="{{ tag }}:RSS" href="{{ blog.url }}tag/{{ tag }}/rss.xml" />
+	{% endfor %}
+	{% endif %}
 
 	{% block page_meta %}
 	<meta name="title" content="{{ blog.title }}">

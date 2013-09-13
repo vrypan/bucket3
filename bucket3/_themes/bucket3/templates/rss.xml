@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:scripting2="http://scripting2.com/namespace.html">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
+		{% if tag %}
+		<atom:link href="{{ blog.url }}tag/{{ tag }}/rss.xml" rel="self" type="application/rss+xml" />
+		{% else %}
+		<atom:link href="{{ blog.url }}rss.xml" rel="self" type="application/rss+xml" />
+		{% endif %}
 		<title>{{ blog.title }}</title>
 		<link>{{ blog.url }}</link>
 		<description>{{ blog.description }}</description>
