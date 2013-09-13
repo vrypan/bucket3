@@ -10,7 +10,7 @@
 	</h3>
 	{% for month in year_items|groupby('month')|reverse() %}
 			<h3>
-				<a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper] }}</a> 
+				<a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper|int] }}</a> 
 				<a href="{{blog.url}}{{ year }}/">{{ year }}</a> 
 				<small>| {{month.list|length()}} posts </small>
 			</h3>
