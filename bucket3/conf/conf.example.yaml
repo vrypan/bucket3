@@ -24,3 +24,12 @@ posts_in_homepage: 10
 
 # if you want rss feed for some specific tags uncomment the line below and fill the list
 #rss_tags: ["sometag", "someothertag"]
+
+# if you want to track Twitter references to your posts, you will need
+# to create a Twitter app and use the credentials.
+# Visit https://dev.twitter.com/apps
+twitter_app:
+        consumer_key: ''
+        consumer_secret: ''
+        access_token: ''
+        access_token_secret: ''

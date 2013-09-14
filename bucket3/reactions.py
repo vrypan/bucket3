@@ -5,11 +5,16 @@ from urlparse import urlparse
 import yaml
 import os
 import hashlib
+import sqlite3
 
 class Reactions():
     def __init__(self, conf=(), verbose=1 ):
         self.verbose = verbose
         self.conf = conf
+
+        self.data_dir = os.path.join(conf['root_dir'], '.bucket3', 'data')
+        self.db_conn = sqlite3.connect( os.path.join(self.data_dir, 'posts') )
+        self.db_conn.row_factory = sqlite3.Row
 
         # This is the blog URL without http://
         # and then urlencoded
@@ -56,6 +61,7 @@ class Reactions():
             data = yaml.load(f.read())
             f.close()        
             return data
+
     def writeUrlDb(self, data):
         url_hash = hashlib.md5(data['url']).hexdigest()
         path = os.path.join( self.conf['reactions_dir'], '%s.yaml' % url_hash )
@@ -73,6 +79,12 @@ class Reactions():
     	else:
     		return format(r.status_code)
 
+    def touchBucket3PostByURL(self, url):
+        p = self.db_conn.execute('SELECT * FROM posts WHERE url=?', (url,) ).fetchone()
+        if p:
+            path = os.path.join(self.conf['root_dir'], p['src'])
+            os.utime(path, None)
+
     def getTwitterReactions(self):
         try:
             print 'last id = %s' % self.status['twitter']['last_id']
@@ -86,10 +98,10 @@ class Reactions():
                 tso.setSinceID(self.status['twitter']['last_id'])
 
             ts = TwitterSearch(
-                consumer_key = '9T1pF31KVGF9f3GY1xSC2w',
-                consumer_secret = '4lVdYjpBAeVHba232lnhwnRILpFkk9qLoIfXp1t7X0',
-                access_token = '74233-1TdJ3EQfRo1643zW8aMZIGarDFmw0mgHcHH5tEaxgQ',
-                access_token_secret = '26quJVgdITg1513AZAC5Wzso6EXhPMXGyTsG39b0mA'
+                consumer_key = self.conf['twitter_app']['consumer_key'] ,
+                consumer_secret = self.conf['twitter_app']['consumer_secret'] ,
+                access_token = self.conf['twitter_app']['access_token'] ,
+                access_token_secret = self.conf['twitter_app']['access_token_secret']
              )
             i = 1
             for tweet in ts.searchTweetsIterable(tso): # this is where the fun actually starts :
@@ -111,6 +123,7 @@ class Reactions():
                         'created_at': tweet['created_at'],
                         }
                     self.writeUrlDb(data)
+                    self.touchBucket3PostByURL(x)
                 i += 1
 
 
@@ -123,9 +136,4 @@ class Reactions():
 
 
 if __name__ == '__main__':
-    demo_conf = {
-        'blog': { 'url': 'http://blog.vrypan.net'},
-        'reactions_dir' : './reactions'
-    }
-    R = Reactions(conf=demo_conf)
-    R.getTwitterReactions()
+    pass

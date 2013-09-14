@@ -7,6 +7,7 @@ Usage:
   bucket3 [options] new <slug> [<ext>]
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
   bucket3 [options] update
+  bucket3 [options] reactions [--twitter]
   bucket3 -h, --help
 
 Options:
@@ -96,5 +97,12 @@ if __name__ == '__main__':
 				b.render_Q.update( [('post', post['id']), ] )
 				b.rq_post_deps(post)
 			b.rq_do()
+
+	elif args['reactions']:
+		from bucket3.reactions import Reactions
+		conf = b3tools.conf_get(args['--path'])
+		r = Reactions(conf=conf)
+		r.getTwitterReactions()
+
 
 
