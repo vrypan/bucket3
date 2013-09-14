@@ -104,15 +104,25 @@ def blog_new(path):
 	import pkgutil
 	
 	path = os.path.abspath(path) # "normalize" path.
-	bucket3_path = os.path.join(path,'.bucket3')
-	bucket3_themes_path = os.path.join(bucket3_path,'themes')
-	bucket3_posts_path = os.path.join(path,'posts')
-	bucket3_html_path = os.path.join(path,'html')
-	conf_file = os.path.join(bucket3_path, 'conf.yaml')
+
+	bucket3_dirs = (
+		os.path.join(path,'.bucket3'),
+		os.path.join(path, '.bucket3','themes'),
+		os.path.join(path,'posts'),
+		os.path.join(path,'html')
+		)
 	
-	if not os.path.isdir(bucket3_path):
-		os.mkdir(bucket3_path)
-		print "Created %s." % bucket3_path
+	conf_file = os.path.join(path, '.bucket3', 'conf.yaml')
+	
+	print
+	print "Checking file structure..."
+	for d in bucket3_dirs :
+		if not os.path.isdir(d):
+			os.mkdir(d)
+			print "   Created %s." % d
+		else:
+			print "   %s already exists." % d
+	print 'Done.'
 	
 	if not os.path.isfile(conf_file):
 		import pkgutil
@@ -126,23 +136,13 @@ def blog_new(path):
 	else:
 		print "%s already exists." % conf_file
 	
-	if not os.path.isdir(bucket3_posts_path):
-		os.mkdir(bucket3_posts_path)
-		print "Created %s." % bucket3_posts_path
-		print "Your posts should be placed there.\n"
-	
-	if not os.path.isdir(bucket3_html_path):
-		os.mkdir(bucket3_html_path)
-		print "Created %s." % bucket3_html_path
-		print "Rendered HTML pages will go there automatically.\n"
-		
-	if not os.path.isdir(bucket3_themes_path):
-		os.mkdir(bucket3_themes_path)
-		print "Created %s." % bucket3_themes_path
-		print "Templates, CSS, and javascript files go there."
-			
 	default_template_dir = os.path.join( os.path.dirname( 
 		os.path.abspath( __file__ ) ),
 		'_themes', 'bucket3')
-	shutil.copytree(default_template_dir, os.path.join(bucket3_themes_path, 'bucket3'))
-	print 'Copied default theme (bucket3).\n'
+
+	def_theme_path = os.path.join(path, '.bucket3', 'themes', 'bucket3')
+	if not os.path.isdir(def_theme_path):
+		shutil.copytree(default_template_dir, def_theme_path)
+		print 'Copied default theme (bucket3).\n'
+	else:
+		print "%s already exists." % def_theme_path
