@@ -54,9 +54,11 @@ class Bucket3v2():
 		
 		self.root_url = conf['blog']['url']
 		self.root_dir = conf['root_dir']
+		self.reactions_dir = conf['reactions_dir']
 		self.data_dir = os.path.join(self.root_dir, '.bucket3', 'data')
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
 		self.html_dir = os.path.join(self.root_dir, 'html')
+
 		
 		if 'use_slugs' in conf:
 			self.use_slugs = conf['use_slugs']
@@ -448,9 +450,10 @@ class Bucket3v2():
 	
 	def render_post(self, post_id):
 		post = self.db_post_get(post_id)
+		reactions = self.reactions_get(post['url'])
 		
 		tpl = self.tpl_env.get_template('post.html')
-		html = tpl.render(meta=post['meta'], body=post['html'])
+		html = tpl.render(meta=post['meta'], body=post['html'], reactions=reactions)
 		if not os.path.exists(post['meta']['fs_path']):
 			os.makedirs(post['meta']['fs_path'])
 		f = open(os.path.join(post['meta']['fs_path'], 'index.html'), 'w')
@@ -601,6 +604,17 @@ class Bucket3v2():
 		f = open(os.path.join(self.html_dir, 'archive', 'index.html' ), 'w')
 		f.write(html.encode('utf8'))
 		f.close()
+
+	def reactions_get(self, url):
+		url_hash = hashlib.md5(url).hexdigest()
+		path = os.path.join( self.reactions_dir, '%s.yaml' % url_hash )
+		if os.path.isfile(path):
+			f = open(path,mode='r')
+			data = yaml.load(f.read())
+			f.close()
+			return data
+		else:
+			return None
 	
 
 if __name__ == '__main__':
