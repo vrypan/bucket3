@@ -116,7 +116,8 @@ class Reactions():
                     data = self.readUrlDb(x)
                     data['tweets'][tweet['id']] = {
                         'id': tweet['id'],
-                        'user_name': tweet['user']['screen_name'],
+                        'user_screen_name': tweet['user']['screen_name'],
+                        'user_name': tweet['user']['name'],
                         'user_id': tweet['user']['id'],
                         'profile_image_url': tweet['user']['profile_image_url'],
                         'text': tweet['text'],
