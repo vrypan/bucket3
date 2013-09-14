@@ -19,6 +19,7 @@ setup(
 	"Jinja2",
 	"PyYAML",
 	"docopt",
+	"TwitterSearch",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
