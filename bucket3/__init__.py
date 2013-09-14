@@ -206,7 +206,8 @@ class Bucket3v2():
 			'tags': "|%s|" % '|'.join(meta['tags']), # store as "|tag1|tag2|..|tagN|"
 			'slug': meta['slug'],
 			'meta': pickle.dumps(meta),
-			'html':body_html
+			'html':body_html,
+			'url': meta['url']
 			}
 
 	def fs_post_get_id(self, rel_path):
@@ -238,7 +239,8 @@ class Bucket3v2():
 			tags TEXT,
 			slug TEXT,
 			meta TEXT,
-			html TEXT
+			html TEXT,
+			url TEXT
 			);
 		""")
 	
@@ -303,8 +305,8 @@ class Bucket3v2():
 			self.rq_post_deps(db_post)
 		
 		self.db_conn.execute("""
-			REPLACE INTO posts(id, title, date, src, tags, slug, meta, html)
-			VALUES (?,?,?,?,?,?,?,?)
+			REPLACE INTO posts(id, title, date, src, tags, slug, meta, html, url)
+			VALUES (?,?,?,?,?,?,?,?,?)
 			""",
 				(
 				post['id'],
@@ -315,6 +317,7 @@ class Bucket3v2():
 				post['slug'],
 				post['meta'],
 				post['html'],
+				post['url']
 				)
 			)
 		self.db_conn.commit()
