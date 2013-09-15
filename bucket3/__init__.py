@@ -447,6 +447,15 @@ class Bucket3v2():
 			f.close()
 			if self.verbose:
 				print "Done."
+
+		# Copy cached images (avatars, etc) from reactions/images to html/images
+		images_src_dir = os.path.join(self.reactions_dir, 'images')
+		images_dst_dir = os.path.join(self.html_dir, 'images')
+		if os.path.exists(images_src_dir):
+			if not os.path.exists(images_dst_dir):
+				os.makedirs(images_dst_dir)
+			for img in os.listdir(images_src_dir):
+				shutil.copy2(os.path.join(images_src_dir, img), images_dst_dir)
 	
 	def render_post(self, post_id):
 		post = self.db_post_get(post_id)
