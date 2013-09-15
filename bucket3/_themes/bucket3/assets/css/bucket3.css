@@ -1,0 +1,18 @@
+.reactions {
+	font-size: 80%; 
+	line-height: 120%;
+}
+
+.reactions-item {
+	clear:both; 
+	padding-bottom: 1ex; 
+	min-height:58px;
+}
+.reactions-avatar {
+	float:left;
+	width: 48px;
+}
+.reactions-body {
+	display: block; 
+	margin-left: 52px;
+}

@@ -28,5 +28,21 @@
         {% endif %}
     </small></p>
     {{ body|safe() }}
+
+    {% if reactions %}
+    <hr/>
+    <div class="reactions">
+    {% for tweet_id, tweet in reactions.tweets|dictsort|reverse %}
+    <div class="reactions-item">
+        <img src="{{ blog.url }}images/{{ tweet.profile_image_local }}" class="reactions-avatar" />
+        <div class="reactions-body">
+            <strong>{{ tweet.user_name }}</strong> <a href="http://twitter.com/{{tweet.user_screen_name}}" class="muted">@{{ tweet.user_screen_name }}</a><br/>
+        {{ tweet.text|urlize }} -- 
+        <small><a href="http://twitter.com/{{ tweet.user_screen_name}}/status/{{tweet_id}}" class="muted" >{{ tweet.created_at }}</a></small>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
     <hr />
 {% endblock %}
