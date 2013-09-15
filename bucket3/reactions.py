@@ -24,6 +24,9 @@ class Reactions():
 
         self.readInfoDb()
 
+    def hash(self, txt):
+        return hashlib.md5(txt).hexdigest()
+
     def readInfoDb(self):
 
         self.status_file = os.path.join(self.conf['reactions_dir'], 'info.yaml')
@@ -45,7 +48,7 @@ class Reactions():
         # for every post URL we create a separate YAML file
         # containing all the "reactions".
 
-        url_hash = hashlib.md5(url).hexdigest()
+        url_hash = self.hash(url)
 
         path = os.path.join( self.conf['reactions_dir'], '%s.yaml' % url_hash )
 
@@ -63,7 +66,7 @@ class Reactions():
             return data
 
     def writeUrlDb(self, data):
-        url_hash = hashlib.md5(data['url']).hexdigest()
+        url_hash = self.hash(data['url'])
         path = os.path.join( self.conf['reactions_dir'], '%s.yaml' % url_hash )
         f = open(path,mode='w')
         f.write(yaml.dump(data, encoding=('utf-8')) )
