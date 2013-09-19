@@ -25,14 +25,14 @@ Quick intro
 
 7. bucket3 update
 
-6. You should now have your whole blog under "html" (as defined in your conf file).
+8. You should now have your whole blog under "html" (as defined in your conf file).
 
-7. Upload the files under html/ to your server.
+9. Upload the files under html/ to your server.
 
 Examples
 ------------
 
-iCheck out the source of http://www.bucket3.com/ at https://github.com/vrypan/www.bucket3.com
+Check out the source of http://www.bucket3.com/ at https://github.com/vrypan/www.bucket3.com
 
 http://blog.vrypan.net/ is also generated using bucket3.
 

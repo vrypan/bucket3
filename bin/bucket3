@@ -9,6 +9,7 @@ Usage:
   bucket3 [options] update
   bucket3 [options] reactions [--twitter]
   bucket3 -h, --help
+  bucket3 --version
 
 Options:
   -p, --path=<path>        top directory of your blog. [default: .]
@@ -18,14 +19,15 @@ Options:
 from docopt import docopt
 
 import sys
+from bucket3 import __version__
 from bucket3 import b3tools
 from bucket3.fsmeta import fsmeta
-from bucket3 import Bucket3v2 as Bucket3
+from bucket3.bucket import Bucket3
 import time
 
 if __name__ == '__main__':
 
-	args = docopt(__doc__, version='bucket3 0.9.9')
+	args = docopt(__doc__, version=__version__)
 
 	VERBOSE = int(args['--verbose'])
 
