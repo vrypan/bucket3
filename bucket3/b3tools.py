@@ -41,7 +41,7 @@ def conf_get(cpath = None):
 	conf = yaml.load(open(conf_file,mode='r').read())
 	conf['root_dir'] = cpath 
 	conf['html_dir'] = os.path.join(cpath, 'html')
-	conf['reactions_dir'] = os.path.join(cpath, 'reactions')
+	conf['mentions_dir'] = os.path.join(cpath, 'mentions')
 
 	return conf
 
@@ -111,7 +111,7 @@ def blog_new(path):
 		os.path.join(path, '.bucket3','themes'),
 		os.path.join(path,'posts'),
 		os.path.join(path,'html'),
-		os.path.join(path,'reactions')
+		os.path.join(path,'mentions')
 		)
 	
 	conf_file = os.path.join(path, '.bucket3', 'conf.yaml')

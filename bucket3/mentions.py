@@ -7,7 +7,7 @@ import os
 import hashlib
 import sqlite3
 
-class Reactions():
+class Mentions():
     def __init__(self, conf=(), verbose=1 ):
         self.verbose = verbose
         self.conf = conf
@@ -32,7 +32,7 @@ class Reactions():
         return '%s://%s%s' % (parts.scheme, parts.netloc, parts.path)
 
     def readInfoDb(self):
-        self.status_file = os.path.join(self.conf['reactions_dir'], 'info.yaml')
+        self.status_file = os.path.join(self.conf['mentions_dir'], 'info.yaml')
         if not os.path.isfile(self.status_file):
             self.status = {}
             self.status['twitter'] = {'last_id':0}
@@ -48,10 +48,10 @@ class Reactions():
 
     def readUrlDb(self, url):
         # for every post URL we create a separate YAML file
-        # containing all the "reactions".
+        # containing all the "mentions".
         url = self.normalizeUrl(url)
         url_hash = self.hash(url)
-        path = os.path.join( self.conf['reactions_dir'], '%s.yaml' % url_hash )
+        path = os.path.join( self.conf['mentions_dir'], '%s.yaml' % url_hash )
         if not os.path.isfile(path):
             data = {
                 'url' : url,
@@ -68,7 +68,7 @@ class Reactions():
     def writeUrlDb(self, data):
         data['url'] = self.normalizeUrl(data['url'])
         url_hash = self.hash(data['url'])
-        path = os.path.join( self.conf['reactions_dir'], '%s.yaml' % url_hash )
+        path = os.path.join( self.conf['mentions_dir'], '%s.yaml' % url_hash )
         f = open(path,mode='w')
         f.write(yaml.dump(data, encoding=('utf-8')) )
         f.close()
@@ -77,8 +77,8 @@ class Reactions():
         url_hash = self.hash(image_url)
         ext = os.path.splitext(image_url)[1]
 
-        file_dir = os.path.join( self.conf['reactions_dir'], 'images' )
-        file_path = os.path.join( self.conf['reactions_dir'], 'images', '%s%s' % (url_hash, ext) )
+        file_dir = os.path.join( self.conf['mentions_dir'], 'images' )
+        file_path = os.path.join( self.conf['mentions_dir'], 'images', '%s%s' % (url_hash, ext) )
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
         if os.path.isfile(file_path):
@@ -108,7 +108,7 @@ class Reactions():
             path = os.path.join(self.conf['root_dir'], p['src'])
             os.utime(path, None)
 
-    def getTwitterReactions(self):
+    def getTwitterMentions(self):
         try:
             print 'last id = %s' % self.status['twitter']['last_id']
 

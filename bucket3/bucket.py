@@ -54,7 +54,7 @@ class Bucket3():
 		
 		self.root_url = conf['blog']['url']
 		self.root_dir = conf['root_dir']
-		self.reactions_dir = conf['reactions_dir']
+		self.mentions_dir = conf['mentions_dir']
 		self.data_dir = os.path.join(self.root_dir, '.bucket3', 'data')
 		self.posts_dir = os.path.join(self.root_dir, 'posts')
 		self.html_dir = os.path.join(self.root_dir, 'html')
@@ -448,8 +448,8 @@ class Bucket3():
 			if self.verbose:
 				print "Done."
 
-		# Copy cached images (avatars, etc) from reactions/images to html/images
-		images_src_dir = os.path.join(self.reactions_dir, 'images')
+		# Copy cached images (avatars, etc) from mentions/images to html/images
+		images_src_dir = os.path.join(self.mentions_dir, 'images')
 		images_dst_dir = os.path.join(self.html_dir, 'images')
 		if os.path.exists(images_src_dir):
 			if not os.path.exists(images_dst_dir):
@@ -459,10 +459,10 @@ class Bucket3():
 	
 	def render_post(self, post_id):
 		post = self.db_post_get(post_id)
-		reactions = self.reactions_get(post['url'])
+		mentions = self.mentions_get(post['url'])
 		
 		tpl = self.tpl_env.get_template('post.html')
-		html = tpl.render(meta=post['meta'], body=post['html'], reactions=reactions)
+		html = tpl.render(meta=post['meta'], body=post['html'], mentions=mentions)
 		if not os.path.exists(post['meta']['fs_path']):
 			os.makedirs(post['meta']['fs_path'])
 		f = open(os.path.join(post['meta']['fs_path'], 'index.html'), 'w')
@@ -614,9 +614,9 @@ class Bucket3():
 		f.write(html.encode('utf8'))
 		f.close()
 
-	def reactions_get(self, url):
+	def mentions_get(self, url):
 		url_hash = hashlib.md5(url).hexdigest()
-		path = os.path.join( self.reactions_dir, '%s.yaml' % url_hash )
+		path = os.path.join( self.mentions_dir, '%s.yaml' % url_hash )
 		if os.path.isfile(path):
 			f = open(path,mode='r')
 			data = yaml.load(f.read())

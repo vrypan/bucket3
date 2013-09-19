@@ -1,18 +1,18 @@
-.reactions {
+.mentions {
 	font-size: 80%; 
 	line-height: 120%;
 }
 
-.reactions-item {
+.mentions-item {
 	clear:both; 
 	padding-bottom: 1ex; 
 	min-height:58px;
 }
-.reactions-avatar {
+.mentions-avatar {
 	float:left;
 	width: 48px;
 }
-.reactions-body {
+.mentions-body {
 	display: block; 
 	margin-left: 52px;
 }
