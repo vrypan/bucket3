@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Usage:
-  bucket3 [options] init 
+  bucket3 [options] init
   bucket3 [options] clear
   bucket3 [options] new <slug> [<ext>]
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
@@ -25,86 +25,87 @@ from bucket3.fsmeta import fsmeta
 from bucket3.bucket import Bucket3
 import time
 
+
 if __name__ == '__main__':
 
-	args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__, version=__version__)
 
-	VERBOSE = int(args['--verbose'])
+    VERBOSE = int(args['--verbose'])
 
-	if args['init']:
-		b3tools.blog_new(args['--path'])
-		
-	elif args['clear']:
-		b3tools.blog_clean(args['--path'])
-		
-	elif args['new']:
-		b3tools.post_new(slug=args['<slug>'], ext=args['<ext>'], cpath=args['--path'])
-		
-	elif args['update']:
-		conf = b3tools.conf_get(args['--path'])
-		fsdb = fsmeta( conf['root_dir'] )
-		fsdb.create()
+    if args['init']:
+        b3tools.blog_new(args['--path'])
 
-		t1 = int(time.time())
-		t2 = int(fsdb.meta_get('last_obj_ts', 0))
+    elif args['clear']:
+        b3tools.blog_clean(args['--path'])
 
-		fsdb.fs_sync( 'posts' ) 
+    elif args['new']:
+        b3tools.post_new(slug=args['<slug>'], ext=args['<ext>'], cpath=args['--path'])
 
-		b = Bucket3(conf = conf, verbose=VERBOSE)
-		b.db_init()
+    elif args['update']:
+        conf = b3tools.conf_get(args['--path'])
+        fsdb = fsmeta( conf['root_dir'] )
+        fsdb.create()
 
-		for f in fsdb.file_get_new( since_ts=t2 ):
-			if VERBOSE:
-				print "Located new/modified file", f['path']
-			post = b.fs_post_get(f['path'])
-			if post:
-				b.db_post_put(post)
-		for f in fsdb.file_get_deleted( before_ts=t1 ):
-			if VERBOSE:
-				print "Located deleted file    ", f['path']
-			post_id = b.fs_post_get_id(f['path'])
-			b.db_post_del(post_id)
-			fsdb.file_del(f['id'])
+        t1 = int(time.time())
+        t2 = int(fsdb.meta_get('last_obj_ts', 0))
 
-		fsdb.close()
+        fsdb.fs_sync( 'posts' )
 
-		# Render static pages, CSS files, etc. 
-		# Should be able to decide smarter if this is necessary each time
-		print 'Rendering skeleton and static pages.'
-		b.render_html_skel() 
+        b = Bucket3(conf = conf, verbose=VERBOSE)
+        b.db_init()
 
-		b.rq_do()
+        for f in fsdb.file_get_new( since_ts=t2 ):
+            if VERBOSE:
+                print "Located new/modified file", f['path']
+            post = b.fs_post_get(f['path'])
+            if post:
+                b.db_post_put(post)
+        for f in fsdb.file_get_deleted( before_ts=t1 ):
+            if VERBOSE:
+                print "Located deleted file    ", f['path']
+            post_id = b.fs_post_get_id(f['path'])
+            b.db_post_del(post_id)
+            fsdb.file_del(f['id'])
 
-	elif args['render']:
-		conf = b3tools.conf_get(args['--path'])
-		b = Bucket3(conf = conf, verbose=VERBOSE)
+        fsdb.close()
 
-		if args['--static']:
-			if VERBOSE:
-				print 'Rendering skeleton and static pages.'
-			b.render_html_skel()
-		if args['--rss']:
-			if VERBOSE:
-				print 'Rendering RSS.'
-			b.render_rss()
-		if args['--sitemap']:
-			if VERBOSE:
-				print 'Rendering sitemap.xml.'
-			b.render_xml_sitemap()
-		if args['--posts']:
-			if VERBOSE:
-				print 'Rendering all posts in db.'
-			b.db_init()
-			for post in b.db_post_get_all(count=None):
-				b.render_Q.update( [('post', post['id']), ] )
-				b.rq_post_deps(post)
-			b.rq_do()
+        # Render static pages, CSS files, etc.
+        # Should be able to decide smarter if this is necessary each time
+        print 'Rendering skeleton and static pages.'
+        b.render_html_skel()
 
-	elif args['mentions']:
-		from bucket3.mentions import Mentions
-		conf = b3tools.conf_get(args['--path'])
-		r = Mentions(conf=conf)
-		r.getTwitterMentions()
+        b.rq_do()
+
+    elif args['render']:
+        conf = b3tools.conf_get(args['--path'])
+        b = Bucket3(conf = conf, verbose=VERBOSE)
+
+        if args['--static']:
+            if VERBOSE:
+                print 'Rendering skeleton and static pages.'
+            b.render_html_skel()
+        if args['--rss']:
+            if VERBOSE:
+                print 'Rendering RSS.'
+            b.render_rss()
+        if args['--sitemap']:
+            if VERBOSE:
+                print 'Rendering sitemap.xml.'
+            b.render_xml_sitemap()
+        if args['--posts']:
+            if VERBOSE:
+                print 'Rendering all posts in db.'
+            b.db_init()
+            for post in b.db_post_get_all(count=None):
+                b.render_Q.update([('post', post['id']), ])
+                b.rq_post_deps(post)
+            b.rq_do()
+
+    elif args['mentions']:
+        from bucket3.mentions import Mentions
+        conf = b3tools.conf_get(args['--path'])
+        r = Mentions(conf=conf)
+        r.getTwitterMentions()
 
 
 
