@@ -4,32 +4,32 @@
 
 {% for year, year_items in index|groupby('year')|reverse() %}
 
-	<h3>{{ year }} <small>| {{ year_items|length() }} posts
-		{% if tag %}tagged "{{ tag }}"{% endif %}
-		</small>
-	</h3>
-	{% for month in year_items|groupby('month')|reverse() %}
-			<h3>
-				<a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper|int] }}</a> 
-				<a href="{{blog.url}}{{ year }}/">{{ year }}</a> 
-				<small>| {{month.list|length()}} posts </small>
-			</h3>
-		{% for p in month.list %}
-			<div class="row-fluid">
-				<div class="span1 muted">{{ p.meta.date.strftime("%d")  }}
-				</div>
-				<div class="span11">
-					<a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
-					{% if p.meta.tags %}
-						{% for t in p.meta.tags %}
-							<a class="muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
-						{% endfor %}
-					{% endif %}
-				</div>
-			</div>
-		{% endfor %}
-	{% endfor %}
-	<hr />
+    <h3>{{ year }} <small>| {{ year_items|length() }} posts
+        {% if tag %}tagged "{{ tag }}"{% endif %}
+        </small>
+    </h3>
+    {% for month in year_items|groupby('month')|reverse() %}
+            <h3>
+                <a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper|int] }}</a>
+                <a href="{{blog.url}}{{ year }}/">{{ year }}</a>
+                <small>| {{month.list|length()}} posts </small>
+            </h3>
+        {% for p in month.list %}
+            <div class="row-fluid">
+                <div class="span1 muted">{{ p.meta.date.strftime("%d")  }}
+                </div>
+                <div class="span11">
+                    <a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
+                    {% if p.meta.tags %}
+                        {% for t in p.meta.tags %}
+                            <a class="muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <hr />
 
 {% endfor %}
 {% endblock %}

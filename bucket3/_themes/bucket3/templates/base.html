@@ -2,73 +2,73 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	{% block page_title %}<title>{{blog.title}}</title>{% endblock %}
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    {% block page_title %}<title>{{blog.title}}</title>{% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- Le styles -->
-	<link href="{{ blog.url }}_/css/bootstrap.min.css" rel="stylesheet">
-	<style type="text/css">
-	  .container-narrow {
-		margin: 0 auto;
-		max-width: 640px;
-	  }
-	</style>
-	<link href="{{ blog.url }}_/css/bucket3.css" rel="stylesheet">
+    <!-- Le styles -->
+    <link href="{{ blog.url }}_/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 640px;
+      }
+    </style>
+    <link href="{{ blog.url }}_/css/bucket3.css" rel="stylesheet">
 
-	<!-- Fav and touch icons -->
+    <!-- Fav and touch icons -->
 
-	<link rel="shortcut icon" href="{{ blog.url}}_/img/favicon.ico">
-	<link rel="alternate" type="application/rss+xml" title="RSS" href="{{ blog.url }}rss.xml" />
-	{% if blog.rss_tags %}
-	{% for tag in blog.rss_tags %}
-	<link rel="alternate" type="application/rss+xml" title="{{ tag }}:RSS" href="{{ blog.url }}tag/{{ tag }}/rss.xml" />
-	{% endfor %}
-	{% endif %}
+    <link rel="shortcut icon" href="{{ blog.url}}_/img/favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ blog.url }}rss.xml" />
+    {% if blog.rss_tags %}
+    {% for tag in blog.rss_tags %}
+    <link rel="alternate" type="application/rss+xml" title="{{ tag }}:RSS" href="{{ blog.url }}tag/{{ tag }}/rss.xml" />
+    {% endfor %}
+    {% endif %}
 
-	{% block page_meta %}
-	<meta name="title" content="{{ blog.title }}">
-	<meta name="description" content="{{ blog.description }}">
-	<!-- Google will often use this as its description of your page/site. Make it good. -->
+    {% block page_meta %}
+    <meta name="title" content="{{ blog.title }}">
+    <meta name="description" content="{{ blog.description }}">
+    <!-- Google will often use this as its description of your page/site. Make it good. -->
 
-	<meta name="author" content="{{ blog.author }}">
-	<meta name="Copyright" content="{{ blog.copyright }}">
+    <meta name="author" content="{{ blog.author }}">
+    <meta name="Copyright" content="{{ blog.copyright }}">
 
-	<!-- Dublin Core Metadata : http://dublincore.org/ -->
-	<meta name="DC.title" content="{{ blog.title }}">
-	<meta name="DC.subject" content="{{ blog.description }}">
-	<meta name="DC.creator" content="{{ blog.author }}">
-	{% endblock page_meta %}
+    <!-- Dublin Core Metadata : http://dublincore.org/ -->
+    <meta name="DC.title" content="{{ blog.title }}">
+    <meta name="DC.subject" content="{{ blog.description }}">
+    <meta name="DC.creator" content="{{ blog.author }}">
+    {% endblock page_meta %}
 </head>
 
 <body>
-	<div class="container-narrow">
-		
-		<div class="navbar" id="topnav">
-			<div class="navbar-inner">
-				<ul class="nav nav-pills">
-					<li><a href="{{ blog.url }}">home</a></li>
-					<li><a href="{{ blog.url }}archive/">archive</a></li>
-					<li><a href="{{ blog.url}}rss.xml">rss</a></li>
-				</ul>
-			</div>
-		</div>
+    <div class="container-narrow">
 
-		<div class="page-header">
-			<h1>{{ blog.title }}
-				<small>{{ blog.description }}</small>
-			</h1>
-		</div>
+        <div class="navbar" id="topnav">
+            <div class="navbar-inner">
+                <ul class="nav nav-pills">
+                    <li><a href="{{ blog.url }}">home</a></li>
+                    <li><a href="{{ blog.url }}archive/">archive</a></li>
+                    <li><a href="{{ blog.url}}rss.xml">rss</a></li>
+                </ul>
+            </div>
+        </div>
 
-		{% block content %}{% endblock content %}
-	
-		<div class="footer">
-			<p class="pull-right">powered by <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a></p>
-		</div>
-	</div>
+        <div class="page-header">
+            <h1>{{ blog.title }}
+                <small>{{ blog.description }}</small>
+            </h1>
+        </div>
 
-	<!-- Le javascript
-	================================================== -->
+        {% block content %}{% endblock content %}
+
+        <div class="footer">
+            <p class="pull-right">powered by <a href="http://bucket3.com/"><img src="{{ blog.url }}_/img/bucket3_small.jpg" alt="bucket3" /></a></p>
+        </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="{{ blog.url}}_/js/bootstrap.min.js"></script>

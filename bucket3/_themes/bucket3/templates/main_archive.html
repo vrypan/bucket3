@@ -15,18 +15,18 @@
 {% endblock page_meta %}
 
 {% block content %}
-	{% for y, months in counts|groupby('year')|reverse() %}
-		<h2>
-			<a href="{{blog.url}}{{ y }}/">{{ y }}</a> 
-			<small>| {{ months|sum(attribute="count") }} posts </small>
-		</h2>
-		{% for c in months %}
-			{% if c.count %}
-				<h3>
-					<a href="{{ blog.url }}{{ y }}/{{ c.month }}/">{{ _months_short[c.month] }}</a> <small>| {{ c.count }} posts</small>
-				</h3>
-			{% endif %}
-		{% endfor %}
-	{% endfor %}
-	<hr />
+    {% for y, months in counts|groupby('year')|reverse() %}
+        <h2>
+            <a href="{{blog.url}}{{ y }}/">{{ y }}</a>
+            <small>| {{ months|sum(attribute="count") }} posts </small>
+        </h2>
+        {% for c in months %}
+            {% if c.count %}
+                <h3>
+                    <a href="{{ blog.url }}{{ y }}/{{ c.month }}/">{{ _months_short[c.month] }}</a> <small>| {{ c.count }} posts</small>
+                </h3>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <hr />
 {% endblock %}
