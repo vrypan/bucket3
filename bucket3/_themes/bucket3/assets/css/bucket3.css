@@ -1,18 +1,18 @@
 .mentions {
-	font-size: 80%; 
-	line-height: 120%;
+    font-size: 80%;
+    line-height: 120%;
 }
 
 .mentions-item {
-	clear:both; 
-	padding-bottom: 1ex; 
-	min-height:58px;
+    clear:both;
+    padding-bottom: 1ex;
+    min-height:58px;
 }
 .mentions-avatar {
-	float:left;
-	width: 48px;
+    float:left;
+    width: 48px;
 }
 .mentions-body {
-	display: block; 
-	margin-left: 52px;
+    display: block;
+    margin-left: 52px;
 }
