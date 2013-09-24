@@ -208,10 +208,11 @@ class Mentions():
                     'target': str(mention['target']),
                     'verified_date': str(mention['verified_date']),
                     'source_title': str(info.title()),
-                    'source_pub_date': str(info.pubDate),
+                    'source_pub_date': str(info.pubDate()),
                     'source_in_reply_to': str(info.inReplyTo()),
                     'source_image': str(info.image()),
                     'source_image_local': self.cacheImage(info.image()),
+                    'source_snippet': info.snippetWithLink(mention['target'])
                     }
                 self.writeUrlDb(data)
                 self.touchBucket3PostByURL(x)
