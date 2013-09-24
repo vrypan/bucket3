@@ -23,6 +23,7 @@ setup(
         "PyYAML",
         "docopt",
         "TwitterSearch",
+        "webmentiontools",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

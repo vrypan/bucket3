@@ -6,6 +6,8 @@ import yaml
 import os
 import hashlib
 import sqlite3
+from webmentiontools.urlinfo import UrlInfo
+from webmentiontools.webmentionio import WebmentionIO
 
 class Mentions():
     def __init__(self, conf=(), verbose=1 ):
@@ -36,6 +38,7 @@ class Mentions():
         if not os.path.isfile(self.status_file):
             self.status = {}
             self.status['twitter'] = {'last_id':0}
+            self.status['webmention_io'] = {'last_id':0}
         else:
             f = open(self.status_file,mode='r')
             self.status = yaml.load(f.read())
@@ -56,12 +59,20 @@ class Mentions():
             data = {
                 'url' : url,
                 'tweets': {},
+                'webmention_io': {},
             }
             self.writeUrlDb(data)
             return data
         else:
             f = open(path,mode='r')
             data = yaml.load(f.read())
+            if self.verbose > 1:
+                print 'Read %s' % path
+                print 'data = %s' % data
+            if not data.has_key('webmention_io'):
+                data['webmention_io'] = {}
+            if not data.has_key('tweets'):
+                data['tweets'] = {}
             f.close()        
             return data
 
@@ -155,7 +166,53 @@ class Mentions():
             print(e)
 
         self.writeInfoDb()
-        
+
+    def getWebMentions(self):
+        wio = WebmentionIO(self.conf['webmention_io']['token'])
+        last_id = self.status['webmention_io']['last_id']
+        print 'last id = %s' % last_id
+        ret = wio.linksToDomain(urlparse(self.conf['blog']['url'])[1]) #domain of blog url
+        if not ret:
+            print wio.error
+            return False
+
+        i = 1
+        for mention in ret['links']:
+            if mention['id'] > self.status['webmention_io']['last_id']:
+                self.status['webmention_io']['last_id'] = mention['id']
+
+                print 
+                print '%02d Webmention.io ID: %s' % (i, mention['id'] )
+                print '    Source: %s' % mention['source']
+                print '    Target: %s' % mention['target']
+                print '    Verification Date: %s' % mention['verified_date']
+
+                # Now use UrlInfo to get some more information about the source.
+                # Most web apps showing webmentions, will probably do something 
+                # like this.
+                info = UrlInfo(mention['source'])
+                print '    Source URL info:'
+                print '        Title: %s' % info.title()
+                print '        Pub Date: %s' % info.pubDate()
+                print '        in-reply-to: %s' % info.inReplyTo()
+                print '        Author image: %s' % info.image()
+
+                x = self.normalizeUrl(mention['target'])
+                data = self.readUrlDb(x)
+                data['webmention_io'][mention['id']] = {
+                    'source': str(mention['source']),
+                    'target': str(mention['target']),
+                    'verified_date': str(mention['verified_date']),
+                    'source_title': str(info.title()),
+                    'source_pub_date': str(info.pubDate),
+                    'source_in_reply_to': str(info.inReplyTo()),
+                    'source_image': str(info.image()),
+                    'source_image_local': self.cacheImage(info.image()),
+                    }
+                self.writeUrlDb(data)
+                self.touchBucket3PostByURL(x)
+                i += 1
+        self.writeInfoDb()
 
 
 if __name__ == '__main__':

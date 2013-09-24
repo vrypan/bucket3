@@ -105,6 +105,7 @@ if __name__ == '__main__':
 		conf = b3tools.conf_get(args['--path'])
 		r = Mentions(conf=conf)
 		r.getTwitterMentions()
+		r.getWebMentions()
 
 
 
