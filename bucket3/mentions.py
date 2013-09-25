@@ -86,6 +86,9 @@ class Mentions():
         f.close()
 
     def cacheImage(self, image_url):
+        if not image_url:
+            return 'default.png'
+        
         url_hash = self.hash(image_url)
         ext = os.path.splitext(image_url)[1]
 
