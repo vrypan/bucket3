@@ -91,6 +91,7 @@ class Mentions():
         
         url_hash = self.hash(image_url)
         ext = os.path.splitext(image_url)[1]
+        ext = ext.split('?')[0] # make sure we remove any parameters in the end.
 
         file_dir = os.path.join(self.conf['mentions_dir'], 'images')
         file_path = os.path.join(self.conf['mentions_dir'], 'images', '%s%s' % (url_hash, ext))
