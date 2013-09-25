@@ -112,6 +112,10 @@ class Bucket3():
         self.db_conn.row_factory = sqlite3.Row
         self.render_Q = set()
 
+        # regexp to extract links from html. Compile once, here.
+        regexp_link = r'<a.*(?=href=\"([^\"]*)\")[^>]*>[^<]*</a>'
+        self.re_link_extract = re.compile(regexp_link)
+
     def util_rel_path(self, abs_path):
         abs_path = os.path.abspath(abs_path)  # make sure path is absolute
         return abs_path[len(self.root_dir) + 1:]
@@ -121,6 +125,10 @@ class Bucket3():
 
     def util_txt_abstract(self, txt):
         txt = re.sub('<[^<]+?>', '', txt)
+
+    def util_extract_links(self, html):
+        links = re.findall(self.re_link_extract, html)
+        return links
 
     def util_parse_frontmatter(self, txt):
         meta = yaml.load(txt)
@@ -474,6 +482,12 @@ class Bucket3():
         if post['meta']['attached']:
             for a in post['meta']['attached']:
                 shutil.copy2(os.path.join(os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
+
+        urls_file = open(os.path.join(self.root_dir, '.bucket3', 'external_links.txt'), 'a')
+        for link in self.util_extract_links(post['html']):
+            urls_file.write('%s\t%s\n' % (post['url'], link))
+        urls_file.close()
+
 
     def render_home(self):
         if self.posts_in_homepage:
