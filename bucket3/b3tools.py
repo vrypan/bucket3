@@ -116,7 +116,8 @@ def blog_new(path):
         os.path.join(path, '.bucket3', 'themes'),
         os.path.join(path, 'posts'),
         os.path.join(path, 'html'),
-        os.path.join(path, 'mentions')
+        os.path.join(path, 'mentions'),
+        os.path.join(path, 'log')
         )
 
     conf_file = os.path.join(path, '.bucket3', 'conf.yaml')

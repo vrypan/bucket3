@@ -121,8 +121,8 @@ class Bucket3():
         abs_path = os.path.abspath(abs_path)  # make sure path is absolute
         return abs_path[len(self.root_dir) + 1:]
 
-    def util_abs_path(self, rel_path):
-        return os.path.join(self.root_dir, rel_path)
+    def util_abs_path(self, *rel_path):
+        return os.path.join(self.root_dir, *rel_path)
 
     def util_txt_abstract(self, txt):
         txt = re.sub('<[^<]+?>', '', txt)
@@ -487,7 +487,8 @@ class Bucket3():
             for a in post['meta']['attached']:
                 shutil.copy2(os.path.join(os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
 
-        urls_file = open(os.path.join(self.root_dir, '.bucket3', 'external_links.txt'), 'a')
+
+        urls_file = open(self.abs_path('log', 'external_links.txt'), 'a')
         for link in self.util_extract_links(post['html']):
             urls_file.write('%s\t%s\n' % (post['url'], link))
         urls_file.close()
