@@ -595,5 +595,15 @@ class Bucket3():
             f.write(html.encode('utf8'))
             f.close()
 
+    def mentions_get(self, url):
+        url_hash = hashlib.md5(url).hexdigest()
+        path = os.path.join(self.mentions_dir, '%s.yaml' % url_hash)
+        if os.path.isfile(path):
+            f = open(path, mode='r')
+            data = yaml.load(f.read())
+            f.close()
+            return data
+        else:
+            return None
 if __name__ == '__main__':
     pass
