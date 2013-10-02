@@ -16,6 +16,7 @@ from jinja2 import Template, FileSystemLoader, Environment
 import sqlite3
 import re
 import pickle
+import unidecode
 
 
 class contentFilters():
@@ -130,6 +131,11 @@ class Bucket3():
         links = re.findall(self.re_link_extract, html)
         return links
 
+    def util_slugify(self, str):
+        # Credit: http://stackoverflow.com/a/8366771
+        str = unidecode.unidecode(str.strip()).lower()
+        return re.sub(r'\W+','-',str)
+
     def util_parse_frontmatter(self, txt):
         meta = yaml.load(txt)
         meta['title'] = meta['title'].strip()
@@ -153,9 +159,7 @@ class Bucket3():
                 if 'id' in meta and meta['id']:
                     meta['slug'] = str(meta['id'])
                 else:
-                    # TODO: a "slugify" method is needed here,
-                    # but the md5(txt) will do for now.
-                    meta['slug'] = hashlib.md5(txt).hexdigest()
+                    meta['slug'] = self.util_slugify(meta['title'])
         else:
             if 'id' in meta and meta['id']:
                 meta['slug'] = str(meta['id'])
