@@ -488,7 +488,7 @@ class Bucket3():
                 shutil.copy2(os.path.join(os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
 
 
-        urls_file = open(self.abs_path('log', 'external_links.txt'), 'a')
+        urls_file = open(self.util_abs_path('log', 'external_links.txt'), 'a')
         for link in self.util_extract_links(post['html']):
             urls_file.write('%s\t%s\n' % (post['url'], link))
         urls_file.close()
