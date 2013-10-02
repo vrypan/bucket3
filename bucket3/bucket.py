@@ -590,57 +590,5 @@ class Bucket3():
             f.write(html.encode('utf8'))
             f.close()
 
-    def ___renderArchives(self):
-        idx = idx = self.db_post_get_all(0, 25)
-
-        max_date = idx[0]['_date']
-        min_date = idx[-1]['_date']
-
-        for year in range(max_date.year, min_date.year - 1, -1):
-            recs = [p for p in idx if p['_date'].year == year]
-            if recs:
-                tpl = self.tpl_env.get_template('archive.html')
-                html = tpl.render(index=recs, year=year)
-                f = open(os.path.join(self.html_dir, '%s' % year, 'index.html'), 'w')
-                f.write(html.encode('utf8'))
-                f.close()
-                max_month = recs[0]['_date'].month
-                min_month = recs[-1]['_date'].month
-                for month in range(max_month, min_month - 1, -1):
-                    mposts = [p for p in recs if p['_date'].month == month]
-                    if mposts:
-                        html = tpl.render(index=mposts, year=year, month=month)
-                        f = open(os.path.join(self.html_dir, '%s' % year, str(month), 'index.html' ), 'w')
-                        f.write(html.encode('utf8'))
-                        f.close()
-
-        if not os.path.exists(os.path.join(self.html_dir, 'archive')):
-            os.makedirs(os.path.join(self.html_dir, 'archive'))
-
-        matrix = {}
-        for year in range(max_date.year, min_date.year - 1, -1):
-            matrix[year] = {}
-            for month in range(1, 13):
-                recs = [p for p in idx if p['_date'].year == year and p['_date'].month == month]
-                matrix[year][month] = len(recs)
-
-        tpl = self.tpl_env.get_template('main_archive.html')
-        html = tpl.render(counts=matrix)
-        f = open(os.path.join(self.html_dir, 'archive', 'index.html'), 'w')
-        f.write(html.encode('utf8'))
-        f.close()
-
-    def mentions_get(self, url):
-        url_hash = hashlib.md5(url).hexdigest()
-        path = os.path.join(self.mentions_dir, '%s.yaml' % url_hash)
-        if os.path.isfile(path):
-            f = open(path, mode='r')
-            data = yaml.load(f.read())
-            f.close()
-            return data
-        else:
-            return None
-
-
 if __name__ == '__main__':
     pass
