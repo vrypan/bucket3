@@ -24,6 +24,7 @@ setup(
         "docopt",
         "TwitterSearch",
         "webmentiontools",
+        "unidecode",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
