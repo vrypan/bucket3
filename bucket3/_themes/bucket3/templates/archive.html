@@ -2,34 +2,33 @@
 
 {% block content %}
 
-{% for year, year_items in index|groupby('year')|reverse() %}
+{% if tag %}<h1>Posts tagged "{{ tag }}" <span class="badge">{{ index|length() }} total</span></h1>{% endif %}
 
-    <h3>{{ year }} <small>| {{ year_items|length() }} posts
-        {% if tag %}tagged "{{ tag }}"{% endif %}
-        </small>
-    </h3>
-    {% for month in year_items|groupby('month')|reverse() %}
-            <h3>
-                <a href="{{blog.url}}{{ year }}/{{ month.grouper }}">{{ _months[month.grouper|int] }}</a>
-                <a href="{{blog.url}}{{ year }}/">{{ year }}</a>
-                <small>| {{month.list|length()}} posts </small>
-            </h3>
-        {% for p in month.list %}
-            <div class="row-fluid">
-                <div class="span1 muted">{{ p.meta.date.strftime("%d")  }}
+{% for year in index|groupby('meta.date.year')|reverse() %}
+    <h2><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" 
+    href="#year{{year.grouper}}">{{ year.grouper }} <span class="badge">{{ year.list|length() }}</span>
+    </a></h2>
+    <div id="year{{year.grouper}}" class="panel-collapse collapse {% if loop.first %}in{% endif %}"><div class="panel-body">
+    {% for month in year.list|groupby('meta.date.month')|reverse() %}
+        <div class="row"><div class="col-sm-12"><h3>{{ _months[month.grouper|int] }}</h3></div></div>
+            {% for p in month.list %}
+                <div class="row">
+                    <div class="col-sm-1 col-xs-1 text-right">
+                        <b>{{ p.meta.date.strftime("%d") }}</b>
+                    </div>
+                    <div class="col-sm-11 col-xs-11">
+                        <a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
+                        {% if p.meta.tags %}<small>
+                            {% for t in p.meta.tags %}
+                                <a class="text-muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
+                            {% endfor %}
+                        </small>{% endif %}
+                        <br/>{% if p.meta.abstract %}<small>{{ p.meta.abstract }}</small>{% endif %}&nbsp;
+                    </div>
                 </div>
-                <div class="span11">
-                    <a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
-                    {% if p.meta.tags %}
-                        {% for t in p.meta.tags %}
-                            <a class="muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
     {% endfor %}
-    <hr />
-
+    </div></div>
 {% endfor %}
+
 {% endblock %}

@@ -1,48 +1,43 @@
 {% extends "base.html" %}
 
 {% block page_title %}
-    <title>{{ blog.title }} | {{ meta.title}}</title>
+    <title>{{ meta.title}} - {{ blog.title }}</title>
 {% endblock page_title %}
 
 {% block page_meta %}
-    <meta name="title" content="{{ blog.title }} | {{ meta.title}}">
-    <meta name="description" content="{{ body|striptags|truncate|e }}">
-    <!-- Google will often use this as its description of your page/site. Make it good. -->
+    <meta name="title" content="{{ meta.title}} | {{ blog.title }}" >
+    {% if meta.abstract %}
+    <meta name="description" content="{{ meta.abstract|trim }}" >
+    {% else %}
+    <meta name="description" content="{{ body|striptags|truncate(300,True)|e }}" >
+    {% endif %}
 
-    <meta name="author" content="{{ blog.author }}">
-    <meta name="Copyright" content="{{ blog.copyright }}">
+    <meta name="author" content="{{ blog.author }}" >
+    <meta name="Copyright" content="{{ blog.copyright }}" >
 
-    <!-- Dublin Core Metadata : http://dublincore.org/ -->
-    <meta name="DC.title" content="{{ blog.title}} | {{meta.title }}">
-    <meta name="DC.subject" content="{{ body|striptags|truncate|e }}">
-    <meta name="DC.creator" content="{{ blog.author }}">
+    <meta property="og:site_name" content="{{ blog.title }}">
+    <meta property="og:title" content="{{ meta.title}}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{meta.url}}">
+    <meta property="og:image" content="">
+    {% if meta.abstract %}
+    <meta property="og:description" content="{{ meta.abstract|trim }}">
+    {% else %}
+    <meta property="og:description" content="{{ body|striptags|truncate(300, True)|e }}">
+    {% endif %}
 {% endblock page_meta %}
 
 
 {% block content %}
-    <h3><a href="{{meta.url}}">{% if meta.title %}{{ meta.title }}{% else %}#{% endif %}</a></h3>
-    <p class="muted"><small>
-        posted on {{ meta.date.strftime("%d/%m/%Y %H:%M")  }}
-        {% if meta.tags %}
-            {% for t in meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
-        {% endif %}
-    </small></p>
-    {{ body|safe() }}
-
-    {% if mentions %}
-    <hr/>
-    <div class="mentions">
-    {% for tweet_id, tweet in mentions.tweets|dictsort|reverse %}
-    <div class="mentions-item">
-        <img src="{{ blog.url }}images/{{ tweet.profile_image_local }}" class="mentions-avatar" />
-        <div class="mentions-body">
-            <strong>{{ tweet.user_name }}</strong> <a href="http://twitter.com/{{tweet.user_screen_name}}" class="muted">@{{ tweet.user_screen_name }}</a><br/>
-        {{ tweet.text|urlize }} --
-        <small><a href="http://twitter.com/{{ tweet.user_screen_name}}/status/{{tweet_id}}" class="muted" >{{ tweet.created_at }}</a></small>
-        </div>
+    <div class="h-entry">
+        <p class="meta">
+            <time class="dt-published" datetime="{{ meta.date.strftime("%Y-%m-%dT%H:%M") }}">{{ meta.date.strftime("%a, %d %B %Y %H:%M")  }}</time>
+            &mdash; <a href="{{ blog.url }}" class="h-card p-author u-url">{{ blog.author }}</a>
+            {% if meta.tags %} &mdash;
+                {% for t in meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
+            {% endif %}
+        </p>
+        <h1 class="p-name"><a href="{{meta.url}}" class="u-url">{% if meta.title %}{{ meta.title }}{% else %}#{% endif %}</a></h1>
+        <div class="e-content">{{ body|safe() }}</div>
     </div>
-    {% endfor %}
-    </div>
-    {% endif %}
-    <hr />
 {% endblock %}

@@ -1,29 +1,34 @@
 {% extends "base.html" %}
 
 {% block page_meta %}
-    <meta name="title" content="{{ blog.title }} | Home">
-    <meta name="description" content="{{ blog.description }}">
-    <!-- Google will often use this as its description of your page/site. Make it good. -->
+	<meta name="title" content="{{ blog.title }} | Home">
+	<meta name="description" content="{{ blog.description }}">
+	<meta name="author" content="{{ blog.author }}">
+	<meta name="Copyright" content="{{ blog.copyright }}">
 
-    <meta name="author" content="{{ blog.author }}">
-    <meta name="Copyright" content="{{ blog.copyright }}">
-
-    <!-- Dublin Core Metadata : http://dublincore.org/ -->
-    <meta name="DC.title" content="{{ blog.title }} | Home">
-    <meta name="DC.subject" content="{{ blog.description }}">
-    <meta name="DC.creator" content="{{ blog.author }}">
+	<meta name="DC.title" content="{{ blog.title }} | Home">
+	<meta name="DC.subject" content="{{ blog.description }}">
+	<meta name="DC.creator" content="{{ blog.author }}">
 {% endblock page_meta %}
 
 {% block content %}
-    {% for p in index %}
-        <h3><a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a></h3>
-        <p class="muted"><small>
-            posted on {{ p.meta.date.strftime("%d/%m/%Y %H:%M")  }}
-            {% if p.meta.tags %}
-                {% for t in p.meta.tags %}<a href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> {% endfor %}
-            {% endif %}
-        </small></p>
-        {{ p.html|safe() }}
-        <hr />
-    {% endfor %}
+	{% for month in index|groupby('meta.date.month')|reverse() %}
+		<div class="row"><div class="col-sm-12"><h3>{{ _months[month.grouper|int] }}</h3></div></div>
+			{% for p in month.list %}
+				<div class="row">
+					<div class="col-sm-1 col-xs-1 text-right">
+						<b>{{ p.meta.date.strftime("%d") }}</b>
+					</div>
+					<div class="col-sm-11 col-xs-11">
+						<a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
+						{% if p.meta.tags %}<small>
+							{% for t in p.meta.tags %}
+								<a class="text-muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
+							{% endfor %}
+						</small>{% endif %}
+						<br/>{% if p.meta.abstract %}<small>{{ p.meta.abstract }}</small>{% endif %}&nbsp;
+					</div>
+				</div>
+			{% endfor %}
+	{% endfor %}
 {% endblock %}

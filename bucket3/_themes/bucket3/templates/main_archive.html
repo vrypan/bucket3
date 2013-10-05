@@ -20,13 +20,18 @@
             <a href="{{blog.url}}{{ y }}/">{{ y }}</a>
             <small>| {{ months|sum(attribute="count") }} posts </small>
         </h2>
+        <div class="row">
         {% for c in months %}
             {% if c.count %}
-                <h3>
-                    <a href="{{ blog.url }}{{ y }}/{{ c.month }}/">{{ _months_short[c.month] }}</a> <small>| {{ c.count }} posts</small>
-                </h3>
+            <div class="col-sm-1">
+                    <a href="{{ blog.url }}{{ y }}/{{ "%02d"|format(c.month) }}/">{{ _months_short[c.month] }}<small><span class="badge">{{ c.count }}</span></small></a>
+            </div>
+            {% else %}
+            <div class="col-sm-1">
+                {{ _months_short[c.month] }}
+            </div>
             {% endif %}
         {% endfor %}
+        </div>
     {% endfor %}
-    <hr />
 {% endblock %}
