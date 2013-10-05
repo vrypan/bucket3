@@ -38,6 +38,7 @@
             {% endif %}
         </p>
         <h1 class="p-name"><a href="{{meta.url}}" class="u-url">{% if meta.title %}{{ meta.title }}{% else %}#{% endif %}</a></h1>
+	{% if meta.abstract %}<p class="lead">{{ meta.abstract }}</p>{% endif %}
         <div class="e-content">{{ body|safe() }}</div>
     </div>
 {% endblock %}
