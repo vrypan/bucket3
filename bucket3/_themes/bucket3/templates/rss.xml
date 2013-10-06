@@ -11,18 +11,18 @@
 		<description>{{ blog.description }}</description>
 		<language>en-us</language>
 		<copyright>{{ blog.copyright }}</copyright>
-		<pubDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S +0200")  }}</pubDate>
-		<lastBuildDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S +0200")  }}</lastBuildDate>
+		<pubDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S")  }}</pubDate>
+		<lastBuildDate>{{ _now.strftime("%a, %d %b %Y %H:%M:%S")  }}</lastBuildDate>
 		<docs>http://cyber.law.harvard.edu/rss/rss.html</docs>
 		<generator>bucket3 v2.0</generator>
 		<ttl>15</ttl>
 		{% for p in posts %}
 		<item>
 			<title>{{ p.title|e }}</title>
-			<link>{{ p.meta.url }}?utm_source=blog+rss+feed&amp;utm_medium=rss&amp;utm_campaign=rss+feed</link>
+			<link>{{ p.meta.url }}</link>
 			<guid>{{ p.meta.url }}</guid>
 			<description>{{ p.html|e }}</description>
-			<pubDate>{{ p.meta.date.strftime("%a, %d %b %Y %H:%M:%S +0200") }}</pubDate>
+			<pubDate>{{ p.meta.date.strftime("%a, %d %b %Y %H:%M:%S") }}</pubDate>
 		</item>
 		{% endfor %}
 	</channel>
