@@ -176,6 +176,8 @@ class Mentions():
         self.writeInfoDb()
 
     def getWebMentions(self):
+        if 'webmention_io' not in self.conf:
+            return False
         wio = WebmentionIO(self.conf['webmention_io']['token'])
         last_id = self.status['webmention_io']['last_id']
         print 'last id = %s' % last_id
