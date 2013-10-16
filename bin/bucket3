@@ -8,6 +8,7 @@ Usage:
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
   bucket3 [options] update
   bucket3 [options] mentions [--twitter]
+  bucket3 [options] getenv <variable>
   bucket3 -h, --help
   bucket3 --version
 
@@ -34,6 +35,14 @@ if __name__ == '__main__':
 
     if args['init']:
         b3tools.blog_new(args['--path'])
+
+    elif args['getenv']:
+        conf = b3tools.conf_get(args['--path'])
+        parts = args['<variable>'].split('.')
+        part = conf
+        for p in parts:
+          part = part[p]
+        print part
 
     elif args['clear']:
         b3tools.blog_clean(args['--path'])
