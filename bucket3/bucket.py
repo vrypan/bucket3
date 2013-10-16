@@ -425,7 +425,7 @@ class Bucket3():
         if not os.path.exists(assets_dir):
             os.makedirs(assets_dir)
 
-        for x in ['css', 'js', 'img']:
+        for x in ['css', 'js', 'img', 'fonts' ]:
             # create /_/<x> and populate with css files from _assets/<x>
             x_dir = os.path.join(assets_dir, x)
             if self.verbose:
