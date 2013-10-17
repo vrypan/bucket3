@@ -4,6 +4,7 @@
 import os
 import sys
 import shutil
+from distutils.dir_util import copy_tree
 from datetime import datetime
 import time
 import calendar
@@ -420,21 +421,13 @@ class Bucket3():
             # MORE HERE!!!
 
     def render_html_skel(self):
-        assets_dir = os.path.join(self.html_dir, '_')
-
-        if not os.path.exists(assets_dir):
-            os.makedirs(assets_dir)
-
-        for x in ['css', 'js', 'img']:
-            # create /_/<x> and populate with css files from _assets/<x>
-            x_dir = os.path.join(assets_dir, x)
-            if self.verbose:
-                print "   Populating /_/%s..." % x,
-            if not os.path.exists(x_dir):
-                os.mkdir(x_dir)
-            for f in os.listdir(os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'assets', x)):
-                shutil.copy2(os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'assets', x, f), x_dir)
-            if self.verbose:
+        if self.verbose:
+            print "   Populating /_/...",
+        copy_tree(
+            os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'assets'),
+            os.path.join(self.html_dir, '_')            
+            )
+        if self.verbose:
                 print "Done."
 
         if os.path.exists(os.path.join( self.root_dir, '.bucket3', 'themes', self.theme, 'robots.txt')):
