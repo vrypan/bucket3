@@ -117,6 +117,7 @@ def blog_new(path):
         os.path.join(path, 'posts'),
         os.path.join(path, 'html'),
         os.path.join(path, 'mentions'),
+        os.path.join(path, 'static'),
         os.path.join(path, 'log')
         )
 
@@ -130,8 +131,9 @@ def blog_new(path):
             print "   Created %s." % d
         else:
             print "   %s already exists." % d
-    print 'Done.'
+    print 'Done.\n'
 
+    print "Generating config files..."
     if not os.path.isfile(conf_file):
         import pkgutil
         s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
@@ -140,17 +142,30 @@ def blog_new(path):
         f = open(conf_file, 'w')
         f.write(s.encode('utf8'))
         f.close()
-        print "\nCreated: %s \nMake sure you edit it before moving on!\n" % conf_file
+        print "   Created: %s \nMake sure you edit it before moving on!\n" % conf_file
     else:
-        print "%s already exists." % conf_file
+        print "   %s already exists." % conf_file
+    print "Done.\n"
 
+    print "Installing default theme..."
     default_template_dir = os.path.join( os.path.dirname(
         os.path.abspath(__file__)),
         '_themes', 'bucket3')
-
     def_theme_path = os.path.join(path, '.bucket3', 'themes', 'bucket3')
     if not os.path.isdir(def_theme_path):
         shutil.copytree(default_template_dir, def_theme_path)
-        print 'Copied default theme (bucket3).\n'
+        print '   Copied default theme (bucket3).\n'
     else:
-        print "%s already exists." % def_theme_path
+        print "   %s already exists." % def_theme_path
+    print "Done.\n"
+
+    print "Populating static/..."
+    for static_page in os.listdir(os.path.join( default_template_dir, 'templates', 'static')):
+        src_f = os.path.join( default_template_dir, 'templates', 'static', static_page)
+        target_f = os.path.join(path, 'static', static_page)
+        if not os.path.isfile(target_f):
+            print '   Copying default %s' % static_page
+            shutil.copy( src_f, os.path.join(path, 'static'))
+        else:
+            print '   %s already exists.' % static_page
+    print 'Done.\n'
