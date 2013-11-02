@@ -101,6 +101,7 @@ class Bucket3():
         self.template_dir = [
                 os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates'),
                 os.path.join(self.root_dir, '.bucket3', 'themes', 'bucket3', 'templates'),
+                os.path.join(self.root_dir, 'static'),
                 os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     '_themes', 'bucket3', 'templates'),  # last resort, the bucket3 theme downloaded with the app
                 ]
@@ -439,21 +440,38 @@ class Bucket3():
                 )
             if self.verbose:
                 print "Done."
+
         """
-        Look for files under <theme_name>templates/static
-        These are files like 404.html, about.html, etc, that should be generated once and placed under /filename.html in our site.
-        IMPORTANT: these files are *NOT* inherited from the default template! You have to create or copy them!
+        "static" pages are pages that are not blog posts. Their URL is /<page>.html and not YYYY/MM/DD/.../index.html
+        Also, they are not included in the RSS feed, in the archive pages, etc.
+        You would usually use a static page for something like about.html, contact.html, 404.html etc.
+
+        They are actual jinja2 templates. They look something like this (this is a 404.html page):
+
+        {% extends "base.html" %}
+        {% block page_meta %}
+        <meta name="title" content="{{ blog.title }} | Error 404 Page Not Found">
+        <meta name="description" content="Error 404: Page not found.">
+        {% endblock page_meta %}
+
+
+        {% block content %}
+        <h3 class="entry-title">Error 404: page not found.</h3>
+                <p>The page you requested was not found. </p>
+        {% endblock %}
+
         """
-        for static_page in os.listdir(os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates', 'static')):
-            if self.verbose:
-                print "   Rendering static page %s..." % static_page,
-            tpl = self.tpl_env.get_template('static/%s' % static_page)
-            html = tpl.render()
-            f = open(os.path.join(self.html_dir, static_page), 'w')
-            f.write(html.encode('utf8'))
-            f.close()
-            if self.verbose:
-                print "Done."
+        if os.path.exists(os.path.join(self.root_dir, 'static')):
+            for static_page in os.listdir(os.path.join(self.root_dir, 'static')):
+                if self.verbose:
+                    print "   Rendering static page %s..." % static_page,
+                tpl = self.tpl_env.get_template(static_page)
+                html = tpl.render()
+                f = open(os.path.join(self.html_dir, static_page), 'w')
+                f.write(html.encode('utf8'))
+                f.close()
+                if self.verbose:
+                    print "Done."
 
         # Copy cached images (avatars, etc) from mentions/images to html/images
         images_src_dir = os.path.join(self.mentions_dir, 'images')
