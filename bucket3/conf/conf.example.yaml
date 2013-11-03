@@ -22,6 +22,9 @@ posts_in_homepage: 10
 rss_tags: # ["tag1", "tag2"]
 # Tags set here will get their own RSS feed and will show up in man navigation.
 
+minify_html: False
+# set to True to automatically minify the generated HTML.
+
 # if you want rss feed for some specific tags uncomment the line below and fill the list
 #rss_tags: ["sometag", "someothertag"]
 

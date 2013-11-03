@@ -25,6 +25,7 @@ setup(
         "TwitterSearch",
         "webmentiontools",
         "unidecode",
+	"htmlmin",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

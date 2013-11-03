@@ -18,6 +18,7 @@ import sqlite3
 import re
 import pickle
 import unidecode
+from htmlmin import minify
 
 
 class contentFilters():
@@ -46,7 +47,6 @@ class contentFilters():
 
     def html2Html(self, txt):
         return txt.decode('utf-8')
-
 
 class Bucket3():
 
@@ -98,6 +98,11 @@ class Bucket3():
         else:
             self.theme = 'bucket3'
 
+        if 'minify_html' in conf:
+            self.minify_html = conf['minify_html']
+        else:
+            self.minify_html = False
+
         self.template_dir = [
                 os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates'),
                 os.path.join(self.root_dir, '.bucket3', 'themes', 'bucket3', 'templates'),
@@ -137,6 +142,15 @@ class Bucket3():
         # Credit: http://stackoverflow.com/a/8366771
         str = unidecode.unidecode(str.strip()).lower()
         return re.sub(r'\W+','-',str)
+
+    def util_write_html(self, file_dir, file_content, file_name='index.html'):
+        if self.minify_html:
+            file_content = minify(file_content, remove_comments=True, remove_empty_space=True)
+        if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+        f = open(os.path.join(file_dir, file_name), 'w')
+        f.write(file_content.encode('utf8'))
+        f.close()
 
     def util_parse_frontmatter(self, txt):
         meta = yaml.load(txt)
@@ -488,12 +502,9 @@ class Bucket3():
 
         tpl = self.tpl_env.get_template('post.html')
         html = tpl.render(meta=post['meta'], body=post['html'], mentions=mentions)
-        if not os.path.exists(post['meta']['fs_path']):
-            os.makedirs(post['meta']['fs_path'])
-        f = open(os.path.join(post['meta']['fs_path'], 'index.html'), 'w')
-        f.write(html.encode('utf8'))
-        f.close()
-
+        
+        self.util_write_html(post['meta']['fs_path'],html)
+        
         if post['meta']['attached']:
             for a in post['meta']['attached']:
                 shutil.copy2(os.path.join(os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
@@ -516,9 +527,7 @@ class Bucket3():
             return
         tpl = self.tpl_env.get_template('home.html')
         html = tpl.render(index=posts)
-        f = open(os.path.join(self.html_dir, 'index.html'), 'w')
-        f.write(html.encode('utf8'))
-        f.close()
+        self.util_write_html(self.html_dir,html)
 
     def render_xml_sitemap(self):
         posts = [{'url':p['meta']['url'], 'date':p['meta']['date']} for p in self.db_post_get_all( count=0 )]
@@ -564,24 +573,16 @@ class Bucket3():
             tpl = self.tpl_env.get_template('main_archive.html')
             html = tpl.render(counts=counts_by_year_month)
             file_dir = os.path.join(self.html_dir, 'archive')
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
-            f = open(os.path.join(file_dir, 'index.html'), 'w')
-            f.write(html.encode('utf8'))
-            f.close()
-
+            self.util_write_html(file_dir, html)
+            
     def render_archive_year(self, year):
         posts = [p for p in self.db_post_get_by_year(year)]
         if posts:
             tpl = self.tpl_env.get_template('archive.html')
             html = tpl.render(index=posts)
             file_dir = os.path.join(self.html_dir, str(year))
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
-            f = open(os.path.join(file_dir, 'index.html'), 'w')
-            f.write(html.encode('utf8'))
-            f.close()
-
+            self.util_write_html(file_dir, html)
+            
     def render_archive_month(self, year, month):
         posts = [p for p in self.db_post_get_by_month(year, month)]
         if posts:
@@ -589,11 +590,7 @@ class Bucket3():
             tpl = self.tpl_env.get_template('archive.html')
             html = tpl.render(index=posts)
             file_dir = os.path.join(self.html_dir, str(year), month_MM)
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
-            f = open(os.path.join(file_dir, 'index.html'), 'w')
-            f.write(html.encode('utf8'))
-            f.close()
+            self.util_write_html(file_dir, html)
 
     def render_archive_tag(self, tag):
         posts = [p for p in self.db_post_get_by_tag(tag)]
@@ -601,11 +598,7 @@ class Bucket3():
             tpl = self.tpl_env.get_template('archive.html')
             html = tpl.render(index=posts, tag=tag)
             file_dir = os.path.join(self.html_dir, 'tag', tag)
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
-            f = open(os.path.join(file_dir, 'index.html'), 'w')
-            f.write(html.encode('utf8'))
-            f.close()
+            self.util_write_html(file_dir, html)
 
     def mentions_get(self, url):
         url_hash = hashlib.md5(url).hexdigest()
