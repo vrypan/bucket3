@@ -145,7 +145,7 @@ class Bucket3():
 
     def util_write_html(self, file_dir, file_content, file_name='index.html'):
         if self.minify_html:
-            file_content = minify(file_content, remove_comments=True, remove_empty_space=True)
+            file_content = minify(file_content, remove_comments=True, remove_empty_space=False)
         if not os.path.exists(file_dir):
                 os.makedirs(file_dir)
         f = open(os.path.join(file_dir, file_name), 'w')
