@@ -110,13 +110,24 @@ class Mentions():
 
     def expandUrl(self, url):
         # Helper method to expand short URLs
-        r = requests.head(url)
-        if r.status_code in range(200, 300):
-            return format(r.url)
-        elif r.status_code in range(300, 400):
-            return self.expandUrl(r.headers['location'])
-        else:
-            return format(r.status_code)
+        try:
+            r = requests.head(url)
+            if r.status_code in range(200, 300):
+                return format(r.url)
+            elif r.status_code in range(300, 400):
+                # Some servers redirect http://host/path to /path/
+                parts1 = urlparse(url)
+                parts2 = urlparse(r.headers['location'])
+                if parts2.netloc == '':
+                    new_url = '%s://%s%s' % (parts1.scheme, parts1.netloc, parts2.path)
+                else:
+                    new_url = r.headers['location']
+                return self.expandUrl(new_url)
+            else:
+                return format(r.status_code)
+        except:
+            return 'error'
+
 
     def touchBucket3PostByURL(self, url):
         p = self.db_conn.execute('SELECT * FROM posts WHERE url=?', (url,)).fetchone()
