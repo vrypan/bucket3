@@ -86,6 +86,9 @@ class Bucket3():
         # we will need rss_tags both in templates and program flow,
         # setting both makes it easier.
 
+        if 'posts_prefix' in conf
+                self.posts_prefix = conf['posts_prefix']
+                
         if 'rss_tags' in conf and conf['rss_tags']:
             self.rss_tags = conf['rss_tags']
             blog['rss_tags'] = conf['rss_tags']
@@ -104,9 +107,9 @@ class Bucket3():
             self.minify_html = False
 
         self.template_dir = [
+                os.path.join(self.root_dir, 'templates'),
                 os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates'),
                 os.path.join(self.root_dir, '.bucket3', 'themes', 'bucket3', 'templates'),
-                os.path.join(self.root_dir, 'static'),
                 os.path.join(os.path.dirname(os.path.abspath(__file__)),
                     '_themes', 'bucket3', 'templates'),  # last resort, the bucket3 theme downloaded with the app
                 ]
@@ -455,6 +458,18 @@ class Bucket3():
             if self.verbose:
                 print "Done."
 
+        # Copy cached images (avatars, etc) from mentions/images to html/images
+        images_src_dir = os.path.join(self.mentions_dir, 'images')
+        images_dst_dir = os.path.join(self.html_dir, 'images')
+        if os.path.exists(images_src_dir):
+            if not os.path.exists(images_dst_dir):
+                os.makedirs(images_dst_dir)
+            for img in os.listdir(images_src_dir):
+                shutil.copy2(os.path.join(images_src_dir, img), images_dst_dir)
+
+        self.render_static_pages()
+
+    def render_static_pages(self):
         """
         "static" pages are pages that are not blog posts. Their URL is /<page>.html and not YYYY/MM/DD/.../index.html
         Also, they are not included in the RSS feed, in the archive pages, etc.
@@ -475,26 +490,34 @@ class Bucket3():
         {% endblock %}
 
         """
-        if os.path.exists(os.path.join(self.root_dir, 'static')):
-            for static_page in os.listdir(os.path.join(self.root_dir, 'static')):
-                if self.verbose:
-                    print "   Rendering static page %s..." % static_page,
-                tpl = self.tpl_env.get_template(static_page)
-                html = tpl.render()
-                f = open(os.path.join(self.html_dir, static_page), 'w')
-                f.write(html.encode('utf8'))
-                f.close()
-                if self.verbose:
-                    print "Done."
+        print 'Rendering static pages. Source is /static/.'
+        static_root_src = os.path.join(self.root_dir, 'skel')
+        static_root_dst = self.html_dir
 
-        # Copy cached images (avatars, etc) from mentions/images to html/images
-        images_src_dir = os.path.join(self.mentions_dir, 'images')
-        images_dst_dir = os.path.join(self.html_dir, 'images')
-        if os.path.exists(images_src_dir):
-            if not os.path.exists(images_dst_dir):
-                os.makedirs(images_dst_dir)
-            for img in os.listdir(images_src_dir):
-                shutil.copy2(os.path.join(images_src_dir, img), images_dst_dir)
+        if os.path.exists(static_root_src):
+            for path, subdirs, files in os.walk(static_root_src):
+                for fname in files:
+                    rel_path = os.path.relpath(path, static_root_src)
+                    dst_path = os.path.join(static_root_dst, rel_path)
+                    ext = os.path.splitext(fname)[1]
+                    
+                    if not os.path.exists(dst_path):
+                        os.makedirs(dst_path)
+                
+                    if ext in ('.html', '.htm'):
+                        print "   Rendering %s/%s..." % (rel_path, fname) ,
+                        html_src = open(os.path.join(path, fname), 'r').read()
+                        html = self.tpl_env.from_string(html_src).render()
+
+                        f = open(os.path.join(dst_path, fname), 'w')
+                        f.write(html.encode('utf8'))
+                        f.close()
+                        print "Done."
+                    else:
+                        print "   Copying %s/%s..." % (rel_path, fname) ,
+                        shutil.copy2(os.path.join(path, fname), dst_path)
+                        print "Done."
+
 
     def render_post(self, post_id):
         post = self.db_post_get(post_id)

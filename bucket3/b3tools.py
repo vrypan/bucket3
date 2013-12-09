@@ -117,7 +117,8 @@ def blog_new(path):
         os.path.join(path, 'posts'),
         os.path.join(path, 'html'),
         os.path.join(path, 'mentions'),
-        os.path.join(path, 'static'),
+        os.path.join(path, 'templates'),
+        os.path.join(path, 'skel'),
         os.path.join(path, 'log')
         )
 
@@ -162,10 +163,10 @@ def blog_new(path):
     print "Populating static/..."
     for static_page in os.listdir(os.path.join( default_template_dir, 'templates', 'static')):
         src_f = os.path.join( default_template_dir, 'templates', 'static', static_page)
-        target_f = os.path.join(path, 'static', static_page)
+        target_f = os.path.join(path, 'skel', static_page)
         if not os.path.isfile(target_f):
             print '   Copying default %s' % static_page
-            shutil.copy( src_f, os.path.join(path, 'static'))
+            shutil.copy( src_f, os.path.join(path, 'skel'))
         else:
             print '   %s already exists.' % static_page
     print 'Done.\n'
