@@ -12,23 +12,25 @@
 {% endblock page_meta %}
 
 {% block content %}
-	{% for month in index|groupby('meta.date.month')|reverse() %}
-		<div class="row"><div class="col-sm-12"><h3>{{ _months[month.grouper|int] }}</h3></div></div>
-			{% for p in month.list %}
-				<div class="row">
-					<div class="col-sm-1 col-xs-1 text-right">
-						<b>{{ p.meta.date.strftime("%d") }}</b>
+	{% for year in index|groupby('meta.date.year')|reverse() %}
+		{% for month in year.list|groupby('meta.date.month')|reverse() %}
+			<div class="row"><div class="col-sm-12"><h3>{{ _months[month.grouper|int] }}</h3></div></div>
+				{% for p in month.list %}
+					<div class="row">
+						<div class="col-sm-1 col-xs-1 text-right">
+							<b>{{ p.meta.date.strftime("%d") }}</b>
+						</div>
+						<div class="col-sm-11 col-xs-11">
+							<a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
+							{% if p.meta.tags %}<small>
+								{% for t in p.meta.tags %}
+									<a class="text-muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
+								{% endfor %}
+							</small>{% endif %}
+							<br/>{% if p.meta.abstract %}<small>{{ p.meta.abstract }}</small>{% endif %}&nbsp;
+						</div>
 					</div>
-					<div class="col-sm-11 col-xs-11">
-						<a href="{{p.meta.url}}">{% if p.title %}{{ p.title }}{% else %}#{% endif %}</a>
-						{% if p.meta.tags %}<small>
-							{% for t in p.meta.tags %}
-								<a class="text-muted" href="{{ blog.url }}tag/{{ t }}/">#{{ t }}</a> 
-							{% endfor %}
-						</small>{% endif %}
-						<br/>{% if p.meta.abstract %}<small>{{ p.meta.abstract }}</small>{% endif %}&nbsp;
-					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+		{% endfor %}
 	{% endfor %}
 {% endblock %}
