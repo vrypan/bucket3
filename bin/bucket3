@@ -80,8 +80,7 @@ if __name__ == '__main__':
 
         # Render static pages, CSS files, etc.
         # Should be able to decide smarter if this is necessary each time
-        print 'Rendering skeleton and static pages.'
-        b.render_html_skel()
+        b.render_static_pages()
 
         b.rq_do()
 
@@ -90,9 +89,7 @@ if __name__ == '__main__':
         b = Bucket3(conf = conf, verbose=VERBOSE)
 
         if args['--static']:
-            if VERBOSE:
-                print 'Rendering skeleton and static pages.'
-            b.render_html_skel()
+            b.render_static_pages()
         if args['--rss']:
             if VERBOSE:
                 print 'Rendering RSS.'

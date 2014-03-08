@@ -96,23 +96,12 @@ class Bucket3():
             self.rss_tags = False
             blog['rss_tags'] = False
 
-        if 'theme' in conf and conf['theme']:
-            self.theme = conf['theme']
-        else:
-            self.theme = 'bucket3'
-
         if 'minify_html' in conf:
             self.minify_html = conf['minify_html']
         else:
             self.minify_html = False
 
-        self.template_dir = [
-                os.path.join(self.root_dir, 'templates'),
-                os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'templates'),
-                os.path.join(self.root_dir, '.bucket3', 'themes', 'bucket3', 'templates'),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                    '_themes', 'bucket3', 'templates'),  # last resort, the bucket3 theme downloaded with the app
-                ]
+        self.template_dir = [ os.path.join(self.root_dir, 'templates'), ]
 
         self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
         self.tpl_env.globals['blog'] = blog
@@ -438,37 +427,6 @@ class Bucket3():
                     print "Done."
             # MORE HERE!!!
 
-    def render_html_skel(self):
-        if self.verbose:
-            print "   Populating /_/...",
-        copy_tree(
-            os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'assets'),
-            os.path.join(self.html_dir, '_')            
-            )
-        if self.verbose:
-                print "Done."
-
-        if os.path.exists(os.path.join( self.root_dir, '.bucket3', 'themes', self.theme, 'robots.txt')):
-            if self.verbose:
-                print "   Copying robots.txt...",
-            shutil.copy2(
-                os.path.join(self.root_dir, '.bucket3', 'themes', self.theme, 'robots.txt'),
-                self.html_dir
-                )
-            if self.verbose:
-                print "Done."
-
-        # Copy cached images (avatars, etc) from mentions/images to html/images
-        images_src_dir = os.path.join(self.mentions_dir, 'images')
-        images_dst_dir = os.path.join(self.html_dir, 'images')
-        if os.path.exists(images_src_dir):
-            if not os.path.exists(images_dst_dir):
-                os.makedirs(images_dst_dir)
-            for img in os.listdir(images_src_dir):
-                shutil.copy2(os.path.join(images_src_dir, img), images_dst_dir)
-
-        self.render_static_pages()
-
     def render_static_pages(self):
         """
         "static" pages are pages that are not blog posts. Their URL is /<page>.html and not YYYY/MM/DD/.../index.html
@@ -490,7 +448,7 @@ class Bucket3():
         {% endblock %}
 
         """
-        print 'Rendering static pages. Source is /static/.'
+        print 'Rendering static pages (under skel/). ',
         static_root_src = os.path.join(self.root_dir, 'skel')
         static_root_dst = self.html_dir
 
@@ -503,20 +461,17 @@ class Bucket3():
                     
                     if not os.path.exists(dst_path):
                         os.makedirs(dst_path)
-                
+                    sys.stdout.write('.')
                     if ext in ('.html', '.htm'):
-                        print "   Rendering %s/%s..." % (rel_path, fname) ,
                         html_src = open(os.path.join(path, fname), 'r').read()
                         html = self.tpl_env.from_string(html_src).render()
 
                         f = open(os.path.join(dst_path, fname), 'w')
                         f.write(html.encode('utf8'))
                         f.close()
-                        print "Done."
                     else:
-                        print "   Copying %s/%s..." % (rel_path, fname) ,
                         shutil.copy2(os.path.join(path, fname), dst_path)
-                        print "Done."
+        print "Done."
 
 
     def render_post(self, post_id):
