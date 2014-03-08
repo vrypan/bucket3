@@ -113,12 +113,9 @@ def blog_new(path):
 
     bucket3_dirs = (
         os.path.join(path, '.bucket3'),
-        os.path.join(path, '.bucket3', 'themes'),
         os.path.join(path, 'posts'),
         os.path.join(path, 'html'),
         os.path.join(path, 'mentions'),
-        os.path.join(path, 'templates'),
-        os.path.join(path, 'skel'),
         os.path.join(path, 'log')
         )
 
@@ -138,8 +135,6 @@ def blog_new(path):
     if not os.path.isfile(conf_file):
         import pkgutil
         s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
-        s = s.replace('_top_blog_dir_', path)
-        s = s.replace('_html_dir_', os.path.join(path, 'html'))
         f = open(conf_file, 'w')
         f.write(s.encode('utf8'))
         f.close()
@@ -148,25 +143,28 @@ def blog_new(path):
         print "   %s already exists." % conf_file
     print "Done.\n"
 
-    print "Installing default theme..."
-    default_template_dir = os.path.join( os.path.dirname(
+    print "Installing default template files..."
+    # cp bucket3/default/templates/ to blog_dir/templates/
+    default_templates_dir = os.path.join( os.path.dirname(
         os.path.abspath(__file__)),
-        '_themes', 'bucket3')
-    def_theme_path = os.path.join(path, '.bucket3', 'themes', 'bucket3')
-    if not os.path.isdir(def_theme_path):
-        shutil.copytree(default_template_dir, def_theme_path)
-        print '   Copied default theme (bucket3).\n'
+        'default', 'templates')
+    inst_templates_dir = os.path.join(path, 'templates')
+    if not os.path.isdir(inst_templates_dir):
+        shutil.copytree(default_templates_dir, inst_templates_dir)
+        print '   Copied default template files to %s.\n' % inst_templates_dir
     else:
-        print "   %s already exists." % def_theme_path
+        print "   %s already exists." % inst_templates_dir
     print "Done.\n"
 
-    print "Populating static/..."
-    for static_page in os.listdir(os.path.join( default_template_dir, 'templates', 'static')):
-        src_f = os.path.join( default_template_dir, 'templates', 'static', static_page)
-        target_f = os.path.join(path, 'skel', static_page)
-        if not os.path.isfile(target_f):
-            print '   Copying default %s' % static_page
-            shutil.copy( src_f, os.path.join(path, 'skel'))
-        else:
-            print '   %s already exists.' % static_page
-    print 'Done.\n'
+    print "Installing default skeleton files..."
+    # cp bucket3/default/skel/ to blog_dir/skel/
+    default_skel_dir = os.path.join( os.path.dirname(
+        os.path.abspath(__file__)),
+        'default', 'skel')
+    inst_skel_dir = os.path.join(path, 'skel')
+    if not os.path.isdir(inst_skel_dir):
+        shutil.copytree(default_skel_dir, inst_skel_dir)
+        print '   Copied default skeleton files to %s.\n' % inst_skel_dir
+    else:
+        print "   %s already exists." % inst_skel_dir
+    print "Done.\n"
