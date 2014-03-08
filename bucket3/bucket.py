@@ -86,7 +86,7 @@ class Bucket3():
         # we will need rss_tags both in templates and program flow,
         # setting both makes it easier.
 
-        if 'posts_prefix' in conf
+        if 'posts_prefix' in conf:
                 self.posts_prefix = conf['posts_prefix']
                 
         if 'rss_tags' in conf and conf['rss_tags']:
