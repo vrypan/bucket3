@@ -48,6 +48,23 @@ class contentFilters():
     def html2Html(self, txt):
         return txt.decode('utf-8')
 
+def jinja_filter_gravatar(email, size=100, rating='g', default='retro', force_default=False,
+    force_lower=False, use_ssl=False):
+    # source: https://gist.github.com/Alquimista/3499097
+    if use_ssl:
+        url = "https://secure.gravatar.com/avatar/"
+    else:
+        url = "http://www.gravatar.com/avatar/"
+    if force_lower:
+        email = email.lower()
+    hashemail = hashlib.md5(email).hexdigest()
+    link = "{url}{hashemail}?s={size}&d={default}&r={rating}".format(
+        url=url, hashemail=hashemail, size=size,
+        default=default, rating=rating)
+    if force_default:
+        link = link + "&f=y"
+    return link
+
 class Bucket3():
 
     def __init__(self, conf=(), verbose=1):
@@ -104,6 +121,7 @@ class Bucket3():
         self.template_dir = [ os.path.join(self.root_dir, 'templates'), ]
 
         self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
+        self.tpl_env.filters['gravatar'] = jinja_filter_gravatar
         self.tpl_env.globals['blog'] = blog
         self.tpl_env.globals['_months'] = [calendar.month_name[i] for i in range(0, 13)]  # yes, needs to start from zero.
         self.tpl_env.globals['_months_short'] = [calendar.month_abbr[i] for i in range(0, 13)]  # yes, needs to start from zero.
