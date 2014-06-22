@@ -564,10 +564,10 @@ class Bucket3():
             print 'Done.'
 
     def render_archive_main(self):
-        counts_by_year_month = self.db_post_get_counts_by_year()
-        if counts_by_year_month:
-            tpl = self.tpl_env.get_template('main_archive.html')
-            html = tpl.render(counts=counts_by_year_month)
+        posts = [p for p in self.db_post_get_all(count=None)]
+        if posts:
+            tpl = self.tpl_env.get_template('archive.html')
+            html = tpl.render(index=posts)
             file_dir = os.path.join(self.html_dir, 'archive')
             self.util_write_html(file_dir, html)
             
