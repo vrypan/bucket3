@@ -18,7 +18,8 @@ setup(
     description='Static blog generator.',
     long_description=open('README.rst').read(),
     install_requires=[
-        "markdown2",
+        "markdown",
+	"py-gfm",
         "Jinja2",
         "PyYAML",
         "docopt",

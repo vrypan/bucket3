@@ -12,7 +12,7 @@ import hashlib
 from operator import itemgetter
 
 import yaml
-import markdown2
+import markdown
 from jinja2 import Template, FileSystemLoader, Environment
 import sqlite3
 import re
@@ -23,6 +23,8 @@ from htmlmin import minify
 
 class contentFilters():
     exts = ('.md', '.markdown', '.wordpress', '.html')
+    def __init__(self, markdown_extensions=[]):
+        self.markdown_extensions = markdown_extensions
 
     def toHtml(self, txt, ext='.markdown'):
         if ext == '.markdown' or ext == '.md':
@@ -35,7 +37,7 @@ class contentFilters():
             return txt
 
     def markdownToHtml(self, txt):
-        ret = markdown2.markdown(txt)
+        ret = markdown.markdown(txt.decode('utf-8'), extensions=self.markdown_extensions)
         return ret
 
     def wordpressToHtml(self, txt):
@@ -71,7 +73,6 @@ class Bucket3():
         self.verbose = verbose
 
         time.tzset()
-        self.filters = contentFilters()
 
         self.root_url = conf['blog']['url']
         self.root_dir = conf['root_dir']
@@ -97,6 +98,12 @@ class Bucket3():
 
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
+
+        if 'markdown_extensions' in conf:
+            self.markdown_extensions = conf['markdown_extensions']
+        else:
+            self.markdown_extensions = []
+        self.filters = contentFilters(markdown_extensions=self.markdown_extensions)
 
         blog = conf['blog']
 
@@ -482,7 +489,7 @@ class Bucket3():
                     sys.stdout.write('.')
                     if ext in ('.html', '.htm'):
                         html_src = open(os.path.join(path, fname), 'r').read()
-                        html = self.tpl_env.from_string(html_src).render()
+                        html = self.tpl_env.from_string(html_src.decode('utf-8')).render()
 
                         f = open(os.path.join(dst_path, fname), 'w')
                         f.write(html.encode('utf8'))
