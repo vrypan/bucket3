@@ -543,17 +543,24 @@ class Bucket3():
         f.close()
 
     def render_rss(self):
-        print "   rss.xml...",
+        self.render_rss_core('rss.xml')
+        self.render_rss_core('rss-medium.xml')
+        self.render_rss_tags()
+        return
+
+    def render_rss_core(self, template_file='rss.xml'):
+        print "   " + template_file +"...",
         posts = [p for p in self.db_post_get_all(0, 25)]
         if not posts:
             return
-        tpl = self.tpl_env.get_template('rss.xml')
+        tpl = self.tpl_env.get_template(template_file)
         html = tpl.render(posts=posts)
-        f = open(os.path.join(self.html_dir, 'rss.xml'), 'w')
+        f = open(os.path.join(self.html_dir, template_file), 'w')
         f.write(html.encode('utf8'))
         f.close()
         print "Done."
 
+    def render_rss_tags(self):
         if not self.rss_tags:
             return
         for tag in self.rss_tags:
@@ -569,6 +576,7 @@ class Bucket3():
                 f.write(html.encode('utf8'))
                 f.close()
             print 'Done.'
+
 
     def render_archive_main(self):
         posts = [p for p in self.db_post_get_all(count=None)]
