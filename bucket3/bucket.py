@@ -545,6 +545,7 @@ class Bucket3():
     def render_rss(self):
         self.render_rss_core('rss.xml')
         self.render_rss_core('rss-medium.xml')
+        self.render_rss_core('rss-fb.xml')
         self.render_rss_tags()
         return
 
