@@ -19,7 +19,8 @@ import re
 import pickle
 import unidecode
 from htmlmin import minify
-
+from lxml import etree as ET
+from copy import deepcopy
 
 class contentFilters():
     exts = ('.md', '.markdown', '.wordpress', '.html')
@@ -37,7 +38,7 @@ class contentFilters():
             return txt
 
     def markdownToHtml(self, txt):
-        ret = markdown.markdown(txt.decode('utf-8'), extensions=self.markdown_extensions)
+        ret = markdown.markdown(txt.decode('utf-8'), extensions=self.markdown_extensions, output_format='xhtml5')
         return ret
 
     def wordpressToHtml(self, txt):
@@ -49,6 +50,38 @@ class contentFilters():
 
     def html2Html(self, txt):
         return txt.decode('utf-8')
+
+def fb_instant_articles_markup(html):
+    html = "<div>" + html +"</div>"
+    root = ET.fromstring(html.encode('utf-8'))
+    for e in root.iterfind('.//center'):
+        if e.text.replace(' ','') == '***':
+            e.text = ''
+    ET.strip_tags(root, 'center')
+
+    for e in root.findall('.//img'):
+        parent_e = e.iterancestors().next()
+        if parent_e.tag != 'figure':
+            tmp_e = ET.Element('figure')
+            tmp_e.append(deepcopy(e))
+            parent_e.replace(e, tmp_e)
+        
+    for h in root.findall('.//h2'):
+        h.tag='h1'
+    for h in root.findall('.//h3'):
+        h.tag='h2'
+    
+    for e in root.findall('.//p'):
+        elements = [el for el in e]
+        if len(elements)==1 and elements[0].tail==None and e.text==None:
+            tmp_e = deepcopy(elements[0])    
+            parent_e = e.getparent()
+            parent_e.replace(e, tmp_e)    
+        if len(e) == 0 and e.text.strip() == '' and e.tail.strip()=='':
+            e.getparent().remove(e)
+
+    ret = ET.tostring(root)
+    return ret
 
 def jinja_filter_gravatar(email, size=100, rating='g', default='retro', force_default=False,
     force_lower=False, use_ssl=False):
@@ -129,6 +162,7 @@ class Bucket3():
 
         self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
         self.tpl_env.filters['gravatar'] = jinja_filter_gravatar
+        self.tpl_env.filters['fbia'] = fb_instant_articles_markup
         self.tpl_env.globals['blog'] = blog
         self.tpl_env.globals['_months'] = [calendar.month_name[i] for i in range(0, 13)]  # yes, needs to start from zero.
         self.tpl_env.globals['_months_short'] = [calendar.month_abbr[i] for i in range(0, 13)]  # yes, needs to start from zero.

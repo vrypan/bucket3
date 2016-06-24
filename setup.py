@@ -27,6 +27,7 @@ setup(
         "webmentiontools",
         "unidecode",
 	"htmlmin",
+	'lxml',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
