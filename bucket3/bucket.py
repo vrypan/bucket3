@@ -51,7 +51,7 @@ class contentFilters():
     def html2Html(self, txt):
         return txt.decode('utf-8')
 
-def fb_instant_articles_markup(html):
+def fb_instant_articles_markup(html, url=''):
     html = "<div>" + html +"</div>"
     root = ET.fromstring(html.encode('utf-8'))
     for e in root.iterfind('.//center'):
@@ -79,6 +79,18 @@ def fb_instant_articles_markup(html):
             parent_e.replace(e, tmp_e)    
         if len(e) == 0 and e.text.strip() == '' and e.tail.strip()=='':
             e.getparent().remove(e)
+
+        for e in root.findall('./pre/code'):
+            parent_e = e.getparent()
+            tmp_e = ET.Element('blockquote')
+            tmp_a = ET.Element('a')
+            tmp_a.attrib['href']=url
+            tmp_a.text = """
+            Visit the original post on my blog to get the code that was displayed here.
+            """
+            tmp_a.tail=' (Code removed due to limitations of Facebook instant articles.)'
+            tmp_e.append(tmp_a)
+            parent_e.replace(e, tmp_e)
 
     ret = ET.tostring(root)
     return ret
