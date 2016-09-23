@@ -54,14 +54,21 @@ def post_new(slug='', ext=None, cpath='.'):
     import pkgutil
     from datetime import datetime
 
-    s = pkgutil.get_data('bucket3', 'conf/post.example.md')
+    c = conf_get(cpath)
+    if not c:
+        print "bucket3.b3tools.post_new: unable to locate conf.yaml."
+        return 1
+    try:
+        local_template = os.path.join(c['root_dir'], 'templates', 'post.template.md')
+        print "Trying template:", local_template
+        s =  open(local_template, 'r').read()
+    except:
+        s = pkgutil.get_data('bucket3', 'conf/post.example.md')
+
     s = s.replace('_date_time_now_', datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'))
     s = s.replace('_post_slug_', slug)
+    
     if not ext:
-        c = conf_get(cpath)
-        if not c:
-            print "bucket3.b3tools.post_new: unable to locate conf.yaml."
-            return 1
         if c['default_file_ext']:
             ext = c['default_file_ext']
         else:
