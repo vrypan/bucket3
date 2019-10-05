@@ -38,7 +38,7 @@ class contentFilters():
             return txt
 
     def markdownToHtml(self, txt):
-        ret = markdown.markdown(txt.decode('utf-8'), extensions=self.markdown_extensions, output_format='xhtml5')
+        ret = markdown.markdown(txt, extensions=self.markdown_extensions, output_format='xhtml5')
         return ret
 
     def wordpressToHtml(self, txt):
@@ -46,21 +46,21 @@ class contentFilters():
         paras = re.split('\n{2,}', txt)
         paras = ['<p>%s</p>' % p.replace('\n', '<br />') for p in paras]
         txt2 = '\n'.join(paras)
-        return txt2.decode('utf-8')
+        return txt2
 
     def html2Html(self, txt):
-        return txt.decode('utf-8')
+        return txt
 
 def fb_instant_articles_markup(html, url=''):
     html = "<div>" + html +"</div>"
-    root = ET.fromstring(html.encode('utf-8'))
+    root = ET.fromstring(html)
     for e in root.iterfind('.//center'):
         if e.text.replace(' ','') == '***':
             e.text = ''
     ET.strip_tags(root, 'center')
 
     for e in root.findall('.//img'):
-        parent_e = e.iterancestors().next()
+        parent_e = next(e.iterancestors())
         if parent_e.tag != 'figure':
             tmp_e = ET.Element('figure')
             tmp_e.append(deepcopy(e))
@@ -212,7 +212,7 @@ class Bucket3():
         if not os.path.exists(file_dir):
                 os.makedirs(file_dir)
         f = open(os.path.join(file_dir, file_name), 'w')
-        f.write(file_content.encode('utf8'))
+        f.write(file_content)
         f.close()
 
     def util_parse_frontmatter(self, txt):
@@ -263,19 +263,19 @@ class Bucket3():
 
     def fs_post_get(self, path):
         if self.verbose > 1:
-            print "DEBUG: fs_post_get(%s)" % path
+            print("DEBUG: fs_post_get(%s)" % path)
         if not os.path.splitext(path)[1] in self.filters.exts:
             return None
 
         abs_path = self.util_abs_path(path)
 
-        post_id = hashlib.sha1(path).hexdigest()
+        post_id = hashlib.sha1(path.encode('utf-8')).hexdigest()
 
         txt = open(abs_path, 'r').read()
         (dummy, frontmatter, body) = txt.split('---', 2)
 
         if self.verbose > 1:
-            print 'Reading %s...' % path
+            print('Reading %s...' % path)
 
         meta = self.util_parse_frontmatter(frontmatter)
 
@@ -315,15 +315,15 @@ class Bucket3():
 
     def db_post_del(self, id):
         if self.verbose:
-            print "Deleting post [id:%s]..." % id,
+            print("Deleting post [id:%s]..." % id, end='')
         post = self.db_post_get(id)
         if not post and self.verbose:
-            print "Not found. Ignoring."
+            print("Not found. Ignoring.")
             return
         self.db_conn.execute('DELETE FROM posts WHERE id=?', (id,))
         self.rq_post_deps(post)
         if self.verbose:
-            print "Done."
+            print("Done.")
 
     def db_init(self):
         self.db_conn.executescript("""
@@ -346,7 +346,7 @@ class Bucket3():
         p['year'] = dt.year
         p['month'] = '{:02d}'.format(dt.month)
         p['day'] = '{:02d}'.format(dt.day)
-        p['meta'] = pickle.loads(str(row['meta']))
+        p['meta'] = pickle.loads(row['meta'])
         return p
 
     def db_post_get(self, id):
@@ -447,55 +447,55 @@ class Bucket3():
         for task in self.render_Q:
             if task[0] == 'post':
                 if self.verbose:
-                    print 'Rendering post    [id:%s]...' % task[1],
+                    print('Rendering post    [id:%s]...' % task[1], end='')
                 self.render_post(task[1])
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'archive_main':
                 if self.verbose:
-                    print "Rendering archive [main]...",
+                    print("Rendering archive [main]...", end='')
                 self.render_archive_main()
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'archive_year':
                 if self.verbose:
-                    print "Rendering archive [year:%s]..." % task[1],
+                    print("Rendering archive [year:%s]..." % task[1], end='')
                 self.render_archive_year(year=task[1])
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'archive_month':
                 if self.verbose:
-                    print "Rendering archive [year:%s, month:%s]..." % (task[1][0], task[1][1]),
+                    print("Rendering archive [year:%s, month:%s]..." % (task[1][0], task[1][1]), end='')
                 self.render_archive_month(year=task[1][0], month=task[1][1])
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'tag':
                 if self.verbose:
-                    print "Rendering archive [tag:%s]..." % task[1],
+                    print("Rendering archive [tag:%s]..." % task[1], end='')
                 self.render_archive_tag(task[1])
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'rss':
                 self.render_rss()
 
             elif task[0] == 'sitemap':
                 if self.verbose:
-                    print "Rendering sitemap.xml... ",
+                    print("Rendering sitemap.xml... ", end='')
                 self.render_xml_sitemap()
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
 
             elif task[0] == 'homepage':
                 if self.verbose:
-                    print "Rendering homepage...",
+                    print("Rendering homepage...", end='')
                 self.render_home()
                 if self.verbose:
-                    print "Done."
+                    print("Done.")
             # MORE HERE!!!
 
     def render_static_pages(self):
@@ -519,7 +519,7 @@ class Bucket3():
         {% endblock %}
 
         """
-        print 'Rendering static pages (under skel/). ',
+        print('Rendering static pages (under skel/). ', end='')
         static_root_src = os.path.join(self.root_dir, 'skel')
         static_root_dst = self.html_dir
 
@@ -535,14 +535,14 @@ class Bucket3():
                     sys.stdout.write('.')
                     if ext in ('.html', '.htm'):
                         html_src = open(os.path.join(path, fname), 'r').read()
-                        html = self.tpl_env.from_string(html_src.decode('utf-8')).render()
+                        html = self.tpl_env.from_string(html_src).render()
 
                         f = open(os.path.join(dst_path, fname), 'w')
-                        f.write(html.encode('utf8'))
+                        f.write(html)
                         f.close()
                     else:
                         shutil.copy2(os.path.join(path, fname), dst_path)
-        print "Done."
+        print("Done.")
 
 
     def render_post(self, post_id):
@@ -577,7 +577,7 @@ class Bucket3():
         tpl = self.tpl_env.get_template('sitemap.xml')
         html = tpl.render(posts=posts)
         f = open(os.path.join(self.html_dir, 'sitemap.xml'), 'w')
-        f.write(html.encode('utf8'))
+        f.write(html)
         f.close()
 
     def render_rss(self):
@@ -588,22 +588,22 @@ class Bucket3():
         return
 
     def render_rss_core(self, template_file='rss.xml'):
-        print "   " + template_file +"...",
+        print("   " + template_file +"...", end='')
         posts = [p for p in self.db_post_get_all(0, 25)]
         if not posts:
             return
         tpl = self.tpl_env.get_template(template_file)
         html = tpl.render(posts=posts)
         f = open(os.path.join(self.html_dir, template_file), 'w')
-        f.write(html.encode('utf8'))
+        f.write(html)
         f.close()
-        print "Done."
+        print("Done.")
 
     def render_rss_tags(self):
         if not self.rss_tags:
             return
         for tag in self.rss_tags:
-            print "   tag/%s/rss.xml..." % tag,
+            print("   tag/%s/rss.xml..." % tag, end='')
             posts = [p for p in self.db_post_get_by_tag(tag)]
             if posts:
                 tpl = self.tpl_env.get_template('rss.xml')
@@ -612,9 +612,9 @@ class Bucket3():
                 if not os.path.exists(file_dir):
                     os.makedirs(file_dir)
                 f = open(os.path.join(file_dir, 'rss.xml'), 'w')
-                f.write(html.encode('utf8'))
+                f.write(html)
                 f.close()
-            print 'Done.'
+            print('Done.')
 
 
     def render_archive_main(self):
@@ -651,7 +651,7 @@ class Bucket3():
             self.util_write_html(file_dir, html)
 
     def mentions_get(self, url):
-        url_hash = hashlib.md5(url).hexdigest()
+        url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
         path = os.path.join(self.mentions_dir, '%s.yaml' % url_hash)
         if os.path.isfile(path):
             f = open(path, mode='r')

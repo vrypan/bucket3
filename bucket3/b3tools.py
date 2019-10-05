@@ -24,7 +24,7 @@ def conf_locate(cpath=None):
         else:
             h, t = os.path.split(h)
     if not confpath:
-        print 'bucket3.tools.conf_locate: Unable to locate a bucket3 configuration.'
+        print('bucket3.tools.conf_locate: Unable to locate a bucket3 configuration.')
         return None
     else:
         return confpath
@@ -37,10 +37,10 @@ def conf_get(cpath=None):
     """
     cpath = conf_locate(cpath)
     if not cpath:
-        print 'bucket3.tools.conf_get: Unable to read bucket3 configuration.'
+        print('bucket3.tools.conf_get: Unable to read bucket3 configuration.')
         return None
     conf_file = os.path.join(cpath, '.bucket3', 'conf.yaml')
-    conf = yaml.load(open(conf_file, mode='r').read())
+    conf = yaml.full_load(open(conf_file, mode='r').read())
     conf['root_dir'] = cpath
     conf['html_dir'] = os.path.join(cpath, 'html')
     conf['mentions_dir'] = os.path.join(cpath, 'mentions')
@@ -56,11 +56,11 @@ def post_new(slug='', ext=None, cpath='.'):
 
     c = conf_get(cpath)
     if not c:
-        print "bucket3.b3tools.post_new: unable to locate conf.yaml."
+        print("bucket3.b3tools.post_new: unable to locate conf.yaml.")
         return 1
     try:
         local_template = os.path.join(c['root_dir'], 'templates', 'post.template.md')
-        print "Trying template:", local_template
+        print("Trying template:", local_template)
         s =  open(local_template, 'r').read()
     except:
         s = pkgutil.get_data('bucket3', 'conf/post.example.md')
@@ -81,7 +81,7 @@ def post_new(slug='', ext=None, cpath='.'):
     f = open(filename, 'w')
     f.write(s.encode('utf8'))
     f.close()
-    print "Created %s." % filename
+    print("Created %s." % filename)
 
 
 def blog_clean(cpath):
@@ -90,14 +90,14 @@ def blog_clean(cpath):
     import shutil
     c = conf_get(cpath)
     if not c:
-        print 'bucket3.b3tools.blog.clean: Unable to locate conf.yaml.'
+        print('bucket3.b3tools.blog.clean: Unable to locate conf.yaml.')
         return 1
 
     html_dir = os.path.abspath(c['html_dir'])
     data_dir = os.path.abspath(os.path.join(c['root_dir'], '.bucket3', 'data'))
     fsdb_dir = os.path.abspath(os.path.join(c['root_dir'], '.bucket3', 'fsdb'))
 
-    ok = raw_input('Delete EVERYTHING under \n%s and \n%s and \n%s \n(y/N)' % ( html_dir,data_dir, fsdb_dir ) )
+    ok = input('Delete EVERYTHING under \n%s and \n%s and \n%s \n(y/N)' % ( html_dir,data_dir, fsdb_dir ) )
     if ok in ('Y', 'y'):
         for p in [html_dir, data_dir, fsdb_dir]:
             for i in os.listdir(p):
@@ -106,9 +106,9 @@ def blog_clean(cpath):
                     shutil.rmtree(path=d, ignore_errors=True)
                 else:
                     os.remove(d)
-            print "Deleted all files in %s." % p
+            print("Deleted all files in %s." % p)
     else:
-        print "Canceled."
+        print("Canceled.")
 
 
 def blog_new(path):
@@ -128,29 +128,29 @@ def blog_new(path):
 
     conf_file = os.path.join(path, '.bucket3', 'conf.yaml')
 
-    print
-    print "Checking file structure..."
+    print("\n")
+    print("Checking file structure...")
     for d in bucket3_dirs:
         if not os.path.isdir(d):
             os.mkdir(d)
-            print "   Created %s." % d
+            print("   Created %s." % d)
         else:
-            print "   %s already exists." % d
-    print 'Done.\n'
+            print("   %s already exists." % d)
+    print('Done.\n')
 
-    print "Generating config files..."
+    print("Generating config files...")
     if not os.path.isfile(conf_file):
         import pkgutil
         s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
         f = open(conf_file, 'w')
         f.write(s.encode('utf8'))
         f.close()
-        print "   Created: %s \nMake sure you edit it before moving on!\n" % conf_file
+        print("   Created: %s \nMake sure you edit it before moving on!\n" % conf_file)
     else:
-        print "   %s already exists." % conf_file
-    print "Done.\n"
+        print("   %s already exists." % conf_file)
+    print("Done.\n")
 
-    print "Installing default template files..."
+    print("Installing default template files...")
     # cp bucket3/default/templates/ to blog_dir/templates/
     default_templates_dir = os.path.join( os.path.dirname(
         os.path.abspath(__file__)),
@@ -158,12 +158,12 @@ def blog_new(path):
     inst_templates_dir = os.path.join(path, 'templates')
     if not os.path.isdir(inst_templates_dir):
         shutil.copytree(default_templates_dir, inst_templates_dir)
-        print '   Copied default template files to %s.\n' % inst_templates_dir
+        print('   Copied default template files to %s.\n' % inst_templates_dir)
     else:
-        print "   %s already exists." % inst_templates_dir
-    print "Done.\n"
+        print("   %s already exists." % inst_templates_dir)
+    print("Done.\n")
 
-    print "Installing default skeleton files..."
+    print("Installing default skeleton files...")
     # cp bucket3/default/skel/ to blog_dir/skel/
     default_skel_dir = os.path.join( os.path.dirname(
         os.path.abspath(__file__)),
@@ -171,7 +171,7 @@ def blog_new(path):
     inst_skel_dir = os.path.join(path, 'skel')
     if not os.path.isdir(inst_skel_dir):
         shutil.copytree(default_skel_dir, inst_skel_dir)
-        print '   Copied default skeleton files to %s.\n' % inst_skel_dir
+        print('   Copied default skeleton files to %s.\n' % inst_skel_dir)
     else:
-        print "   %s already exists." % inst_skel_dir
-    print "Done.\n"
+        print("   %s already exists." % inst_skel_dir)
+    print("Done.\n")

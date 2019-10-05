@@ -42,7 +42,7 @@ if __name__ == '__main__':
         part = conf
         for p in parts:
           part = part[p]
-        print part
+        print(part)
 
     elif args['clear']:
         b3tools.blog_clean(args['--path'])
@@ -65,13 +65,13 @@ if __name__ == '__main__':
 
         for f in fsdb.file_get_new( since_ts=t2 ):
             if VERBOSE:
-                print "Located new/modified file", f['path']
+                print("Located new/modified file", f['path'])
             post = b.fs_post_get(f['path'])
             if post:
                 b.db_post_put(post)
         for f in fsdb.file_get_deleted( before_ts=t1 ):
             if VERBOSE:
-                print "Located deleted file    ", f['path']
+                print("Located deleted file    ", f['path'])
             post_id = b.fs_post_get_id(f['path'])
             b.db_post_del(post_id)
             fsdb.file_del(f['id'])
@@ -92,15 +92,15 @@ if __name__ == '__main__':
             b.render_static_pages()
         if args['--rss']:
             if VERBOSE:
-                print 'Rendering RSS.'
+                print('Rendering RSS.')
             b.render_rss()
         if args['--sitemap']:
             if VERBOSE:
-                print 'Rendering sitemap.xml.'
+                print('Rendering sitemap.xml.')
             b.render_xml_sitemap()
         if args['--posts']:
             if VERBOSE:
-                print 'Rendering all posts in db.'
+                print('Rendering all posts in db.')
             b.db_init()
             for post in b.db_post_get_all(count=None):
                 b.render_Q.update([('post', post['id']), ])

@@ -48,7 +48,7 @@ class fsmeta:
         self.db_conn.commit()
 
     def hash(self, s):
-        return hashlib.sha1(s).hexdigest()
+        return hashlib.sha1(s.encode('utf-8')).hexdigest()
 
     def meta_get(self, k, d=None):
         self.db_cur.execute("SELECT * FROM meta WHERE key=?", (k,))
