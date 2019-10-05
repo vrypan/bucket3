@@ -558,14 +558,6 @@ class Bucket3():
             for a in post['meta']['attached']:
                 shutil.copy2(os.path.join(os.path.dirname(self.util_abs_path(post['src'])), a), post['meta']['fs_path'])
 
-        if not os.path.exists(os.path.join(self.root_dir, 'log')):
-            os.makedirs(os.path.join(self.root_dir, 'log'))
-        urls_file = open(os.path.join(self.root_dir, 'log', 'external_links.txt'),'a')
-        for link in self.util_extract_links(post['html']):
-            urls_file.write('%s\t%s\n' % (post['url'], link))
-        urls_file.close()
-
-
     def render_home(self):
         if self.posts_in_homepage:
             count = self.posts_in_homepage
