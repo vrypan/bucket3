@@ -79,7 +79,7 @@ def post_new(slug='', ext=None, cpath='.'):
     filename = os.path.join(dirname, "%s-%s.%s" % (prefix, slug, ext))
     os.mkdir(dirname)
     f = open(filename, 'w')
-    f.write(s.encode('utf8'))
+    f.write(s)
     f.close()
     print("Created %s." % filename)
 
