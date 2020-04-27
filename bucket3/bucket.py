@@ -216,7 +216,7 @@ class Bucket3():
         f.close()
 
     def util_parse_frontmatter(self, txt):
-        meta = yaml.load(txt)
+        meta = yaml.load(txt, Loader=yaml.FullLoader)
         meta['title'] = meta['title'].strip()
         if type(meta['date']) != datetime:
             meta['date'] = datetime.strptime(meta['date'][:16], '%Y-%m-%d %H:%M')
