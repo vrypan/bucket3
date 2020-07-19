@@ -1,7 +1,17 @@
 import os
 import sys
 import yaml
+import urllib
+import unidecode
+import re
 
+
+def slugify(str):
+    # Credit: http://stackoverflow.com/a/8366771
+    str = urllib.parse.unquote(str)
+    str = unidecode.unidecode(str).lower()
+    ret = re.sub(r'\W+','-',str)
+    return ret
 
 def conf_locate(cpath=None):
     """ Given a filesystem path, locate configuration files.
@@ -63,7 +73,7 @@ def post_new(slug='', ext=None, cpath='.'):
         print("Trying template:", local_template)
         s =  open(local_template, 'r').read()
     except:
-        s = pkgutil.get_data('bucket3', 'conf/post.example.md')
+        s = pkgutil.get_data('bucket3', 'conf/post.example.md').decode()
 
     s = s.replace('_date_time_now_', datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'))
     s = s.replace('_post_slug_', slug)
