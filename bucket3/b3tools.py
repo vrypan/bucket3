@@ -100,13 +100,14 @@ def blog_clean(cpath):
     ok = input('Delete EVERYTHING under \n%s and \n%s and \n%s \n(y/N)' % ( html_dir,data_dir, fsdb_dir ) )
     if ok in ('Y', 'y'):
         for p in [html_dir, data_dir, fsdb_dir]:
-            for i in os.listdir(p):
-                d = os.path.join(p, i)
-                if os.path.isdir(d):
-                    shutil.rmtree(path=d, ignore_errors=True)
-                else:
-                    os.remove(d)
-            print("Deleted all files in %s." % p)
+            if os.path.isdir(p):
+                for i in os.listdir(p):
+                    d = os.path.join(p, i)
+                    if os.path.isdir(d):
+                        shutil.rmtree(path=d, ignore_errors=True)
+                    else:
+                        os.remove(d)
+                print("Deleted all files in %s." % p)
     else:
         print("Canceled.")
 
@@ -141,8 +142,8 @@ def blog_new(path):
     if not os.path.isfile(conf_file):
         import pkgutil
         s = pkgutil.get_data('bucket3', 'conf/conf.example.yaml')
-        f = open(conf_file, 'w')
-        f.write(s.encode('utf8'))
+        f = open(conf_file, 'wb')
+        f.write(s)
         f.close()
         print("   Created: %s \nMake sure you edit it before moving on!\n" % conf_file)
     else:
