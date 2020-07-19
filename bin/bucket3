@@ -7,7 +7,6 @@ Usage:
   bucket3 [options] new <slug> [<ext>]
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
   bucket3 [options] update
-  bucket3 [options] mentions [--twitter]
   bucket3 [options] getenv <variable>
   bucket3 -h, --help
   bucket3 --version
@@ -106,10 +105,3 @@ if __name__ == '__main__':
                 b.render_Q.update([('post', post['id']), ])
                 b.rq_post_deps(post)
             b.rq_do()
-
-    elif args['mentions']:
-        from bucket3.mentions import Mentions
-        conf = b3tools.conf_get(args['--path'])
-        r = Mentions(conf=conf)
-        r.getTwitterMentions()
-        r.getWebMentions()

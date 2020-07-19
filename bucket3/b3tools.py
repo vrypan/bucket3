@@ -1,12 +1,14 @@
 import os
+import sys
 import yaml
 
 
 def conf_locate(cpath=None):
     """ Given a filesystem path, locate configuration files.
     If path is not defined, use current directory to start searching.
-    Then go up one level each time, until a ".bucket3" dir is located.
-    If located, will return (str) path to .bucket3.
+    Then go up one level each time, until a dir containing 
+    bucket3.conf.yaml is located.
+    If located, will return (str) the path.
     """
     if cpath and cpath != '.':
         # more testing need to be done here.
@@ -16,8 +18,8 @@ def conf_locate(cpath=None):
     h, t = os.path.split(cwd)  # head, tail
 
     while h != os.sep:
-        if os.path.isdir(
-                os.path.join(h, t, '.bucket3')
+        if os.path.isfile(
+                os.path.join(h, t, 'bucket3.conf.yaml')
                 ):
             confpath = os.path.join(h, t)
             break
@@ -25,26 +27,24 @@ def conf_locate(cpath=None):
             h, t = os.path.split(h)
     if not confpath:
         print('bucket3.tools.conf_locate: Unable to locate a bucket3 configuration.')
-        return None
+        sys.exit(1)
     else:
         return confpath
 
 
 def conf_get(cpath=None):
     """ Given a path (or cur dir if not), search for conf dir
-    (going up if needed), then locate conf.yaml in conf dir,
-    parse conf.yaml and return the configuration object.
+    (going up if needed), then locate bucket3.conf.yaml in conf dir,
+    parse bucket3.conf.yaml and return the configuration object.
     """
     cpath = conf_locate(cpath)
     if not cpath:
         print('bucket3.tools.conf_get: Unable to read bucket3 configuration.')
-        return None
-    conf_file = os.path.join(cpath, '.bucket3', 'conf.yaml')
+        sys.exit(1)
+    conf_file = os.path.join(cpath, 'bucket3.conf.yaml')
     conf = yaml.full_load(open(conf_file, mode='r').read())
     conf['root_dir'] = cpath
     conf['html_dir'] = os.path.join(cpath, 'html')
-    conf['mentions_dir'] = os.path.join(cpath, 'mentions')
-
     return conf
 
 
@@ -56,7 +56,7 @@ def post_new(slug='', ext=None, cpath='.'):
 
     c = conf_get(cpath)
     if not c:
-        print("bucket3.b3tools.post_new: unable to locate conf.yaml.")
+        print("bucket3.b3tools.post_new: unable to locate bucket3.conf.yaml.")
         return 1
     try:
         local_template = os.path.join(c['root_dir'], 'templates', 'post.template.md')
@@ -90,7 +90,7 @@ def blog_clean(cpath):
     import shutil
     c = conf_get(cpath)
     if not c:
-        print('bucket3.b3tools.blog.clean: Unable to locate conf.yaml.')
+        print('bucket3.b3tools.blog.clean: Unable to locate bucket3.conf.yaml.')
         return 1
 
     html_dir = os.path.abspath(c['html_dir'])
@@ -122,11 +122,10 @@ def blog_new(path):
         os.path.join(path, '.bucket3'),
         os.path.join(path, 'posts'),
         os.path.join(path, 'html'),
-        os.path.join(path, 'mentions'),
         os.path.join(path, 'log')
         )
 
-    conf_file = os.path.join(path, '.bucket3', 'conf.yaml')
+    conf_file = os.path.join(path, 'bucket3.conf.yaml')
 
     print("\n")
     print("Checking file structure...")

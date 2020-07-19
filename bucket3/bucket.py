@@ -121,7 +121,6 @@ class Bucket3():
 
         self.root_url = conf['blog']['url']
         self.root_dir = conf['root_dir']
-        self.mentions_dir = conf['mentions_dir']
         self.data_dir = os.path.join(self.root_dir, '.bucket3', 'data')
         self.posts_dir = os.path.join(self.root_dir, 'posts')
         self.html_dir = os.path.join(self.root_dir, 'html')
@@ -547,10 +546,8 @@ class Bucket3():
 
     def render_post(self, post_id):
         post = self.db_post_get(post_id)
-        mentions = self.mentions_get(post['url'])
-
         tpl = self.tpl_env.get_template('post.html')
-        html = tpl.render(meta=post['meta'], body=post['html'], mentions=mentions)
+        html = tpl.render(meta=post['meta'], body=post['html'])
         
         self.util_write_html(post['meta']['fs_path'],html)
         
@@ -650,15 +647,5 @@ class Bucket3():
             file_dir = os.path.join(self.html_dir, 'tag', tag)
             self.util_write_html(file_dir, html)
 
-    def mentions_get(self, url):
-        url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
-        path = os.path.join(self.mentions_dir, '%s.yaml' % url_hash)
-        if os.path.isfile(path):
-            f = open(path, mode='r')
-            data = yaml.load(f.read())
-            f.close()
-            return data
-        else:
-            return None
 if __name__ == '__main__':
     pass
