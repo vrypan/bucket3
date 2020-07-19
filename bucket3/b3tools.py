@@ -4,6 +4,9 @@ import yaml
 import urllib
 import unidecode
 import re
+from jinja2 import FileSystemLoader, Environment
+from datetime import datetime
+
 
 
 def slugify(str):
@@ -58,38 +61,45 @@ def conf_get(cpath=None):
     return conf
 
 
-def post_new(slug='', ext=None, cpath='.'):
+def post_new(slug='', title='', cpath='.', post=None):
     """ Create an empty post
     """
-    import pkgutil
     from datetime import datetime
 
     c = conf_get(cpath)
     if not c:
         print("bucket3.b3tools.post_new: unable to locate bucket3.conf.yaml.")
-        return 1
-    try:
-        local_template = os.path.join(c['root_dir'], 'templates', 'post.template.md')
-        print("Trying template:", local_template)
-        s =  open(local_template, 'r').read()
-    except:
-        s = pkgutil.get_data('bucket3', 'conf/post.example.md').decode()
+        sys.exit(1)
 
-    s = s.replace('_date_time_now_', datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'))
-    s = s.replace('_post_slug_', slug)
+    if not title:
+        print("b3tools.post_new: No post title provided. Exiting.")
+        sys.exit(1)
     
-    if not ext:
-        if c['default_file_ext']:
-            ext = c['default_file_ext']
-        else:
-            ext = ".md"
+    if not post:
+        post = {
+            "slug": slug,
+            "title": title,
+            "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'),
+            "abstract": """Enter post abstract here. The space at the 
+ begining of the line is important.""",
+            "tags": ("tag1", "tag2", "tag3"),
+            "attached": "",
+            "content": "Here goes your markdown content."
+            }
+    if not post['slug']:
+        post['slug']=slugify(post['title'])
+
+    template_dir = [ os.path.join(c['root_dir'], 'templates'), ]
+    tpl_env = Environment(loader=FileSystemLoader(template_dir))
+    tpl = tpl_env.get_template('post.meta.template.md')
+    new_post = tpl.render(post=post)
 
     prefix = datetime.now().strftime('%y%m%d')
-    dirname = "%s-%s" % (prefix, slug)
-    filename = os.path.join(dirname, "%s-%s.%s" % (prefix, slug, ext))
+    dirname = "%s-%s" % (prefix, post['slug'])
+    filename = os.path.join(dirname, "%s-%s.%s" % (prefix, post['slug'], "md"))
     os.mkdir(dirname)
     f = open(filename, 'w')
-    f.write(s)
+    f.write(new_post)
     f.close()
     print("Created %s." % filename)
 

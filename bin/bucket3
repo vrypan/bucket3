@@ -4,7 +4,7 @@
 Usage:
   bucket3 [options] init
   bucket3 [options] clear
-  bucket3 [options] new <slug> [<ext>]
+  bucket3 [options] new <title> [<slug>]
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
   bucket3 [options] update
   bucket3 [options] getenv <variable>
@@ -47,8 +47,11 @@ if __name__ == '__main__':
         b3tools.blog_clean(args['--path'])
 
     elif args['new']:
-        slug = b3tools.slugify(args['<slug>'])
-        b3tools.post_new(slug=slug, ext=args['<ext>'], cpath=args['--path'])
+        b3tools.post_new(
+            slug=args['<slug>'], 
+            title=args['<title>'], 
+            cpath=args['--path']
+            )
 
     elif args['update']:
         conf = b3tools.conf_get(args['--path'])
