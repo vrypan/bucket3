@@ -4,9 +4,9 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -30,51 +30,51 @@
 
         <hr>
 
-<section id="main_content">
-<h3>Welcome to bucket3</h3>
-<p>bucket3 is a simple, blog aware, static site generator written in python. It reads your content and spits out a complete, static website in HTML, that can be histed in any web server or even GitHub Pages or Amazon S3.</p>
-<p>bucket3 intends to be an “information bucket” where you throw pieces of information (texts, images, audio, etc), and presents them in a nice blog-like format.</p>
-
-<h3>Quick intro</h3>
+        <section id="main_content">
+          <h1>
+<a id="bucket3" class="anchor" href="#bucket3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bucket3</h1>
+<p>bucket3 is a simple, blog aware, static site generator written in python. It reads your content and spits out a complete, static website suitable for serving with Apache or your favorite web server.</p>
+<p>bucket3 would like to become a virtual “information bucket” where you throw
+pieces of information (texts, images, audio, etc), and presents them in a nice
+blog-like format.</p>
+<h1>
+<a id="quick-intro" class="anchor" href="#quick-intro" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick intro</h1>
 <p>Install bucket3</p>
-<pre><code>$ pip install bucket3</code></pre>
+<p><code>pip install bucket3</code></p>
 <p>Create a local directory to hold your blog and initialize a new bucket3 blog</p>
-<pre><code>$ mkdir myblog
-$ cd myblog
-$ bucket3 init
+<pre><code>mkdir myblog
+cd myblog 
+bucket3 init
 </code></pre>
-<p>Configure your blog: Edit .bucket3/conf.yaml and set your blog name, URL, etc.</p>
-<p>Create a new post.</p>
-<pre><code>$ cd posts
-$ bucket3 new hello-world-1
+<p>Configure your blog: Edit bucket3.conf.yaml and set your blog name, URL, etc.</p>
+<p>Create a new post</p>
+<pre><code>cd posts
+bucket3 new hello-world-1 
 </code></pre>
-
-<p>Edit the file generated, and add some text, then generate/update your blog's HTML.</p>
-<pre><code>$ bucket3 update</code></pre>
-<p>Upload the contents of <code>html/</code> to your server.</p>
-<p>Note: if you want to host your bucket3-generated blog on GitHube pages, make sure you 
-  <a href="https://github.com/blog/572-bypassing-jekyll-on-github-pages">create a .nojekyll file</a>. 
-  Bucket3 puts all assets (css, js, etc) unded the directory "_/" that's ignored by GitHub Pages otherwise.</p>
-
-<h3>Examples.</h3>
+<p>Edit the generated .md file, and add some text.</p>
+<p>Generate/update your blog's HTML.</p>
+<p><code>bucket3 update</code></p>
+<p>You should now have your whole blog under "html" (as defined in your conf file).</p>
+<p>Upload the contents of html/ to your server.</p>
+<h1>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h1>
 <ul>
-  <li><a href="http://blog.vrypan.net/">blog.vrypan.net</a></li>
-  <li><a href="http://www.roussos.cc/">www.roussos.cc</a></li>
-  <li><a href="http://the.longaccess.com/blog/">the longaccess blog</a></li>
+<li><a href="http://blog.vrypan.net/">http://blog.vrypan.net/</a></li>
 </ul>
-
-<h3>News, tips</h3>
-<p>News and tips can be found at <a href="http://blog.vrypan.net/tag/bucket3/">blog.vrypan.net/tag/bucket3.</a></p>
-
-<h3>License &amp; Copyright.</h3>
+<h1>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h1>
 <p>bucket3 is distributed under the MIT LICENSE.</p>
-<p>Copyright by <a href="http://www.vrypan.net">Panayotis Vryonis</a>.</p>
-
+<h1>
+<a id="copyright" class="anchor" href="#copyright" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Copyright</h1>
+<p>Panayotis Vryonis, <a href="http://www.vrypan.net/">http://www.vrypan.net/</a></p>
+<h1>
+<a id="see-also" class="anchor" href="#see-also" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>See also</h1>
+<p>If you are not familiar with the idea of a static HTML blog, visit <a href="https://github.com/mojombo/jekyll">https://github.com/mojombo/jekyll</a> they've done a much better way at explaining it! (the intro is actually a copy from jekyll's README file)</p>
         </section>
 
         <footer>
           Bucket3 is maintained by <a href="https://github.com/vrypan">vrypan</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
                   <script type="text/javascript">
