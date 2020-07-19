@@ -19,15 +19,13 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         "markdown",
-	"py-gfm",
+        "py-gfm",
         "Jinja2",
         "PyYAML",
         "docopt",
-        "TwitterSearch",
-        "webmentiontools",
         "unidecode",
-	"htmlmin",
-	'lxml',
+        "htmlmin",
+        "lxml",
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
