@@ -1,6 +1,5 @@
-===========
 Bucket3
-===========
+=======
 
 bucket3 is a simple, blog aware, static site generator written in python. It reads your content and spits out a complete, static website suitable for serving with Apache or your favorite web server.
 
@@ -9,7 +8,7 @@ pieces of information (texts, images, audio, etc), and presents them in a nice
 blog-like format.
 
 Quick intro
-=========
+===========
 
 1. pip install bucket3
 
@@ -30,14 +29,14 @@ Quick intro
 9. Upload the files under html/ to your server.
 
 Examples
-------------
+--------
 
 Check out the source of http://www.bucket3.com/ at https://github.com/vrypan/www.bucket3.com
 
 http://blog.vrypan.net/ is also generated using bucket3.
 
 License
-=========
+=======
 
 bucket3 is distributed under the MIT LICENSE.
 

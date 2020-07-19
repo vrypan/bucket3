@@ -5,7 +5,7 @@ import sys
 from bucket3 import __version__
 
 setup(
-    name='bucket3',
+    name="bucket3",
     version=__version__,
     author='Panayotis Vryonis',
     author_email='vrypan@gmail.com',
@@ -17,6 +17,7 @@ setup(
     license='MIT-LICENSE.txt',
     description='Static blog generator.',
     long_description=open('README.rst').read(),
+    long_description_content_type='text/x-rst',
     install_requires=[
         "markdown",
         "py-gfm",
@@ -32,7 +33,7 @@ setup(
         'Environment :: Console',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.7.1',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
