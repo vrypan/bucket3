@@ -61,6 +61,12 @@ def conf_get(cpath=None):
     return conf
 
 
+def post_dirname_filename(slug=''):
+    prefix = datetime.now().strftime('%y%m%d')
+    dirname = "%s-%s" % (prefix, slug)
+    filename = os.path.join(dirname, "%s-%s.%s" % (prefix, slug, "md"))
+    return dirname, filename
+
 def post_new(slug='', title='', cpath='.', post=None):
     """ Create an empty post
     """
@@ -71,10 +77,6 @@ def post_new(slug='', title='', cpath='.', post=None):
         print("bucket3.b3tools.post_new: unable to locate bucket3.conf.yaml.")
         sys.exit(1)
 
-    if not title:
-        print("b3tools.post_new: No post title provided. Exiting.")
-        sys.exit(1)
-    
     if not post:
         post = {
             "slug": slug,
@@ -86,6 +88,11 @@ def post_new(slug='', title='', cpath='.', post=None):
             "attached": "",
             "content": "Here goes your markdown content."
             }
+    
+    if not post['title']:
+        print("b3tools.post_new: No post title provided. Exiting.")
+        sys.exit(1)
+    
     if not post['slug']:
         post['slug']=slugify(post['title'])
 
@@ -94,10 +101,10 @@ def post_new(slug='', title='', cpath='.', post=None):
     tpl = tpl_env.get_template('post.meta.template.md')
     new_post = tpl.render(post=post)
 
-    prefix = datetime.now().strftime('%y%m%d')
-    dirname = "%s-%s" % (prefix, post['slug'])
-    filename = os.path.join(dirname, "%s-%s.%s" % (prefix, post['slug'], "md"))
-    os.mkdir(dirname)
+    dirname, filename = post_dirname_filename(post['slug'])
+
+    if not os.path.isdir(dirname):
+        os.mkdir(dirname)
     f = open(filename, 'w')
     f.write(new_post)
     f.close()
