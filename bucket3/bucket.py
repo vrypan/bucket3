@@ -626,7 +626,7 @@ class Bucket3():
         posts = [p for p in self.db_post_get_by_year(year)]
         if posts:
             tpl = self.tpl_env.get_template('archive.html')
-            html = tpl.render(index=posts)
+            html = tpl.render(index=posts, tag='%s' % year)
             file_dir = os.path.join(self.html_dir, str(year))
             self.util_write_html(file_dir, html)
             
@@ -636,6 +636,7 @@ class Bucket3():
             month_MM = '{:02d}'.format(month)
             tpl = self.tpl_env.get_template('archive.html')
             html = tpl.render(index=posts)
+            html = tpl.render(index=posts, tag='%s/%s' % (month,year))
             file_dir = os.path.join(self.html_dir, str(year), month_MM)
             self.util_write_html(file_dir, html)
 
