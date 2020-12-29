@@ -21,6 +21,7 @@ import unidecode
 from htmlmin import minify
 from lxml import etree as ET
 from copy import deepcopy
+import json
 
 class contentFilters():
     exts = ('.md', '.markdown', '.wordpress', '.html')
@@ -112,6 +113,11 @@ def jinja_filter_gravatar(email, size=100, rating='g', default='retro', force_de
         link = link + "&f=y"
     return link
 
+# jinja's "tojason" filter will escape unicode.
+# this is a workaround.
+def jinja_filter_tojson_u(text): 
+    return json.dumps(text,ensure_ascii=False)
+
 class Bucket3():
 
     def __init__(self, conf=(), verbose=1):
@@ -173,6 +179,7 @@ class Bucket3():
 
         self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
         self.tpl_env.filters['gravatar'] = jinja_filter_gravatar
+        self.tpl_env.filters['tojson_u'] = jinja_filter_tojson_u
         self.tpl_env.filters['fbia'] = fb_instant_articles_markup
         self.tpl_env.globals['blog'] = blog
         self.tpl_env.globals['_months'] = [calendar.month_name[i] for i in range(0, 13)]  # yes, needs to start from zero.
@@ -437,7 +444,7 @@ class Bucket3():
         actions.append(('rss',))
         actions.append(('sitemap',))
         actions.append(('homepage',))
-        actions.append(('archive_main',))
+        actions.append(('full_index',)) # main archive, search_index.js, etc. 
 
         self.render_Q.update(actions)
 
@@ -451,10 +458,15 @@ class Bucket3():
                 if self.verbose:
                     print("Done.")
 
-            elif task[0] == 'archive_main':
+            elif task[0] == 'full_index':
                 if self.verbose:
                     print("Rendering archive [main]...", end='')
                 self.render_archive_main()
+                if self.verbose:
+                    print("Done.")
+                if self.verbose:
+                    print("Rendering search index...", end='')
+                self.render_search_index_js()
                 if self.verbose:
                     print("Done.")
 
@@ -613,7 +625,6 @@ class Bucket3():
                 f.close()
             print('Done.')
 
-
     def render_archive_main(self):
         posts = [p for p in self.db_post_get_all(count=None)]
         if posts:
@@ -621,7 +632,15 @@ class Bucket3():
             html = tpl.render(index=posts)
             file_dir = os.path.join(self.html_dir, 'archive')
             self.util_write_html(file_dir, html)
-            
+    
+    def render_search_index_js(self):
+        posts = [p for p in self.db_post_get_all(count=None)]
+        if posts:
+            tpl = self.tpl_env.get_template('search_index.js')
+            html = tpl.render(index=posts)
+            file_dir = os.path.join(self.html_dir, 'js')
+            self.util_write_html(file_dir, html, 'search_index.js' )
+
     def render_archive_year(self, year):
         posts = [p for p in self.db_post_get_by_year(year)]
         if posts:
