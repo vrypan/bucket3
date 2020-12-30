@@ -18,7 +18,7 @@ Quick intro
 
 4. Edit .bucket3/conf.yaml
 
-5. cd posts; bucket3 new hello-world-1 
+5. cd posts; bucket3 new "This is my first bucket3 post" 
 
 6. Edit the file generated, and add some text.
 
