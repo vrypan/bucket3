@@ -8,12 +8,14 @@ Usage:
   bucket3 [options] render [--posts] [--static] [--rss] [--sitemap]
   bucket3 [options] update
   bucket3 [options] getenv <variable>
+  bucket3 [options] server [--port=number]
   bucket3 -h, --help
   bucket3 --version
 
 Options:
   -p, --path=<path>        top directory of your blog. [default: .]
-  -v, --verbose=<level>,   show messages, level=0..2, 0=silent. [default: 1]
+  -v, --verbose=<level>    show messages, level=0..2, 0=silent. [default: 1]
+  --port=number          port number the server will listen to. [default: 8000]
 """
 
 from docopt import docopt
@@ -109,3 +111,19 @@ if __name__ == '__main__':
                 b.render_Q.update([('post', post['id']), ])
                 b.rq_post_deps(post)
             b.rq_do()
+
+    elif args['server']:
+        import http.server
+        from functools import partial
+        
+        conf = b3tools.conf_get(args['--path'])
+        port = int(args['--port'])
+        directory = conf['html_dir']
+
+        Handler = partial(http.server.SimpleHTTPRequestHandler, directory=directory)
+        print("This server must NOT be used for production. It is only intended for development.")
+        http.server.test(
+            HandlerClass=Handler,
+            ServerClass=http.server.ThreadingHTTPServer,
+            port=port,
+        )
