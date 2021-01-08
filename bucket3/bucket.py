@@ -96,6 +96,31 @@ def fb_instant_articles_markup(html, url=''):
     ret = ET.tostring(root)
     return ret
 
+def jinja_filter_end_slash(path):
+    """ Add trailing slash if needed. """
+    if path == '' or path[-1] == '/':
+        return path
+    else:
+        return path + '/'
+
+def jinja_filter_to_abs_urls(html, abs_prefix):
+    """ Replace src and href links with absolute ones if the start with '/'.
+        This is useful for the RSS content, where we have to replace the img
+        and href links that look like "/2020/10/..." with a full URL pointing
+        to the blog hostname and path.
+    """
+    html = re.sub(
+        r" src=[\"'](/[^\"'']*)",  # only for relative links!
+        ' src="%s%s"' % (abs_prefix, r"\1"),
+        html)
+
+    # rewrite links pointing to local files
+    html = re.sub(
+        r" href=[\"'](/[^\"'']*)",  # only for relative links!
+        ' href="%s%s"' % ( abs_prefix, r"\1"),
+        html)
+    return html
+
 def jinja_filter_gravatar(email, size=100, rating='g', default='retro', force_default=False,
     force_lower=False, use_ssl=False):
     # source: https://gist.github.com/Alquimista/3499097
@@ -125,7 +150,8 @@ class Bucket3():
 
         time.tzset()
 
-        self.root_url = conf['blog']['url']
+        self.root_url = conf['blog']['path']
+            
         self.root_dir = conf['root_dir']
         self.data_dir = os.path.join(self.root_dir, '.bucket3', 'data')
         self.posts_dir = os.path.join(self.root_dir, 'posts')
@@ -178,6 +204,8 @@ class Bucket3():
         self.template_dir = [ os.path.join(self.root_dir, 'templates'), ]
 
         self.tpl_env = Environment(loader=FileSystemLoader(self.template_dir))
+        self.tpl_env.filters['end_slash'] = jinja_filter_end_slash
+        self.tpl_env.filters['to_abs_urls'] = jinja_filter_to_abs_urls
         self.tpl_env.filters['gravatar'] = jinja_filter_gravatar
         self.tpl_env.filters['tojson_u'] = jinja_filter_tojson_u
         self.tpl_env.filters['fbia'] = fb_instant_articles_markup
@@ -258,8 +286,8 @@ class Bucket3():
             str('{:02d}'.format(meta['date'].day)),
             meta['slug'])
 
-        meta['url'] = "%s%s/%s/%s/%s/" % (
-            self.root_url,
+        meta['url'] = "%s/%s/%s/%s/%s/" % (
+            '/' + self.root_url if self.root_url else '',
             str(meta['date'].year),
             str('{:02d}'.format(meta['date'].month)),
             str('{:02d}'.format(meta['date'].day)),

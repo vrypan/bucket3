@@ -7,7 +7,7 @@
 		<atom:link href="{{ blog.url }}rss.xml" rel="self" type="application/rss+xml" />
 		{% endif %}
 		<title>{{ blog.title }}</title>
-		<link>{{ blog.url }}</link>
+		<link>{{blog.protocol}}://{{ blog.hostname }}/{{ blog.path }}</link>
 		<description>{{ blog.description }}</description>
 		<language>en-us</language>
 		<copyright>{{ blog.copyright }}</copyright>
@@ -19,8 +19,8 @@
 		{% for p in posts %}
 		<item>
 			<title>{{ p.title|e }}</title>
-			<link>{{ p.meta.url }}</link>
-			<guid>{{ p.meta.url }}</guid>
+			<link>{{blog.protocol}}://{{ blog.hostname }}{{ blog.path }}{{ p.meta.url }}</link>
+			<guid>{{blog.protocol}}://{{ blog.hostname }}{{ blog.path }}{{ p.meta.url }}</guid>
 			<description>{{ p.html|e }}</description>
 			<pubDate>{{ p.meta.date.strftime("%a, %d %b %Y %H:%M:%S") }}</pubDate>
 		</item>
