@@ -1,3 +1,8 @@
+> [!NOTE]
+> **bucket3 is no longer maintained.**
+> 
+> Visit [bckt](https://github.com/vrypan/bckt) for a similar, more modern SSG.
+
 Bucket3
 =======
 
